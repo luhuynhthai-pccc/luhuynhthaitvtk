@@ -1,0 +1,1867 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Tracking & Dashboard Bộ Phận TVTK 2026 - Nam Lợi Phát</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            blue: '#0F52BA', darkblue: '#0A2540',
+                            gold: '#F5A623', lightgold: '#FFF9E6',
+                            teal: '#00A896',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #040d1a; color: #e2e8f0; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0a192f; }
+        ::-webkit-scrollbar-thumb { background: #1e3a8a; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #F5A623; }
+
+        /* === NOTIFICATION BELL BADGE === */
+        .bell-badge {
+            position: absolute; top: -4px; right: -4px;
+            background: #ef4444; color: white;
+            font-size: 9px; font-weight: 800;
+            min-width: 16px; height: 16px;
+            border-radius: 9999px;
+            display: flex; align-items: center; justify-content: center;
+            padding: 0 3px;
+            border: 2px solid #040d1a;
+            animation: bellPulse 2s infinite;
+        }
+        @keyframes bellPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        .bell-shake { animation: shake 0.5s ease; }
+        @keyframes shake {
+            0%,100%{transform:rotate(0)} 20%{transform:rotate(-15deg)} 40%{transform:rotate(15deg)} 60%{transform:rotate(-10deg)} 80%{transform:rotate(10deg)}
+        }
+
+        /* === NOTIFICATION PANEL === */
+        #notifPanel {
+            position: fixed; top: 72px; right: 16px;
+            width: 380px; max-height: 520px;
+            background: #0d1b2e;
+            border: 1px solid rgba(15,82,186,0.4);
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+            z-index: 999;
+            overflow: hidden;
+            display: flex; flex-direction: column;
+            transform-origin: top right;
+            transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        #notifPanel.hidden-panel {
+            transform: scale(0.85) translateY(-10px);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* === AUDIT LOG PANEL === */
+        #auditPanel {
+            position: fixed; top: 72px; right: 16px;
+            width: 420px; max-height: 560px;
+            background: #0d1b2e;
+            border: 1px solid rgba(15,82,186,0.4);
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+            z-index: 998;
+            overflow: hidden;
+            display: flex; flex-direction: column;
+            transform-origin: top right;
+            transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        #auditPanel.hidden-panel {
+            transform: scale(0.85) translateY(-10px);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* === DEADLINE URGENCY LEVELS === */
+        .urgency-critical { border-left: 3px solid #ef4444; background: rgba(239,68,68,0.05); }
+        .urgency-warning  { border-left: 3px solid #f97316; background: rgba(249,115,22,0.05); }
+        .urgency-soon     { border-left: 3px solid #F5A623; background: rgba(245,166,35,0.05); }
+
+        /* === ROW ANIMATION === */
+        #projectTableBody tr {
+            animation: fadeInRow 0.3s ease forwards;
+        }
+        @keyframes fadeInRow {
+            from { opacity: 0; transform: translateX(-8px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+
+        /* === MODAL ANIMATIONS === */
+        #projectModal > div, #staffModal > div {
+            animation: modalIn 0.25s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        @keyframes modalIn {
+            from { transform: scale(0.92) translateY(12px); opacity: 0; }
+            to   { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        /* === KPI CARD HOVER === */
+        .kpi-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .kpi-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(15,82,186,0.2);
+        }
+
+        /* === PROGRESS BAR ANIMATION === */
+        .progress-fill {
+            transition: width 1s cubic-bezier(0.4,0,0.2,1);
+        }
+
+        /* === TOAST === */
+        .toast-item {
+            animation: slideInToast 0.35s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        @keyframes slideInToast {
+            from { transform: translateX(60px); opacity: 0; }
+            to   { transform: translateX(0); opacity: 1; }
+        }
+
+        /* === AUDIT LOG ENTRY === */
+        .audit-entry { transition: background 0.15s; }
+        .audit-entry:hover { background: rgba(15,82,186,0.08); }
+
+        /* === PRINT === */
+        @media print {
+            body { background: #fff !important; color: #000 !important; font-size: 10px !important; }
+            header, .no-print, button, select, input, #notifPanel, #auditPanel { display: none !important; }
+            main { max-width: 100% !important; padding: 0 !important; margin: 0 !important; }
+            .print-card { background: #fff !important; border: 1px solid #cbd5e1 !important; box-shadow: none !important; color: #000 !important; break-inside: avoid; margin-bottom: 15px !important; padding: 12px !important; }
+            .text-white, .text-slate-200, .text-slate-300 { color: #000 !important; }
+            .text-slate-400, .text-slate-500 { color: #475569 !important; }
+            canvas { max-width: 100% !important; height: 150px !important; }
+            table { width: 100% !important; border: 1px solid #94a3b8 !important; break-inside: auto; }
+            tr { break-inside: avoid; }
+            th { background-color: #f1f5f9 !important; color: #0f172a !important; border-bottom: 2px solid #334155 !important; padding: 5px !important; font-size: 9px !important; }
+            td { border-bottom: 1px solid #cbd5e1 !important; padding: 5px !important; color: #0f172a !important; font-size: 9px !important; }
+            .print-header { display: block !important; margin-bottom: 25px; border-bottom: 3px double #0F52BA; padding-bottom: 12px; }
+            .print-header h1 { color: #0F52BA !important; font-size: 20px !important; font-weight: 800; }
+            .print-new-page { page-break-before: always; }
+        }
+        .print-header { display: none; }
+/* --- PHẦN BỔ SUNG: BẢO MẬT & HỆ THỐNG --- */
+.hidden-ui { display: none !important; }
+#loginOverlay {
+    position: fixed; inset: 0; background: #040d1a; z-index: 9999;
+    display: flex; align-items: center; justify-content: center;
+    backdrop-filter: blur(15px);
+}
+.btn-system {
+    transition: all 0.2s;
+    background: rgba(15,82,186,0.1);
+    border: 1px solid rgba(15,82,186,0.3);
+}
+.btn-system:hover {
+    background: rgba(245,166,35,0.1);
+    border-color: #F5A623;
+    color: #F5A623;
+}
+    </style>
+</head>
+<body class="min-h-screen flex flex-col pb-10">
+
+    <!-- PRINT HEADER -->
+    <div class="print-header w-full">
+        <div class="flex justify-between items-center">
+            <div>
+                <h2 class="text-xs font-bold text-slate-600 uppercase">CÔNG TY TNHH NAM LỢI PHÁT</h2>
+                <p class="text-[9px] text-slate-500">Bộ phận Tư vấn Thiết kế Phòng cháy Chữa cháy (TVTK PCCC)</p>
+            </div>
+            <div class="text-right">
+                <p class="text-[9px] text-slate-500">Ngày in: <span id="printDate"></span></p>
+            </div>
+        </div>
+        <div class="text-center mt-6">
+            <h1 class="text-xl font-bold uppercase">BÁO CÁO TRACKING THEO DÕI DỰ ÁN BỘ PHẬN TVTK 2026</h1>
+        </div>
+    </div>
+    <!-- HEADER -->
+    <header class="bg-brand-darkblue border-b border-blue-900/40 sticky top-0 z-40 no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3.5">
+    <!-- Icon Container -->
+    <div class="w-11 h-11 bg-brand-blue rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/20 flex-shrink-0">
+        <i class="fa-solid fa-fire-extinguisher text-xl text-brand-gold"></i>
+    </div>
+    
+    <!-- Text Container -->
+    <div class="flex flex-col justify-center">
+        <div class="flex items-baseline space-x-2">
+            <h1 class="text-[19px] font-extrabold text-white tracking-tight leading-none">
+                NAM LỢI PHÁT
+            </h1>
+            <div class="flex flex-col items-start">
+                <span class="text-brand-gold font-black text-[13px] leading-none uppercase">TVTK</span>
+                <span class="text-brand-gold font-bold text-[11px] leading-none">2026</span>
+            </div>
+        </div>
+        <p class="text-[10px] text-slate-400 font-medium mt-1 tracking-wide uppercase opacity-80">
+            Hệ thống điều hành Kỹ thuật & Quản trị Dự án
+        </p>
+    </div>
+</div>
+
+            <div class="hidden md:flex items-center space-x-1 bg-slate-950/80 p-1 rounded-xl border border-blue-900/30 tab-navigation">
+                <button onclick="switchTab('dashboard')" id="tabBtnDashboard" class="px-4 py-2 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 bg-brand-blue text-white">
+                    <i class="fa-solid fa-chart-line"></i><span>Dashboard & Dự án</span>
+                </button>
+                <button onclick="switchTab('personnel')" id="tabBtnPersonnel" class="px-4 py-2 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-users-gear"></i><span>Quản lý Nhân Sự</span>
+                </button>
+                <button onclick="switchTab('audit')" id="tabBtnAudit" class="px-4 py-2 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-clock-rotate-left"></i><span>Lịch sử</span>
+                </button>
+            </div>
+
+            <div class="flex items-center space-x-3">
+                <!-- NOTIFICATION BELL -->
+                <button onclick="toggleNotifPanel()" id="bellBtn" class="relative w-9 h-9 bg-slate-800/80 hover:bg-slate-700 border border-blue-900/40 rounded-xl flex items-center justify-center transition duration-200" title="Thông báo deadline">
+                    <i class="fa-solid fa-bell text-slate-300 text-sm" id="bellIcon"></i>
+                    <span class="bell-badge hidden" id="bellBadge">0</span>
+                </button>
+<!-- CỤM NÚT NHẬP XUẤT DỮ LIỆU -->
+<div class="flex items-center space-x-2 border-r border-blue-900/30 pr-3 mr-2">
+    <button onclick="exportFullData()" class="btn-system px-3 py-1.5 rounded-lg text-[10px] font-bold text-slate-300 flex items-center space-x-1.5" title="Tải toàn bộ dữ liệu dự án về máy">
+        <i class="fa-solid fa-file-export text-brand-gold"></i>
+        <span>XUẤT DỮ LIỆU</span>
+    </button>
+    
+    <button onclick="document.getElementById('importFile').click()" class="btn-system px-3 py-1.5 rounded-lg text-[10px] font-bold text-slate-300 flex items-center space-x-1.5" title="Khôi phục dữ liệu từ file backup">
+        <i class="fa-solid fa-file-import text-brand-teal"></i>
+        <span>NHẬP DỮ LIỆU</span>
+    </button>
+    
+    <!-- Input ẩn để chọn file -->
+    <input type="file" id="importFile" class="hidden" accept=".json" onchange="importFullData(event)">
+</div>
+
+                <!-- AUDIT LOG QUICK BUTTON -->
+                <button onclick="switchTab('audit')" class="hidden md:flex relative w-9 h-9 bg-slate-800/80 hover:bg-slate-700 border border-blue-900/40 rounded-xl items-center justify-center transition duration-200" title="Lịch sử thay đổi">
+                    <i class="fa-solid fa-clock-rotate-left text-slate-300 text-sm"></i>
+                    <span class="bell-badge hidden" id="auditBadge">0</span>
+                </button>
+
+                <span class="hidden md:inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-brand-gold/10 text-brand-gold border border-brand-gold/20">
+                    <span class="w-2 h-2 rounded-full bg-brand-gold mr-1.5 animate-pulse"></span>LocalStorage
+                </span>
+
+                <button onclick="triggerPrint()" class="px-3.5 py-1.5 bg-brand-gold hover:bg-amber-500 text-brand-darkblue font-bold rounded-lg text-xs flex items-center space-x-1.5 transition duration-200 active:scale-95 shadow-lg shadow-brand-gold/20">
+                    <i class="fa-solid fa-file-pdf"></i><span class="hidden sm:inline">Xuất PDF</span>
+                </button>
+
+                <div class="text-right hidden sm:block border-l border-slate-700 pl-3">
+                    <p class="text-[10px] text-slate-400">Điều hành:</p>
+                    <p class="text-sm font-semibold text-brand-gold">Thái (TVTK)</p>
+                </div>
+                <div class="w-9 h-9 rounded-full bg-brand-blue/20 border border-brand-blue flex items-center justify-center">
+                    <i class="fa-solid fa-user-shield text-brand-gold text-sm"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MOBILE TAB NAV -->
+    <div id="mobileTabNav" class="block md:hidden bg-brand-darkblue/90 border-b border-blue-900/30 p-2 text-center no-print">
+        <div class="inline-flex rounded-lg p-1 bg-slate-950 gap-1">
+            <button onclick="switchTab('dashboard')" id="mobileTabBtnDashboard" class="px-3 py-1.5 rounded-md text-xs font-bold bg-brand-blue text-white">Dashboard</button>
+            <button onclick="switchTab('personnel')" id="mobileTabBtnPersonnel" class="px-3 py-1.5 rounded-md text-xs font-bold text-slate-400">Nhân Sự</button>
+            <button onclick="switchTab('audit')" id="mobileTabBtnAudit" class="px-3 py-1.5 rounded-md text-xs font-bold text-slate-400">Lịch sử</button>
+        </div>
+    </div>
+
+    <!-- NOTIFICATION PANEL -->
+    <div id="notifPanel" class="hidden-panel">
+        <div class="px-4 py-3 border-b border-blue-900/40 flex items-center justify-between bg-brand-darkblue/80">
+            <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-bell text-brand-gold text-sm"></i>
+                <h4 class="text-sm font-bold text-white">Cảnh báo Deadline</h4>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button onclick="markAllNotifsRead()" class="text-[10px] text-slate-400 hover:text-brand-gold transition">Đánh dấu đã đọc</button>
+                <button onclick="toggleNotifPanel()" class="text-slate-400 hover:text-white transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+        </div>
+        <div class="overflow-y-auto flex-1" id="notifList" style="max-height:420px"></div>
+        <div class="px-4 py-2 border-t border-blue-900/30 bg-brand-darkblue/60">
+            <p class="text-[10px] text-slate-500 text-center">Cảnh báo tự động: 7 ngày · 14 ngày · 30 ngày</p>
+        </div>
+    </div>
+
+}
+
+    <!-- MAIN BODY -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+<!-- MÀN HÌNH KHÓA TRUY CẬP -->
+<div id="loginOverlay">
+    <div class="bg-brand-darkblue p-8 rounded-3xl border border-blue-900/50 shadow-2xl w-full max-w-md text-center">
+        <div class="w-16 h-16 bg-brand-blue rounded-2xl mx-auto flex items-center justify-center mb-6 shadow-lg">
+            <i class="fa-solid fa-shield-halved text-2xl text-brand-gold"></i>
+        </div>
+        <h2 class="text-xl font-bold text-white mb-2 uppercase tracking-tighter">TRAKING BỘ PHẬN TVTK 2026</h2>
+        <p class="text-slate-400 text-[10px] mb-6 uppercase tracking-widest">Vui lòng nhập mật khẩu để tiếp tục</p>
+        <input type="password" id="accessKeyInput" onkeyup="if(event.key==='Enter') checkAccessKey()" class="w-full bg-slate-950 border border-blue-900/40 rounded-xl px-4 py-3 text-center text-white tracking-[0.5em] outline-none mb-4 focus:border-brand-gold transition-all" placeholder="••••">
+        <button onclick="checkAccessKey()" class="w-full bg-brand-gold hover:bg-amber-500 text-brand-darkblue font-black py-3 rounded-xl transition-all uppercase text-xs">Xác nhận</button>
+        <p id="loginError" class="text-red-400 text-[10px] mt-4 hidden font-bold italic text-center">MẬT KHẨU KHÔNG CHÍNH XÁC!</p>
+    </div>
+</div>
+
+<!-- Bọc toàn bộ nội dung cũ của bạn vào thẻ div này để ẩn đi lúc đầu -->
+<div id="mainContent" class="hidden-ui">
+
+        <!-- ====== TAB 1: DASHBOARD ====== -->
+        <div id="dashboardTab" class="space-y-8">
+
+            <!-- KPI GRID -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                <div class="kpi-card print-card bg-brand-darkblue/40 backdrop-blur border border-blue-900/50 rounded-2xl p-5">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-medium text-slate-300">Tổng Số Dự Án</span>
+                        <div class="w-8 h-8 rounded-lg bg-brand-blue/20 flex items-center justify-center text-brand-gold">
+                            <i class="fa-solid fa-folder-tree text-sm"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <h3 class="text-2xl font-bold text-white" id="statTotalProjects">0</h3>
+                        <p class="text-[10px] text-slate-400 mt-1">Hồ sơ TVTK PCCC</p>
+                    </div>
+                </div>
+                <div class="kpi-card print-card bg-brand-darkblue/40 backdrop-blur border border-blue-900/50 rounded-2xl p-5">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-medium text-slate-300">Hồ Sơ Đã Ra Giấy</span>
+                        <div class="w-8 h-8 rounded-lg bg-brand-teal/15 flex items-center justify-center text-brand-teal">
+                            <i class="fa-solid fa-file-shield text-sm"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <h3 class="text-2xl font-bold text-brand-teal" id="statCompleted">0</h3>
+                        <p class="text-[10px] text-slate-300 mt-1" id="statCompletedPct">Tỷ lệ: 0%</p>
+                    </div>
+                </div>
+                <div class="kpi-card print-card bg-brand-darkblue/40 backdrop-blur border border-blue-900/50 rounded-2xl p-5">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-medium text-slate-300">Đang Triển Khai</span>
+                        <div class="w-8 h-8 rounded-lg bg-brand-gold/15 flex items-center justify-center text-brand-gold">
+                            <i class="fa-solid fa-person-digging text-sm"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <h3 class="text-2xl font-bold text-white" id="statActive">0</h3>
+                        <p class="text-[10px] text-slate-400 mt-1">Đang tích cực thực hiện</p>
+                    </div>
+                </div>
+                <div class="kpi-card print-card bg-brand-darkblue/40 backdrop-blur border border-blue-900/50 rounded-2xl p-5">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-medium text-slate-300">Đang Tạm Dừng</span>
+                        <div class="w-8 h-8 rounded-lg bg-slate-500/10 flex items-center justify-center text-slate-400">
+                            <i class="fa-solid fa-circle-pause text-sm"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <h3 class="text-2xl font-bold text-slate-300" id="statSuspended">0</h3>
+                        <p class="text-[10px] text-slate-400 mt-1">Đang chờ xử lý pháp lý</p>
+                    </div>
+                </div>
+                <div class="kpi-card print-card bg-red-950/20 border border-red-500/30 rounded-2xl p-5">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-medium text-red-400">Trễ Hạn / Khẩn Cấp</span>
+                        <div class="w-8 h-8 rounded-lg bg-red-500/20 flex items-center justify-center text-red-400 animate-pulse">
+                            <i class="fa-solid fa-triangle-exclamation text-sm"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <h3 class="text-2xl font-bold text-red-400" id="statDelayed">0</h3>
+                        <p class="text-[10px] text-red-300/80 mt-1">Quá hạn cam kết/hạn nộp</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CHARTS + FINANCE -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="print-card bg-brand-darkblue/40 border border-blue-900/40 rounded-2xl p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center space-x-2 mb-1">
+                            <i class="fa-solid fa-money-bill-trend-up text-brand-gold"></i>
+                            <h3 class="text-base font-bold uppercase text-white">Chỉ Tiêu Tài Chính 2026</h3>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mb-6">Cam kết của bộ phận TVTK với Ban Giám Đốc</p>
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between text-xs text-slate-300 mb-1">
+                                    <span>Giá trị chắc chắn đạt (Đã ra giấy)</span>
+                                    <span class="font-bold text-brand-teal" id="statCompletedContractValue">0 VNĐ</span>
+                                </div>
+                                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                                    <div class="bg-brand-teal h-full rounded-full progress-fill" id="progressCompletedValBar" style="width:0%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs text-slate-300 mb-1">
+                                    <span>Tổng giá trị hợp đồng quản lý</span>
+                                    <span class="font-bold text-brand-gold" id="statTotalContractValue">0 VNĐ</span>
+                                </div>
+                                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                                    <div class="bg-brand-gold h-full rounded-full progress-fill" style="width:100%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6 pt-5 border-t border-blue-900/40">
+                        <div class="flex items-center space-x-3 bg-brand-blue/10 border border-brand-blue/30 p-3.5 rounded-xl">
+                            <i class="fa-solid fa-award text-2xl text-brand-gold"></i>
+                            <div>
+                                <p class="text-[10px] text-slate-400">Doanh thu mục tiêu 2026:</p>
+                                <p class="text-lg font-extrabold text-brand-gold">8,000,000,000 VNĐ</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="print-card bg-brand-darkblue/40 border border-blue-900/40 rounded-2xl p-6">
+                    <div class="flex items-center space-x-2 text-brand-gold mb-3">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        <h3 class="text-base font-bold uppercase text-white">Trạng Thái Thẩm Duyệt</h3>
+                    </div>
+                    <div class="relative h-48 w-full flex items-center justify-center">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                </div>
+                <div class="print-card bg-brand-darkblue/40 border border-blue-900/40 rounded-2xl p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center space-x-2 text-brand-gold">
+                            <i class="fa-solid fa-chart-column"></i>
+                            <h3 class="text-base font-bold uppercase text-white">Năng Suất Chịu Tải</h3>
+                        </div>
+                        <span class="text-[10px] text-slate-400">(Tỷ VNĐ)</span>
+                    </div>
+                    <div class="relative h-48 w-full flex items-center justify-center">
+                        <canvas id="personnelChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DEADLINE ALERT BANNER — shown when there are upcoming -->
+            <div id="deadlineBanner" class="hidden print-card bg-amber-950/20 border border-amber-500/30 rounded-2xl p-5">
+                <div class="flex items-start space-x-3.5">
+                    <div class="p-3 bg-amber-500/10 rounded-xl text-amber-400 flex-shrink-0">
+                        <i class="fa-solid fa-clock text-xl"></i>
+                    </div>
+                    <div class="flex-grow">
+                        <h4 class="text-sm font-bold text-amber-400 uppercase">Dự án sắp đến hạn trong 30 ngày tới</h4>
+                        <div class="mt-2 flex flex-wrap gap-2" id="deadlineBannerBadges"></div>
+                    </div>
+                    <button onclick="document.getElementById('deadlineBanner').classList.add('hidden')" class="text-slate-500 hover:text-white transition no-print">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- FINANCE TABLE -->
+            <div class="print-card bg-brand-darkblue/40 border border-blue-900/45 rounded-2xl p-6">
+                <div class="flex items-center justify-between mb-4 pb-3 border-b border-blue-900/30">
+                    <div class="flex items-center space-x-2.5">
+                        <div class="w-8 h-8 rounded-lg bg-brand-gold/15 flex items-center justify-center text-brand-gold">
+                            <i class="fa-solid fa-users-viewfinder"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold uppercase text-white">Bảng Thống Kê Tài Chính & Phân Bổ Trách Nhiệm</h3>
+                            <p class="text-[11px] text-slate-400 mt-0.5">Giá trị Đã Ra Giấy so với Đang Phụ Trách từng kỹ sư</p>
+                        </div>
+                    </div>
+                    <div class="text-[11px] text-slate-300">Đơn vị: <span class="font-bold text-brand-gold">VNĐ</span></div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-brand-darkblue/80 text-[10px] font-bold text-slate-300 uppercase tracking-wider border-b border-blue-900/30">
+                                <th class="py-2.5 px-4">Nhân sự thực hiện</th>
+                                <th class="py-2.5 px-4 text-center">Tổng hồ sơ</th>
+                                <th class="py-2.5 px-4 text-center">Đã Ra Giấy</th>
+                                <th class="py-2.5 px-4 text-right text-brand-teal">Giá trị Hoàn Thành</th>
+                                <th class="py-2.5 px-4 text-center">Đang chạy</th>
+                                <th class="py-2.5 px-4 text-right text-brand-gold">Giá trị Đang Chịu Tải</th>
+                                <th class="py-2.5 px-4 text-right font-bold text-white">Tổng Đảm Nhiệm</th>
+                            </tr>
+                        </thead>
+                        <tbody id="financePersonnelTableBody" class="divide-y divide-blue-950/40 text-xs"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ALERT BLOCK -->
+            <div class="print-card bg-red-950/15 border border-red-500/20 rounded-2xl p-5">
+                <div class="flex items-start space-x-3.5">
+                    <div class="p-3 bg-red-500/10 rounded-xl text-red-400">
+                        <i class="fa-solid fa-triangle-exclamation text-xl animate-bounce"></i>
+                    </div>
+                    <div class="flex-grow">
+                        <h4 class="text-sm font-bold text-red-400 uppercase">Khuyến nghị điều hành từ Trưởng bộ phận</h4>
+                        <p class="text-xs text-slate-300 mt-1">Đang tồn đọng <span id="alertDelayedCount" class="font-bold">0</span> dự án trễ hạn nghiêm trọng. Kỹ sư phụ trách cần tập trung kiểm tra mốc nộp/trả (L1, L2, L3) và hành động sớm với phòng PC07.</p>
+                        <div class="mt-3 flex flex-wrap gap-2 no-print" id="alertBoxBadges"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MAIN TABLE -->
+            <div class="print-card bg-brand-darkblue/30 border border-blue-900/40 rounded-2xl overflow-hidden print-new-page">
+                <!-- FILTERS -->
+                <div class="p-6 border-b border-blue-900/40 flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-brand-darkblue/60 no-print">
+                    <div>
+                        <h3 class="text-lg font-bold text-white flex items-center">
+                            Bảng Quản Lý & Tracking Tiến Độ Chi Tiết
+                            <span class="ml-2 text-xs bg-brand-gold/15 text-brand-gold border border-brand-gold/20 px-2 py-0.5 rounded-full font-medium">V2.1</span>
+                        </h3>
+                        <p class="text-[11px] text-slate-400 mt-1">Quản lý mốc thời gian thẩm duyệt L1, L2, L3 và thông tin vướng mắc</p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-3">
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-magnifying-glass text-xs"></i></span>
+                            <input type="text" id="searchInput" oninput="applyFilters()" placeholder="Tìm tên dự án, cán bộ..."
+                                class="pl-8 pr-4 py-2 bg-slate-900/80 border border-blue-900/40 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-brand-gold/50 transition w-full sm:w-52">
+                        </div>
+                        <select id="statusFilter" onchange="applyFilters()" class="px-3 py-2 bg-slate-900/80 border border-blue-900/40 rounded-xl text-xs text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-gold/50 cursor-pointer">
+                            <option value="all">Tất cả trạng thái</option>
+                            <option value="Đang triển khai">Đang triển khai</option>
+                            <option value="Đã ra giấy">Đã ra giấy</option>
+                            <option value="Đang tạm dừng">Đang tạm dừng</option>
+                            <option value="TRỄ HẠN">Quá hạn (Trễ)</option>
+                        </select>
+                        <select id="personnelFilter" onchange="applyFilters()" class="px-3 py-2 bg-slate-900/80 border border-blue-900/40 rounded-xl text-xs text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-gold/50 cursor-pointer">
+                            <option value="all">Nhân sự thực tế</option>
+                        </select>
+                        <button onclick="openProjectModal()" class="px-4 py-2 bg-brand-gold hover:bg-amber-500 text-brand-darkblue rounded-xl text-xs font-bold flex items-center space-x-1.5 transition duration-200 hover:-translate-y-0.5 shadow-md shadow-brand-gold/10">
+                            <i class="fa-solid fa-folder-plus"></i><span>Thêm Dự Án</span>
+                        </button>
+                    </div>
+                </div>
+                <!-- TABLE -->
+                <div class="overflow-x-auto table-container">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-brand-darkblue text-[11px] font-bold text-slate-300 uppercase tracking-wider border-b border-blue-900/40">
+                                <th class="py-3.5 px-3 text-center w-10">STT</th>
+                                <th class="py-3.5 px-3 min-w-[200px]">Chi tiết dự án</th>
+                                <th class="py-3.5 px-3 text-right">Giá Trị HĐ</th>
+                                <th class="py-3.5 px-3">Người Thực Hiện</th>
+                                <th class="py-3.5 px-3">Hạn Nộp</th>
+                                <th class="py-3.5 px-3">Tình Trạng</th>
+                                <th class="py-3.5 px-3 min-w-[150px]">Mốc L1 · L2 · L3</th>
+                                <th class="py-3.5 px-3 min-w-[150px]">Vướng mắc / Cán bộ PC07</th>
+                                <th class="py-3.5 px-3 text-center no-print w-24">Hành Động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="projectTableBody" class="divide-y divide-blue-950/40 text-xs"></tbody>
+                    </table>
+                </div>
+                <!-- TABLE FOOTER -->
+                <div class="p-4 bg-brand-darkblue/50 border-t border-blue-900/40 flex items-center justify-between text-[11px] text-slate-400">
+                    <p>Hiển thị <span id="displayedCount" class="font-bold text-brand-gold">0</span> / <span id="totalCount" class="font-bold text-brand-gold">0</span> dự án</p>
+                    <button onclick="resetToDefaultData()" class="no-print text-[10px] text-slate-500 hover:text-brand-gold transition underline">Khôi phục dữ liệu gốc mẫu</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====== TAB 2: NHÂN SỰ ====== -->
+        <div id="personnelTab" class="space-y-8 hidden">
+            <div class="bg-brand-darkblue/40 border border-blue-900/50 rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div>
+                    <h3 class="text-lg font-bold text-white flex items-center space-x-2">
+                        <i class="fa-solid fa-users-gear text-brand-gold"></i>
+                        <span>Quản Lý Nhân Sự & Phân Phối Trách Nhiệm</span>
+                    </h3>
+                    <p class="text-xs text-slate-400 mt-1">Đăng ký thành viên, phân bổ và bàn giao hồ sơ nhanh chóng.</p>
+                </div>
+                <button onclick="openStaffModal()" class="px-4 py-2.5 bg-brand-gold hover:bg-amber-500 text-brand-darkblue font-extrabold rounded-xl text-xs flex items-center space-x-2 transition duration-200 shadow-md">
+                    <i class="fa-solid fa-user-plus"></i><span>Thêm nhân viên mới</span>
+                </button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="staffCardsGrid"></div>
+            <!-- TRANSFER PANEL -->
+            <div class="bg-slate-900/60 border border-blue-900/40 rounded-2xl p-6">
+                <div class="flex items-center space-x-3 mb-6 pb-4 border-b border-blue-900/30">
+                    <div class="w-10 h-10 bg-brand-gold/15 rounded-xl flex items-center justify-center text-brand-gold">
+                        <i class="fa-solid fa-shuffle text-lg"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-bold text-white uppercase">Công cụ chuyển giao hồ sơ hàng loạt</h4>
+                        <p class="text-[11px] text-slate-400 mt-0.5">Gán lại toàn bộ hồ sơ đang triển khai từ nhân viên A sang nhân viên B.</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">1. Nhân sự chuyển đi</label>
+                        <select id="reassignSource" class="w-full bg-slate-950 border border-blue-900/40 rounded-xl px-4 py-2.5 text-xs text-white focus:ring-1 focus:ring-brand-gold focus:outline-none"></select>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">2. Nhân sự tiếp quản</label>
+                        <select id="reassignDest" class="w-full bg-slate-950 border border-blue-900/40 rounded-xl px-4 py-2.5 text-xs text-white focus:ring-1 focus:ring-brand-gold focus:outline-none"></select>
+                    </div>
+                    <div>
+                        <button onclick="executeTransfer()" class="w-full px-5 py-2.5 bg-brand-blue hover:bg-blue-700 text-white font-bold rounded-xl text-xs flex items-center justify-center space-x-2 transition">
+                            <i class="fa-solid fa-bolt"></i><span>Bắt Đầu Chuyển Giao</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====== TAB 3: AUDIT LOG ====== -->
+        <div id="auditTab" class="space-y-6 hidden">
+            <div class="bg-brand-darkblue/40 border border-blue-900/50 rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h3 class="text-lg font-bold text-white flex items-center space-x-2">
+                        <i class="fa-solid fa-clock-rotate-left text-brand-gold"></i>
+                        <span>Lịch Sử Thay Đổi Hệ Thống (Audit Log)</span>
+                    </h3>
+                    <p class="text-xs text-slate-400 mt-1">Ghi lại toàn bộ thao tác thêm, sửa, xóa dự án và nhân sự với dấu thời gian.</p>
+                </div>
+                <button onclick="clearAuditLog()" class="px-4 py-2 bg-red-950/30 hover:bg-red-900/40 text-red-400 border border-red-800/40 font-bold rounded-xl text-xs flex items-center space-x-2 transition no-print">
+                    <i class="fa-solid fa-trash-can"></i><span>Xóa lịch sử</span>
+                </button>
+            </div>
+
+            <!-- AUDIT FILTER -->
+            <div class="no-print flex flex-wrap gap-3 items-center">
+                <select id="auditTypeFilter" onchange="renderAuditLog()" class="px-3 py-2 bg-slate-900/80 border border-blue-900/40 rounded-xl text-xs text-slate-200 focus:outline-none cursor-pointer">
+                    <option value="all">Tất cả thao tác</option>
+                    <option value="CREATE">Thêm mới</option>
+                    <option value="UPDATE">Cập nhật</option>
+                    <option value="DELETE">Xóa</option>
+                    <option value="TRANSFER">Chuyển giao</option>
+                    <option value="STAFF">Nhân sự</option>
+                </select>
+                <span class="text-[11px] text-slate-400">Tổng: <span id="auditTotalCount" class="font-bold text-brand-gold">0</span> thao tác được ghi lại</span>
+            </div>
+
+            <!-- AUDIT TABLE -->
+            <div class="print-card bg-brand-darkblue/30 border border-blue-900/40 rounded-2xl overflow-hidden">
+                <div id="auditLogContainer" class="divide-y divide-blue-950/30">
+                    <!-- JS inject -->
+                </div>
+                <div id="auditEmpty" class="hidden py-16 text-center text-slate-500 italic text-sm">
+                    <i class="fa-solid fa-inbox text-2xl mb-3 block text-slate-700"></i>
+                    Chưa có lịch sử thay đổi nào được ghi lại.
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- MODAL: DỰ ÁN -->
+    <div id="projectModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden no-print">
+        <div class="bg-slate-900 border border-blue-900/40 w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl m-4">
+            <div class="bg-brand-darkblue px-6 py-4 flex items-center justify-between border-b border-blue-900/30">
+                <h3 id="modalTitle" class="text-sm font-bold uppercase text-white">Thêm Dự Án TVTK Mới</h3>
+                <button onclick="closeProjectModal()" class="text-slate-400 hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form id="projectForm" onsubmit="saveProject(event)" class="p-6 space-y-4 max-h-[75vh] overflow-y-auto">
+                <input type="hidden" id="formProjectId">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1.5">Tên Dự Án *</label>
+                        <input type="text" id="formProjectName" required class="w-full bg-slate-950 border border-blue-900/40 rounded-xl px-4 py-2 text-xs text-white focus:ring-1 focus:ring-brand-gold focus:outline-none" placeholder="Tên dự án">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1.5">Giá Trị HĐ (VNĐ) *</label>
+                        <input type="number" id="formContractValue" required class="w-full bg-slate-950 border border-blue-900/40 rounded-xl px-4 py-2 text-xs text-white focus:ring-1 focus:ring-brand-gold focus:outline-none" placeholder="0">
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1.5">Kỹ Sư Thiết Kế *</label>
+                        <select id="formAssignee" required class="w-full bg-slate-950 border border-blue-900/40 rounded-xl px-4 py-2 text-xs text-white focus:ring-1 focus:ring-brand-gold focus:outline-none"></select>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1.5">Deadline *</label>
+                        <input type="date" id="formDeadline" required class="w-full bg-slate-950 border border-blue-900/40 rounded-xl px-4 py-2 text-xs text-white focus:ring-1 focus:ring-brand-gold focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1.5">Tình Trạng *</label>
+                        <select id="formStatus" required class="w-full bg-slate-950 border border-blue-900/40 rounded-xl px-4 py-2 text-xs text-white focus:ring-1 focus:ring-brand-gold focus:outline-none">
+                            <option value="Đang triển khai">Đang triển khai</option>
+                            <option value="Đã ra giấy">Đã ra giấy</option>
+                            <option value="Đang tạm dừng">Đang tạm dừng</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="border-t border-blue-950 py-3">
+                    <h4 class="text-xs font-bold text-brand-gold mb-3 flex items-center">
+                        <i class="fa-solid fa-list-check mr-2"></i>Tiến Độ 3 Giai Đoạn Thẩm Duyệt (L1, L2, L3)
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-950/50 p-4 rounded-xl border border-blue-950">
+                        <div>
+                            <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Mốc L1 (TKCS / Pháp lý)</label>
+                            <select id="formL1Status" class="w-full bg-slate-950 border border-blue-900/30 rounded-lg px-2 py-1 text-[11px] text-slate-200 mb-2 focus:outline-none">
+                                <option>Chưa nộp</option><option>Đang duyệt</option><option>Đã duyệt</option>
+                            </select>
+                            <input type="date" id="formL1Date" class="w-full bg-slate-950 border border-blue-900/30 rounded-lg px-2 py-1 text-[11px] text-slate-200 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Mốc L2 (Bản vẽ thi công)</label>
+                            <select id="formL2Status" class="w-full bg-slate-950 border border-blue-900/30 rounded-lg px-2 py-1 text-[11px] text-slate-200 mb-2 focus:outline-none">
+                                <option>Chưa nộp</option><option>Đang duyệt</option><option>Đã duyệt</option>
+                            </select>
+                            <input type="date" id="formL2Date" class="w-full bg-slate-950 border border-blue-900/30 rounded-lg px-2 py-1 text-[11px] text-slate-200 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Mốc L3 (Ra giấy)</label>
+                            <select id="formL3Status" class="w-full bg-slate-950 border border-blue-900/30 rounded-lg px-2 py-1 text-[11px] text-slate-200 mb-2 focus:outline-none">
+                                <option>Chưa nộp</option><option>Đang duyệt</option><option>Đã duyệt</option>
+                            </select>
+                            <input type="date" id="formL3Date" class="w-full bg-slate-950 border border-blue-900/30 rounded-lg px-2 py-1 text-[11px] text-slate-200 focus:outline-none">
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1.5">Cán Bộ PC07 Thụ Lý</label>
+                        <input type="text" id="formOfficer" class="w-full bg-slate-950 border border-blue-900/40 rounded-xl px-4 py-2 text-xs text-white focus:ring-1 focus:ring-brand-gold focus:outline-none" placeholder="Cán bộ PC07">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1.5">Ghi Chú Vướng Mắc</label>
+                        <input type="text" id="formNotes" class="w-full bg-slate-950 border border-blue-900/40 rounded-xl px-4 py-2 text-xs text-white focus:ring-1 focus:ring-brand-gold focus:outline-none" placeholder="Vướng mắc, lý do chậm...">
+                    </div>
+                </div>
+                <div class="pt-4 flex justify-end space-x-3 border-t border-blue-950">
+                    <button type="button" onclick="closeProjectModal()" class="px-5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold transition">Đóng</button>
+                    <button type="submit" class="px-5 py-2 bg-brand-gold hover:bg-amber-500 text-brand-darkblue rounded-xl text-xs font-bold transition">Lưu Thay Đổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: NHÂN VIÊN -->
+    <div id="staffModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden no-print">
+        <div class="bg-slate-900 border border-blue-900/40 w-full max-w-md rounded-2xl overflow-hidden shadow-2xl m-4">
+            <div class="bg-brand-darkblue px-6 py-4 flex items-center justify-between border-b border-blue-900/30">
+                <h3 class="text-sm font-bold uppercase text-white">Thêm Nhân Sự TVTK Mới</h3>
+                <button onclick="closeStaffModal()" class="text-slate-400 hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form id="staffForm" onsubmit="saveStaff(event)" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1.5">Họ Và Tên *</label>
+                    <input type="text" id="formStaffName" required class="w-full bg-slate-950 border border-blue-900/40 rounded-xl px-4 py-2.5 text-xs text-white focus:ring-1 focus:ring-brand-gold focus:outline-none" placeholder="Họ và tên">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1.5">Chức Vụ *</label>
+                    <input type="text" id="formStaffRole" required class="w-full bg-slate-950 border border-blue-900/40 rounded-xl px-4 py-2.5 text-xs text-white focus:ring-1 focus:ring-brand-gold focus:outline-none" placeholder="Ví dụ: Kỹ sư thiết kế chính">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1.5">Liên lạc</label>
+                    <input type="text" id="formStaffContact" class="w-full bg-slate-950 border border-blue-900/40 rounded-xl px-4 py-2.5 text-xs text-white focus:ring-1 focus:ring-brand-gold focus:outline-none" placeholder="SĐT hoặc Email">
+                </div>
+                <div class="pt-4 flex justify-end space-x-3 border-t border-blue-950">
+                    <button type="button" onclick="closeStaffModal()" class="px-5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold transition">Đóng</button>
+                    <button type="submit" class="px-5 py-2 bg-brand-gold hover:bg-amber-500 text-brand-darkblue rounded-xl text-xs font-bold transition">Đăng ký</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- TOAST CONTAINER -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-[100] flex flex-col gap-2 no-print max-w-sm"></div>
+
+    <!-- ====== JAVASCRIPT ====== -->
+    <script>
+// --- PHẦN BỔ SUNG: LOGIC HỆ THỐNG ---
+const MASTER_KEY = "2026"; // MẬT KHẨU TRUY CẬP
+
+// 1. Kiểm tra mật khẩu
+function checkAccessKey() {
+    const input = document.getElementById("accessKeyInput").value;
+    if (input === MASTER_KEY) {
+        document.getElementById("loginOverlay").style.display = "none";
+        document.getElementById("mainContent").classList.remove("hidden-ui");
+        sessionStorage.setItem("nlp_authorized", "true");
+        // Gọi hàm khởi tạo ứng dụng cũ của bạn (ví dụ: initializeApplication() hoặc loadData())
+        if (typeof initializeApplication === "function") initializeApplication();
+    } else {
+        document.getElementById("loginError").classList.remove("hidden");
+        document.getElementById("accessKeyInput").value = "";
+    }
+}
+
+// 2. Xuất dữ liệu ra file JSON
+function exportFullData() {
+    const data = {
+        projects: JSON.parse(localStorage.getItem("NLP_TVTK_Projects") || "[]"),
+        staff: JSON.parse(localStorage.getItem("NLP_TVTK_Staff") || "[]"),
+        auditLog: JSON.parse(localStorage.getItem("NLP_TVTK_AuditLog") || "[]"),
+        exportDate: new Date().toLocaleString()
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], {type: "application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `BACKUP_TVTK_NLP_${new Date().toLocaleDateString()}.json`;
+    a.click();
+    if (typeof showToast === "function") showToast("Đã xuất file lưu trữ thành công!", "success");
+}
+
+// 3. Nhập dữ liệu từ file JSON
+function importFullData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = JSON.parse(e.target.result);
+            if(confirm("Dữ liệu nhập vào sẽ thay thế toàn bộ dữ liệu hiện tại. Bạn có chắc chắn không?")) {
+                localStorage.setItem("NLP_TVTK_Projects", JSON.stringify(data.projects || []));
+                localStorage.setItem("NLP_TVTK_Staff", JSON.stringify(data.staff || []));
+                localStorage.setItem("NLP_TVTK_AuditLog", JSON.stringify(data.auditLog || []));
+                alert("Nhập dữ liệu thành công! Trang sẽ tải lại.");
+                location.reload();
+            }
+        } catch(err) { alert("Lỗi: File dữ liệu không đúng định dạng!"); }
+    };
+    reader.readAsText(file);
+}
+
+// 4. Đăng xuất
+function logout() {
+    sessionStorage.removeItem("nlp_authorized");
+    location.reload();
+}
+
+// 5. Giữ trạng thái đăng nhập khi F5 (Thay thế hoặc dán vào hàm window.onload cũ)
+const originalOnload = window.onload;
+window.onload = () => {
+    if (sessionStorage.getItem("nlp_authorized") === "true") {
+        document.getElementById("loginOverlay").style.display = "none";
+        document.getElementById("mainContent").classList.remove("hidden-ui");
+        if (typeof initializeApplication === "function") initializeApplication();
+    }
+    if (originalOnload) originalOnload();
+};
+// --- HÀM XUẤT DỮ LIỆU RA FILE .JSON ---
+function exportFullData() {
+    // Gom tất cả dữ liệu từ LocalStorage
+    const data = {
+        projects: JSON.parse(localStorage.getItem("NLP_TVTK_Projects") || "[]"),
+        staff: JSON.parse(localStorage.getItem("NLP_TVTK_Staff") || "[]"),
+        auditLog: JSON.parse(localStorage.getItem("NLP_TVTK_AuditLog") || "[]"),
+        backupDate: new Date().toISOString()
+    };
+
+    // Chuyển dữ liệu thành file để tải về
+    const dataStr = JSON.stringify(data, null, 2);
+    const blob = new Blob([dataStr], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    
+    const link = document.createElement("a");
+    const today = new Date().toLocaleDateString().replace(/\//g, '-');
+    link.download = `BACKUP_TVTK_NAMLOIPHAT_${today}.json`;
+    link.href = url;
+    link.click();
+    
+    // Nếu bạn có hàm showToast thì gọi, không thì dùng alert
+    if (typeof showToast === "function") showToast("Đã xuất file lưu trữ thành công!");
+    else alert("Đã xuất file lưu trữ thành công!");
+}
+
+// --- HÀM NHẬP DỮ LIỆU TỪ FILE .JSON VÀO HỆ THỐNG ---
+function importFullData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const importedData = JSON.parse(e.target.result);
+            
+            // Kiểm tra xem file có đúng định dạng không
+            if (!importedData.projects) {
+                throw new Error("File không đúng định dạng hệ thống!");
+            }
+
+            if (confirm("CẢNH BÁO: Toàn bộ dự án hiện tại sẽ bị ghi đè bởi dữ liệu từ file này. Bạn có chắc chắn muốn nhập không?")) {
+                localStorage.setItem("NLP_TVTK_Projects", JSON.stringify(importedData.projects));
+                localStorage.setItem("NLP_TVTK_Staff", JSON.stringify(importedData.staff));
+                localStorage.setItem("NLP_TVTK_AuditLog", JSON.stringify(importedData.auditLog));
+                
+                alert("Nhập dữ liệu thành công! Trang web sẽ tự động tải lại.");
+                location.reload(); // Tải lại trang để cập nhật bảng và biểu đồ
+            }
+        } catch (err) {
+            alert("Lỗi: " + err.message);
+        }
+    };
+    reader.readAsText(file);
+    // Reset input file để có thể chọn lại cùng 1 file nếu cần
+    event.target.value = '';
+}
+    // ======= DỮ LIỆU MẶC ĐỊNH =======
+    // ─── DỮ LIỆU 26 DỰ ÁN — cập nhật từ Excel FILE_TỔNG_HỢP r1 ───
+    // Ngày L1/L2/L3 được convert từ Excel serial date sang ISO
+    const defaultProjects = [
+        // ── NHÓM A: Năm 2025 tiếp tục triển khai 2026 ──
+        {
+            id:"DA001", name:"Trường Liên Cấp", contractValue:199000000,
+            assignee:"Thái", deadline:"2026-12-01", status:"Đang tạm dừng",
+            l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"",
+            l3Status:"Chưa nộp", l3Date:"",
+            officer:"Ms Trâm", notes:"Sai về pháp lý — tạm dừng pháp lý"
+        },
+        {
+            id:"DA002", name:"Aloha Beach Bình Thuận", contractValue:1350000000,
+            assignee:"Thái", deadline:"2026-12-01", status:"Đang tạm dừng",
+            l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"",
+            l3Status:"Chưa nộp", l3Date:"",
+            officer:"N/A", notes:"Đang giai đoạn TKCS — tạm dừng pháp lý — đang thương thảo"
+        },
+        {
+            id:"DA003", name:"Bệnh viện Đà Nẵng", contractValue:315000000,
+            assignee:"Thiện", deadline:"2026-05-30", status:"Đang triển khai",
+            l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"",
+            l3Status:"Chưa nộp", l3Date:"",
+            officer:"N/A", notes:"Cài Morley, đã gởi CĐT review"
+        },
+        {
+            id:"DA004", name:"Cao ốc văn phòng PMH", contractValue:450000000,
+            assignee:"Thắng", deadline:"2026-05-20", status:"Đang triển khai",
+            l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"",
+            l3Status:"Chưa nộp", l3Date:"",
+            officer:"Mr Mtrung", notes:"Đã ký số gởi Nam Việt làm việc với CĐT — mức độ ưu tiên: Cao"
+        },
+        {
+            id:"DA005", name:"Điều chỉnh Vạn Đạt khối 1", contractValue:100000000,
+            assignee:"Thái, Thiện", deadline:"2026-12-31", status:"Đã ra giấy",
+            l1Status:"Đã duyệt", l1Date:"2026-03-10", l2Status:"Chưa nộp", l2Date:"",
+            l3Status:"Chưa nộp", l3Date:"",
+            officer:"N/A", notes:"Đã xong"
+        },
+        {
+            id:"DA006", name:"103 Trần Quốc Toản", contractValue:200000000,
+            assignee:"Thái, Thiện", deadline:"2026-12-31", status:"Đã ra giấy",
+            l1Status:"Đã duyệt", l1Date:"2026-04-09", l2Status:"Đã duyệt", l2Date:"2026-04-24",
+            l3Status:"Chưa nộp", l3Date:"",
+            officer:"Mr Mtrung", notes:"Cài Morley — đã xong — mức độ ưu tiên: Trung bình"
+        },
+        {
+            id:"DA007", name:"74 - 76 Trần Quốc Thảo", contractValue:216000000,
+            assignee:"Thái, Thiện", deadline:"2026-05-30", status:"Đang triển khai",
+            l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"",
+            l3Status:"Chưa nộp", l3Date:"",
+            officer:"Mr Nguyệt", notes:"TK CĐT đang triển khai"
+        },
+        {
+            id:"DA008", name:"Bệnh Viện Tâm Anh", contractValue:378000000,
+            assignee:"Thái, Thiện", deadline:"2026-05-30", status:"Đang triển khai",
+            l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"",
+            l3Status:"Chưa nộp", l3Date:"",
+            officer:"Mr Khoa", notes:"Làm việc với Mr Tuấn hỗ trợ hồ sơ — mức độ ưu tiên: Cao"
+        },
+        {
+            id:"DA009", name:"Kho Nguyễn Minh", contractValue:250000000,
+            assignee:"Trường", deadline:"2026-05-30", status:"Đang triển khai",
+            l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"",
+            l3Status:"Chưa nộp", l3Date:"",
+            officer:"N/A", notes:"OS đang triển khai — mức độ ưu tiên: Cao"
+        },
+        {
+            id:"DA010", name:"4-6A Trần Cao Vân", contractValue:300000000,
+            assignee:"Thiện", deadline:"2026-05-30", status:"Đang triển khai",
+            l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"",
+            l3Status:"Chưa nộp", l3Date:"",
+            officer:"N/A", notes:"Kiểm tra/Góp ý"
+        },
+        {
+            id:"DA011", name:"19b Phạm Ngọc Thạch", contractValue:160000000,
+            assignee:"Thái", deadline:"2026-12-31", status:"Đã ra giấy",
+            l1Status:"Đã duyệt", l1Date:"2025-10-23", l2Status:"Đã duyệt", l2Date:"2025-12-05",
+            l3Status:"Chưa nộp", l3Date:"",
+            officer:"Mr Hiếu", notes:"Thuyết minh chưa đầy đủ — đã xong"
+        },
+        {
+            id:"DA012", name:"151-157 Nguyễn Văn Thủ", contractValue:0,
+            assignee:"Thiện", deadline:"2026-12-31", status:"Đang tạm dừng",
+            l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"",
+            l3Status:"Chưa nộp", l3Date:"",
+            officer:"N/A", notes:"Chào giá"
+        },
+        {
+            id:"DA013", name:"31AB Lê Quý Đôn", contractValue:150000000,
+            assignee:"Thiện", deadline:"2026-12-31", status:"Đã ra giấy",
+            l1Status:"Đã duyệt", l1Date:"", l2Status:"Đã duyệt", l2Date:"",
+            l3Status:"Đã duyệt", l3Date:"",
+            officer:"Ms Trâm", notes:"Đã xong"
+        },
+        {
+            id:"DA014", name:"Văn phòng KLC", contractValue:200000000,
+            assignee:"Thái, Thiện", deadline:"2026-12-31", status:"Đã ra giấy",
+            l1Status:"Đã duyệt", l1Date:"", l2Status:"Đã duyệt", l2Date:"",
+            l3Status:"Đã duyệt", l3Date:"",
+            officer:"Mr HTrung", notes:"PC07, thiết kế cải tạo — đã xong"
+        },
+
+        // ── NHÓM B: Năm 2026 ──
+        {
+            id:"DA015", name:"NOXH Hàm Kiệm", contractValue:500000000,
+            assignee:"Thái", deadline:"2026-05-30", status:"Đang tạm dừng",
+            l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"",
+            l3Status:"Chưa nộp", l3Date:"",
+            officer:"N/A", notes:"Chờ CĐT tạm ứng triển khai"
+        },
+        {
+            id:"DA016", name:"Căn Hộ Đạt Phước Ven Sông", contractValue:800000000,
+            assignee:"Thắng", deadline:"2026-05-18", status:"Đang triển khai",
+            l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"",
+            l3Status:"Chưa nộp", l3Date:"",
+            officer:"N/A", notes:"Gởi review cho khách hàng"
+        },
+        {
+            id:"DA017", name:"Điều chỉnh Dat Bike", contractValue:100000000,
+            assignee:"Thái, Thiện", deadline:"2026-05-30", status:"Đã ra giấy",
+            l1Status:"Đã duyệt", l1Date:"2026-05-14", l2Status:"Chưa nộp", l2Date:"",
+            l3Status:"Chưa nộp", l3Date:"",
+            officer:"Mr Tín", notes:"Đã gởi cho Mr Tín check — mức độ ưu tiên: Trung bình"
+        },
+        {
+            id:"DA018", name:"Nhà ở Chiến Sỹ", contractValue:600000000,
+            assignee:"Thắng", deadline:"2026-05-20", status:"Đang triển khai",
+            l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"",
+            l3Status:"Chưa nộp", l3Date:"",
+            officer:"N/A", notes:"Kiểm tra hồ sơ — mức độ ưu tiên: Trung bình"
+        },
+        {
+            id:"DA019", name:"32H Hồ Hảo Hớn", contractValue:220000000,
+            assignee:"Thái", deadline:"2026-05-30", status:"Đang tạm dừng",
+            l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"",
+            l3Status:"Chưa nộp", l3Date:"",
+            officer:"N/A", notes:"CĐT đang xin TKCS"
+        },
+        {
+            id:"DA020", name:"Kho Việt Phong", contractValue:0,
+            assignee:"Thái", deadline:"2026-05-30", status:"Đang tạm dừng",
+            l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"",
+            l3Status:"Chưa nộp", l3Date:"",
+            officer:"N/A", notes:"Đang thương thảo"
+        },
+        {
+            id:"DA021", name:"Hòa Phát Had Decor", contractValue:500000000,
+            assignee:"Trường", deadline:"2026-12-31", status:"Đã ra giấy",
+            l1Status:"Đã duyệt", l1Date:"2026-05-04", l2Status:"Đã duyệt", l2Date:"2026-05-13",
+            l3Status:"Đã duyệt", l3Date:"2026-05-19",
+            officer:"N/A", notes:"Đã xong ra giấy — mức độ ưu tiên: Trung bình"
+        },
+        {
+            id:"DA022", name:"Hòa Phát KLH + Năng lượng", contractValue:10800000000,
+            assignee:"Trường", deadline:"2026-05-30", status:"Đang triển khai",
+            l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"",
+            l3Status:"Chưa nộp", l3Date:"",
+            officer:"N/A", notes:"Chưa triển khai"
+        },
+        {
+            id:"DA023", name:"31AB Lê Quý Đôn - điều chỉnh trạm điện", contractValue:50000000,
+            assignee:"Thiện", deadline:"2026-12-31", status:"Đã ra giấy",
+            l1Status:"Đã duyệt", l1Date:"", l2Status:"Đã duyệt", l2Date:"",
+            l3Status:"Đã duyệt", l3Date:"",
+            officer:"Ms Trâm", notes:"Đã xong"
+        },
+        {
+            id:"DA024", name:"Ixora Hồ Tràm", contractValue:1350000000,
+            assignee:"Thiện", deadline:"2026-05-30", status:"Đang triển khai",
+            l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"",
+            l3Status:"Chưa nộp", l3Date:"",
+            officer:"N/A", notes:"Kiểm tra/Góp ý"
+        },
+        {
+            id:"DA025", name:"BBKT SBPQ", contractValue:300000000,
+            assignee:"Thiện", deadline:"2026-05-30", status:"Đang triển khai",
+            l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"",
+            l3Status:"Chưa nộp", l3Date:"",
+            officer:"N/A", notes:"Đã gởi hồ sơ thiết kế cho Mr Phong"
+        },
+        {
+            id:"DA026", name:"BBKT NAM TRUNG", contractValue:330000000,
+            assignee:"Thắng", deadline:"2026-05-30", status:"Đang triển khai",
+            l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"",
+            l3Status:"Chưa nộp", l3Date:"",
+            officer:"N/A", notes:"Gởi thi công khảo sát triển khai"
+        }
+    ];
+
+    const defaultStaff = [
+        { id:"NV001", name:"Thái", role:"Trưởng bộ phận TVTK PCCC", contact:"thai.lu@namloiphat.vn" },
+        { id:"NV002", name:"Thiện", role:"Kỹ sư thiết kế chính", contact:"thien.nguyen@namloiphat.vn" },
+        { id:"NV003", name:"Thắng", role:"Kỹ sư cơ điện PCCC", contact:"thang.vu@namloiphat.vn" },
+        { id:"NV004", name:"Thái, Thiện", role:"Nhóm phụ trách chung", contact:"group.tvtk@namloiphat.vn" }
+    ];
+
+    let projects = [], staff = [], auditLog = [];
+    let statusChartInstance = null, personnelChartInstance = null;
+    let notifPanelOpen = false;
+
+    // ======= AUDIT LOG =======
+    function addAuditEntry(type, action, detail) {
+        const entry = {
+            id: Date.now(),
+            type,       // CREATE | UPDATE | DELETE | TRANSFER | STAFF
+            action,     // human-readable verb
+            detail,     // what changed
+            timestamp: new Date().toISOString(),
+            user: "Thái"
+        };
+        auditLog.unshift(entry); // newest first
+        if (auditLog.length > 200) auditLog.pop(); // cap at 200
+        localStorage.setItem("NLP_TVTK_AuditLog", JSON.stringify(auditLog));
+        updateAuditBadge();
+    }
+
+    function loadAuditLog() {
+        const stored = localStorage.getItem("NLP_TVTK_AuditLog");
+        auditLog = stored ? JSON.parse(stored) : [];
+        updateAuditBadge();
+    }
+
+    function updateAuditBadge() {
+        const badge = document.getElementById("auditBadge");
+        const count = auditLog.length;
+        if (count > 0) {
+            badge.textContent = count > 99 ? "99+" : count;
+            badge.classList.remove("hidden");
+        } else {
+            badge.classList.add("hidden");
+        }
+        const totalEl = document.getElementById("auditTotalCount");
+        if (totalEl) totalEl.textContent = count;
+    }
+
+    function renderAuditLog() {
+        const container = document.getElementById("auditLogContainer");
+        const emptyEl = document.getElementById("auditEmpty");
+        const filterType = document.getElementById("auditTypeFilter")?.value || "all";
+        
+        const filtered = filterType === "all" ? auditLog : auditLog.filter(e => e.type === filterType);
+        
+        document.getElementById("auditTotalCount").textContent = auditLog.length;
+
+        if (filtered.length === 0) {
+            container.innerHTML = "";
+            emptyEl.classList.remove("hidden");
+            return;
+        }
+        emptyEl.classList.add("hidden");
+
+        const typeConfig = {
+            CREATE:   { color: "text-emerald-400", bg: "bg-emerald-500/10 border-emerald-500/20", icon: "fa-circle-plus" },
+            UPDATE:   { color: "text-brand-gold",  bg: "bg-amber-500/10 border-amber-500/20",   icon: "fa-pen-to-square" },
+            DELETE:   { color: "text-red-400",      bg: "bg-red-500/10 border-red-500/20",       icon: "fa-trash-can" },
+            TRANSFER: { color: "text-blue-400",     bg: "bg-blue-500/10 border-blue-500/20",     icon: "fa-shuffle" },
+            STAFF:    { color: "text-purple-400",   bg: "bg-purple-500/10 border-purple-500/20", icon: "fa-user-gear" },
+        };
+
+        container.innerHTML = filtered.map((e, idx) => {
+            const cfg = typeConfig[e.type] || typeConfig.UPDATE;
+            const dt = new Date(e.timestamp);
+            const dateStr = `${String(dt.getDate()).padStart(2,'0')}/${String(dt.getMonth()+1).padStart(2,'0')}/${dt.getFullYear()}`;
+            const timeStr = `${String(dt.getHours()).padStart(2,'0')}:${String(dt.getMinutes()).padStart(2,'0')}:${String(dt.getSeconds()).padStart(2,'0')}`;
+            return `
+            <div class="audit-entry flex items-start space-x-4 px-5 py-3.5 ${idx % 2 === 0 ? '' : 'bg-blue-950/10'}">
+                <div class="flex-shrink-0 mt-0.5">
+                    <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg border ${cfg.bg} ${cfg.color}">
+                        <i class="fa-solid ${cfg.icon} text-xs"></i>
+                    </span>
+                </div>
+                <div class="flex-grow min-w-0">
+                    <div class="flex items-baseline justify-between gap-2">
+                        <span class="text-xs font-semibold text-slate-200">${e.action}</span>
+                        <span class="text-[10px] text-slate-500 flex-shrink-0">${dateStr} · ${timeStr}</span>
+                    </div>
+                    <p class="text-[11px] text-slate-400 mt-0.5 truncate">${e.detail}</p>
+                </div>
+                <div class="flex-shrink-0">
+                    <span class="text-[9px] text-slate-600 border border-slate-700 px-1.5 py-0.5 rounded">${e.user}</span>
+                </div>
+            </div>`;
+        }).join("");
+    }
+
+    function clearAuditLog() {
+        if (!confirm("Bạn có chắc muốn xóa toàn bộ lịch sử thay đổi?")) return;
+        auditLog = [];
+        localStorage.removeItem("NLP_TVTK_AuditLog");
+        updateAuditBadge();
+        renderAuditLog();
+        showToast("Đã xóa toàn bộ lịch sử!", "warning");
+    }
+
+    // ======= DEADLINE NOTIFICATIONS =======
+    function getDeadlineNotifications() {
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        const notifs = [];
+
+        projects.forEach(p => {
+            if (p.status === "Đã ra giấy") return;
+            const dl = new Date(p.deadline);
+            dl.setHours(0,0,0,0);
+            const diffDays = Math.ceil((dl - today) / (1000*60*60*24));
+
+            if (diffDays < 0) {
+                notifs.push({ project: p, diffDays, urgency: "critical", label: `Trễ ${Math.abs(diffDays)} ngày` });
+            } else if (diffDays <= 7) {
+                notifs.push({ project: p, diffDays, urgency: "critical", label: `Còn ${diffDays} ngày` });
+            } else if (diffDays <= 14) {
+                notifs.push({ project: p, diffDays, urgency: "warning", label: `Còn ${diffDays} ngày` });
+            } else if (diffDays <= 30) {
+                notifs.push({ project: p, diffDays, urgency: "soon", label: `Còn ${diffDays} ngày` });
+            }
+        });
+
+        notifs.sort((a,b) => a.diffDays - b.diffDays);
+        return notifs;
+    }
+
+    function updateNotifBell() {
+        const notifs = getDeadlineNotifications();
+        const badge = document.getElementById("bellBadge");
+        const bellIcon = document.getElementById("bellIcon");
+        if (notifs.length > 0) {
+            badge.textContent = notifs.length > 9 ? "9+" : notifs.length;
+            badge.classList.remove("hidden");
+            bellIcon.classList.add("text-brand-gold");
+            bellIcon.classList.remove("text-slate-300");
+        } else {
+            badge.classList.add("hidden");
+            bellIcon.classList.remove("text-brand-gold");
+            bellIcon.classList.add("text-slate-300");
+        }
+    }
+
+    function renderNotifPanel() {
+        const notifs = getDeadlineNotifications();
+        const list = document.getElementById("notifList");
+
+        if (notifs.length === 0) {
+            list.innerHTML = `<div class="py-10 text-center text-slate-500 text-sm italic"><i class="fa-solid fa-check-circle text-emerald-500 text-2xl mb-2 block"></i>Tất cả dự án đang đúng hạn!</div>`;
+            return;
+        }
+
+        const urgencyLabel = { critical: "Khẩn cấp", warning: "Cảnh báo", soon: "Sắp tới" };
+        const urgencyColor = { critical: "text-red-400 bg-red-500/10 border-red-500/30", warning: "text-orange-400 bg-orange-500/10 border-orange-500/30", soon: "text-amber-400 bg-amber-500/10 border-amber-500/30" };
+
+        list.innerHTML = notifs.map(n => `
+            <div class="px-4 py-3 border-b border-blue-900/20 hover:bg-blue-950/20 transition cursor-pointer urgency-${n.urgency}" onclick="editProject('${n.project.id}'); toggleNotifPanel();">
+                <div class="flex items-start justify-between gap-2">
+                    <div class="min-w-0">
+                        <p class="text-xs font-semibold text-slate-200 truncate">${n.project.name}</p>
+                        <p class="text-[10px] text-slate-400 mt-0.5">
+                            <i class="fa-solid fa-user text-slate-500 mr-1"></i>${n.project.assignee}
+                            &nbsp;·&nbsp;
+                            <i class="fa-solid fa-calendar text-slate-500 mr-1"></i>${n.project.deadline.split('-').reverse().join('/')}
+                        </p>
+                    </div>
+                    <div class="flex-shrink-0 flex flex-col items-end gap-1">
+                        <span class="text-[9px] font-bold px-2 py-0.5 rounded-full border ${urgencyColor[n.urgency]}">${urgencyLabel[n.urgency]}</span>
+                        <span class="text-[10px] font-bold ${n.diffDays < 0 ? 'text-red-400' : 'text-slate-300'}">${n.label}</span>
+                    </div>
+                </div>
+            </div>
+        `).join("");
+    }
+
+    function toggleNotifPanel() {
+        const panel = document.getElementById("notifPanel");
+        notifPanelOpen = !notifPanelOpen;
+        if (notifPanelOpen) {
+            renderNotifPanel();
+            panel.classList.remove("hidden-panel");
+            document.getElementById("bellBtn").classList.add("bell-shake");
+            setTimeout(() => document.getElementById("bellBtn").classList.remove("bell-shake"), 500);
+        } else {
+            panel.classList.add("hidden-panel");
+        }
+    }
+
+    function markAllNotifsRead() {
+        toggleNotifPanel();
+        showToast("Đã đánh dấu tất cả thông báo đã đọc!", "success");
+    }
+
+    function renderDeadlineBanner() {
+        const notifs = getDeadlineNotifications().filter(n => n.urgency !== "soon" || n.diffDays <= 14);
+        const banner = document.getElementById("deadlineBanner");
+        const badges = document.getElementById("deadlineBannerBadges");
+
+        if (notifs.length === 0) { banner.classList.add("hidden"); return; }
+        banner.classList.remove("hidden");
+        
+        const urgencyColor = {
+            critical: "bg-red-500/15 text-red-400 border-red-500/30",
+            warning: "bg-orange-500/15 text-orange-400 border-orange-500/30",
+            soon: "bg-amber-500/15 text-amber-400 border-amber-500/30"
+        };
+
+        badges.innerHTML = notifs.map(n => `
+            <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-semibold border ${urgencyColor[n.urgency]} cursor-pointer hover:opacity-80 transition" onclick="editProject('${n.project.id}')">
+                <i class="fa-solid fa-clock text-[8px] mr-1"></i>${n.project.name} · ${n.label}
+            </span>
+        `).join("");
+    }
+
+    // ======= CORE FUNCTIONS =======
+    function loadData() {
+        const sp = localStorage.getItem("NLP_TVTK_Projects");
+        const ss = localStorage.getItem("NLP_TVTK_Staff");
+        projects = sp ? JSON.parse(sp) : JSON.parse(JSON.stringify(defaultProjects));
+        staff = ss ? JSON.parse(ss) : JSON.parse(JSON.stringify(defaultStaff));
+        if (!sp) localStorage.setItem("NLP_TVTK_Projects", JSON.stringify(projects));
+        if (!ss) localStorage.setItem("NLP_TVTK_Staff", JSON.stringify(staff));
+    }
+
+    function saveData() {
+        localStorage.setItem("NLP_TVTK_Projects", JSON.stringify(projects));
+        localStorage.setItem("NLP_TVTK_Staff", JSON.stringify(staff));
+    }
+
+    function resetToDefaultData() {
+        if (!confirm("Khôi phục dữ liệu gốc? Toàn bộ thay đổi sẽ bị mất.")) return;
+        projects = JSON.parse(JSON.stringify(defaultProjects));
+        staff = JSON.parse(JSON.stringify(defaultStaff));
+        saveData();
+        addAuditEntry("UPDATE", "Khôi phục dữ liệu gốc", "Toàn bộ dự án và nhân sự được reset về mặc định");
+        initializeApplication();
+        showToast("Khôi phục dữ liệu gốc thành công!", "success");
+    }
+
+    function initializeApplication() {
+        loadData();
+        loadAuditLog();
+        syncFilterOptions();
+        calculateKPIs();
+        renderAllTables();
+        renderCharts();
+        renderStaffCards();
+        updateNotifBell();
+        renderDeadlineBanner();
+
+        const dateSpan = document.getElementById("printDate");
+        if (dateSpan) {
+            const now = new Date();
+            dateSpan.textContent = `${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()}`;
+        }
+    }
+
+    function showToast(message, type = "success") {
+        const container = document.getElementById("toastContainer");
+        const toast = document.createElement("div");
+        const styles = {
+            success: "bg-emerald-950/95 border-emerald-500/50 text-emerald-400",
+            error:   "bg-red-950/95 border-red-500/50 text-red-400",
+            warning: "bg-amber-950/95 border-amber-500/50 text-amber-400"
+        };
+        const icons = { success: "fa-circle-check", error: "fa-circle-xmark", warning: "fa-triangle-exclamation" };
+        toast.className = `toast-item flex items-center p-4 rounded-xl shadow-lg border text-xs font-semibold ${styles[type] || styles.success}`;
+        toast.innerHTML = `<i class="fa-solid ${icons[type]||icons.success} text-sm mr-2.5 flex-shrink-0"></i><span class="flex-grow">${message}</span>`;
+        container.appendChild(toast);
+        setTimeout(() => {
+            toast.style.transition = "opacity 0.3s, transform 0.3s";
+            toast.style.opacity = "0";
+            toast.style.transform = "translateX(20px)";
+            setTimeout(() => toast.remove(), 300);
+        }, 4000);
+    }
+
+    function syncFilterOptions() {
+        const personnelFilter = document.getElementById("personnelFilter");
+        const formAssignee    = document.getElementById("formAssignee");
+        const reassignSource  = document.getElementById("reassignSource");
+        const reassignDest    = document.getElementById("reassignDest");
+
+        personnelFilter.innerHTML = '<option value="all">Nhân sự thực tế</option>';
+        formAssignee.innerHTML = '';
+        reassignSource.innerHTML = '<option value="">-- Chọn nhân sự chuyển đi --</option>';
+        reassignDest.innerHTML   = '<option value="">-- Chọn nhân sự tiếp quản --</option>';
+
+        staff.forEach(p => {
+            [personnelFilter, formAssignee, reassignSource, reassignDest].forEach((sel, i) => {
+                const opt = document.createElement("option");
+                opt.value = p.name;
+                opt.textContent = p.name;
+                sel.appendChild(opt);
+            });
+        });
+    }
+
+    function switchTab(tabId) {
+        ["dashboard","personnel","audit"].forEach(id => {
+            document.getElementById(id+"Tab").classList.add("hidden");
+            const btn = document.getElementById("tabBtn"+capitalize(id));
+            const mBtn = document.getElementById("mobileTabBtn"+capitalize(id));
+            if (btn) btn.className = "px-4 py-2 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 text-slate-400 hover:text-white";
+            if (mBtn) mBtn.className = "px-3 py-1.5 rounded-md text-xs font-bold text-slate-400" + (id !== "dashboard" ? " ml-1" : "");
+        });
+
+        document.getElementById(tabId+"Tab").classList.remove("hidden");
+        const activeBtn = document.getElementById("tabBtn"+capitalize(tabId));
+        const activeMBtn = document.getElementById("mobileTabBtn"+capitalize(tabId));
+        if (activeBtn) activeBtn.className = "px-4 py-2 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 bg-brand-blue text-white";
+        if (activeMBtn) activeMBtn.className = "px-3 py-1.5 rounded-md text-xs font-bold bg-brand-blue text-white" + (tabId !== "dashboard" ? " ml-1" : "");
+
+        if (tabId === "dashboard") setTimeout(renderCharts, 100);
+        if (tabId === "audit") renderAuditLog();
+    }
+
+    function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+    function formatVND(val) {
+        if (!val || val === 0) return "—";
+        return new Intl.NumberFormat('vi-VN').format(val) + " VNĐ";
+    }
+
+    function calculateKPIs() {
+        const today = new Date(); today.setHours(0,0,0,0);
+
+        projects.forEach(p => {
+            if (p.status === "Đã ra giấy") return;
+            const dl = new Date(p.deadline); dl.setHours(0,0,0,0);
+            if (dl < today && p.status !== "TRỄ HẠN") {
+                p.status = "TRỄ HẠN";
+            }
+        });
+
+        const total     = projects.length;
+        const completed = projects.filter(p => p.status === "Đã ra giấy").length;
+        const active    = projects.filter(p => p.status === "Đang triển khai").length;
+        const suspended = projects.filter(p => p.status === "Đang tạm dừng").length;
+        const delayed   = projects.filter(p => p.status === "TRỄ HẠN").length;
+
+        document.getElementById("statTotalProjects").textContent = total;
+        document.getElementById("statCompleted").textContent = completed;
+        document.getElementById("statCompletedPct").textContent = `Tỷ lệ: ${total > 0 ? ((completed/total)*100).toFixed(1) : 0}%`;
+        document.getElementById("statActive").textContent = active;
+        document.getElementById("statSuspended").textContent = suspended;
+        document.getElementById("statDelayed").textContent = delayed;
+        document.getElementById("alertDelayedCount").textContent = delayed;
+
+        let totalVal = 0, completedVal = 0;
+        projects.forEach(p => {
+            totalVal += p.contractValue;
+            if (p.status === "Đã ra giấy") completedVal += p.contractValue;
+        });
+        document.getElementById("statTotalContractValue").textContent = formatVND(totalVal);
+        document.getElementById("statCompletedContractValue").textContent = formatVND(completedVal);
+        document.getElementById("progressCompletedValBar").style.width = totalVal > 0 ? `${(completedVal/totalVal*100).toFixed(1)}%` : "0%";
+
+        // Alert badges for delayed
+        const alertContainer = document.getElementById("alertBoxBadges");
+        alertContainer.innerHTML = "";
+        projects.filter(p => p.status === "TRỄ HẠN").forEach(p => {
+            const badge = document.createElement("span");
+            badge.className = "inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-semibold bg-red-500/20 text-red-400 border border-red-500/30 cursor-pointer hover:bg-red-500/35 transition";
+            badge.innerHTML = `<i class="fa-solid fa-fire text-[8px] mr-1"></i>${p.name} (${p.assignee})`;
+            badge.onclick = () => editProject(p.id);
+            alertContainer.appendChild(badge);
+        });
+    }
+
+    function renderCharts() {
+        if (statusChartInstance) statusChartInstance.destroy();
+        if (personnelChartInstance) personnelChartInstance.destroy();
+
+        const completed = projects.filter(p => p.status === "Đã ra giấy").length;
+        const active    = projects.filter(p => p.status === "Đang triển khai").length;
+        const suspended = projects.filter(p => p.status === "Đang tạm dừng").length;
+        const delayed   = projects.filter(p => p.status === "TRỄ HẠN").length;
+
+        statusChartInstance = new Chart(document.getElementById("statusChart").getContext("2d"), {
+            type: "doughnut",
+            data: {
+                labels: ["Đã ra giấy","Đang triển khai","Đang tạm dừng","Trễ hạn"],
+                datasets: [{ data: [completed, active, suspended, delayed], backgroundColor: ["#00A896","#0F52BA","#475569","#EF4444"], borderWidth: 2, borderColor: "#040d1a" }]
+            },
+            options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:"bottom", labels:{ color:"#e2e8f0", font:{ size:9 }, boxWidth:12 } } }, cutout:"65%" }
+        });
+
+        const staffNames = staff.map(s => s.name);
+        personnelChartInstance = new Chart(document.getElementById("personnelChart").getContext("2d"), {
+            type: "bar",
+            data: {
+                labels: staffNames,
+                datasets: [
+                    { label:"Đã ra giấy", data: staffNames.map(n => projects.filter(p => p.assignee===n && p.status==="Đã ra giấy").reduce((a,p) => a+p.contractValue, 0)/1e9), backgroundColor:"#00A896", borderRadius:4 },
+                    { label:"Đang triển khai", data: staffNames.map(n => projects.filter(p => p.assignee===n && p.status!=="Đã ra giấy").reduce((a,p) => a+p.contractValue, 0)/1e9), backgroundColor:"#F5A623", borderRadius:4 }
+                ]
+            },
+            options: { responsive:true, maintainAspectRatio:false, scales:{ x:{ stacked:true, grid:{ display:false }, ticks:{ color:"#94a3b8", font:{size:9} } }, y:{ stacked:true, grid:{ color:"rgba(30,41,59,0.5)" }, ticks:{ color:"#94a3b8", font:{size:9} } } }, plugins:{ legend:{ position:"bottom", labels:{ color:"#e2e8f0", font:{size:9}, boxWidth:10 } } } }
+        });
+    }
+
+    function renderAllTables() {
+        renderProjectTable();
+        renderFinancePersonnelTable();
+    }
+
+    function renderFinancePersonnelTable() {
+        const tbody = document.getElementById("financePersonnelTableBody");
+        tbody.innerHTML = "";
+        staff.forEach(person => {
+            const pp = projects.filter(p => p.assignee === person.name);
+            const total = pp.length;
+            const done  = pp.filter(p => p.status === "Đã ra giấy").length;
+            const run   = total - done;
+            let doneVal = 0, runVal = 0;
+            pp.forEach(p => { (p.status === "Đã ra giấy" ? (doneVal += p.contractValue) : (runVal += p.contractValue)); });
+            const tr = document.createElement("tr");
+            tr.className = "hover:bg-slate-900/40 transition";
+            tr.innerHTML = `
+                <td class="py-3 px-4 font-semibold text-white flex items-center"><span class="w-2 h-2 rounded-full bg-brand-blue mr-2"></span>${person.name}</td>
+                <td class="py-3 px-4 text-center font-bold text-slate-300">${total}</td>
+                <td class="py-3 px-4 text-center text-brand-teal font-semibold">${done}</td>
+                <td class="py-3 px-4 text-right text-brand-teal font-semibold">${formatVND(doneVal)}</td>
+                <td class="py-3 px-4 text-center text-brand-gold font-semibold">${run}</td>
+                <td class="py-3 px-4 text-right text-brand-gold font-semibold">${formatVND(runVal)}</td>
+                <td class="py-3 px-4 text-right font-extrabold text-white bg-blue-950/20">${formatVND(doneVal+runVal)}</td>`;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function renderProjectTable(filteredProjects = null) {
+        const tbody = document.getElementById("projectTableBody");
+        tbody.innerHTML = "";
+        const list = filteredProjects || projects;
+        document.getElementById("displayedCount").textContent = list.length;
+        document.getElementById("totalCount").textContent = projects.length;
+
+        if (list.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="9" class="py-10 text-center text-slate-500 italic">Không tìm thấy hồ sơ phù hợp!</td></tr>`;
+            return;
+        }
+
+        const statusBadge = (s) => {
+            const map = {
+                "Đã ra giấy":     `<span class="px-2 py-1 rounded-md text-[10px] font-bold bg-emerald-500/10 text-brand-teal border border-emerald-500/20 whitespace-nowrap"><i class="fa-solid fa-circle-check mr-1"></i>Ra giấy</span>`,
+                "Đang triển khai":`<span class="px-2 py-1 rounded-md text-[10px] font-bold bg-blue-500/10 text-blue-400 border border-blue-500/20 whitespace-nowrap"><i class="fa-solid fa-spinner animate-spin mr-1"></i>Triển khai</span>`,
+                "Đang tạm dừng":  `<span class="px-2 py-1 rounded-md text-[10px] font-bold bg-slate-500/15 text-slate-400 border border-slate-500/20 whitespace-nowrap"><i class="fa-solid fa-circle-pause mr-1"></i>Tạm dừng</span>`,
+                "TRỄ HẠN":        `<span class="px-2 py-1 rounded-md text-[10px] font-bold bg-red-500/15 text-red-400 border border-red-500/20 animate-pulse whitespace-nowrap"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Quá hạn</span>`,
+            };
+            return map[s] || map["Đang triển khai"];
+        };
+
+        const milestone = (label, status, date) => {
+            let cls = "text-slate-500 border-slate-800 bg-slate-950/20";
+            if (status === "Đã duyệt") cls = "text-brand-teal border-emerald-950/40 bg-emerald-950/20";
+            else if (status === "Đang duyệt") cls = "text-brand-gold border-amber-950/40 bg-amber-950/20";
+            return `<div class="flex items-center justify-between text-[10px] px-2 py-1 rounded-lg border ${cls} mb-1">
+                <span class="font-bold">${label}: ${status}</span>
+                <span class="text-[9px] opacity-85">${date ? date.split("-").reverse().join("/") : "--/--"}</span>
+            </div>`;
+        };
+
+        // Deadline urgency highlight for row
+        const today = new Date(); today.setHours(0,0,0,0);
+        const getRowUrgency = (p) => {
+            if (p.status === "Đã ra giấy") return "";
+            const dl = new Date(p.deadline); dl.setHours(0,0,0,0);
+            const diff = Math.ceil((dl - today) / (1000*60*60*24));
+            if (diff < 0) return "bg-red-950/10";
+            if (diff <= 7) return "bg-red-950/5";
+            if (diff <= 14) return "bg-amber-950/5";
+            return "";
+        };
+
+        list.forEach((p, i) => {
+            const dl = p.deadline.split("-").reverse().join("/");
+            const rowBg = getRowUrgency(p);
+            const tr = document.createElement("tr");
+            tr.className = `hover:bg-slate-900/30 transition duration-150 align-top ${rowBg}`;
+            tr.innerHTML = `
+                <td class="py-3 px-3 text-center text-slate-500 font-bold border-r border-blue-950/20">${i+1}</td>
+                <td class="py-3 px-3">
+                    <div class="font-bold text-slate-200 text-xs hover:text-brand-gold transition cursor-pointer" onclick="editProject('${p.id}')">${p.name}</div>
+                    <div class="text-[9px] text-slate-400 mt-1 flex items-center">
+                        <span class="bg-blue-950 text-blue-400 px-1.5 py-0.5 rounded font-bold uppercase mr-1">${p.id}</span>
+                        <span>TVTK Nam Lợi Phát</span>
+                    </div>
+                </td>
+                <td class="py-3 px-3 text-right font-bold text-slate-300 whitespace-nowrap">${formatVND(p.contractValue)}</td>
+                <td class="py-3 px-3">
+                    <div class="flex items-center space-x-1.5">
+                        <div class="w-5 h-5 rounded-full bg-brand-blue/30 flex items-center justify-center text-[10px] text-brand-gold font-bold flex-shrink-0">${p.assignee.charAt(0)}</div>
+                        <span class="font-semibold text-slate-200">${p.assignee}</span>
+                    </div>
+                </td>
+                <td class="py-3 px-3">
+                    <div class="font-bold text-slate-300 whitespace-nowrap">${dl}</div>
+                    <div class="text-[9px] text-slate-500 mt-0.5">Hạn nộp</div>
+                </td>
+                <td class="py-3 px-3">${statusBadge(p.status)}</td>
+                <td class="py-3 px-3">
+                    <div class="space-y-1">
+                        ${milestone("L1", p.l1Status, p.l1Date)}
+                        ${milestone("L2", p.l2Status, p.l2Date)}
+                        ${milestone("L3", p.l3Status, p.l3Date)}
+                    </div>
+                </td>
+                <td class="py-3 px-3">
+                    <div class="font-medium text-brand-gold text-[11px]">${p.officer || "N/A"}</div>
+                    <div class="text-[10px] text-slate-400 mt-1 max-w-[180px] break-words italic">${p.notes || "—"}</div>
+                </td>
+                <td class="py-3 px-3 text-center no-print">
+                    <div class="flex items-center justify-center space-x-2">
+                        <button onclick="editProject('${p.id}')" title="Chỉnh sửa" class="w-7 h-7 bg-blue-900/30 hover:bg-brand-blue/40 text-blue-400 hover:text-white rounded-lg flex items-center justify-center transition">
+                            <i class="fa-solid fa-pen-to-square text-xs"></i>
+                        </button>
+                        <button onclick="deleteProject('${p.id}')" title="Xóa" class="w-7 h-7 bg-red-950/20 hover:bg-red-500 text-red-400 hover:text-white rounded-lg flex items-center justify-center transition">
+                            <i class="fa-solid fa-trash-can text-xs"></i>
+                        </button>
+                    </div>
+                </td>`;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function applyFilters() {
+        const search = document.getElementById("searchInput").value.toLowerCase().trim();
+        const status = document.getElementById("statusFilter").value;
+        const person = document.getElementById("personnelFilter").value;
+        const filtered = projects.filter(p =>
+            (search === "" || p.name.toLowerCase().includes(search) || p.id.toLowerCase().includes(search) || (p.notes||"").toLowerCase().includes(search) || (p.officer||"").toLowerCase().includes(search)) &&
+            (status === "all" || p.status === status) &&
+            (person === "all" || p.assignee === person)
+        );
+        renderProjectTable(filtered);
+    }
+
+    // ======= PROJECT MODAL =======
+    function openProjectModal(projectId = null) {
+        const modal = document.getElementById("projectModal");
+        document.getElementById("projectForm").reset();
+        if (projectId) {
+            document.getElementById("modalTitle").textContent = "Cập Nhật Thông Tin Dự Án";
+            const p = projects.find(x => x.id === projectId);
+            if (p) {
+                document.getElementById("formProjectId").value = p.id;
+                document.getElementById("formProjectName").value = p.name;
+                document.getElementById("formContractValue").value = p.contractValue;
+                document.getElementById("formAssignee").value = p.assignee;
+                document.getElementById("formDeadline").value = p.deadline;
+                document.getElementById("formStatus").value = p.status === "TRỄ HẠN" ? "Đang triển khai" : p.status;
+                document.getElementById("formL1Status").value = p.l1Status;
+                document.getElementById("formL1Date").value = p.l1Date;
+                document.getElementById("formL2Status").value = p.l2Status;
+                document.getElementById("formL2Date").value = p.l2Date;
+                document.getElementById("formL3Status").value = p.l3Status;
+                document.getElementById("formL3Date").value = p.l3Date;
+                document.getElementById("formOfficer").value = p.officer || "";
+                document.getElementById("formNotes").value = p.notes || "";
+            }
+        } else {
+            document.getElementById("modalTitle").textContent = "Thêm Dự Án TVTK Mới";
+            document.getElementById("formProjectId").value = "";
+        }
+        modal.classList.remove("hidden");
+    }
+
+    function closeProjectModal() { document.getElementById("projectModal").classList.add("hidden"); }
+
+    function saveProject(e) {
+        e.preventDefault();
+        const id           = document.getElementById("formProjectId").value;
+        const name         = document.getElementById("formProjectName").value.trim();
+        const contractValue = parseInt(document.getElementById("formContractValue").value) || 0;
+        const assignee     = document.getElementById("formAssignee").value;
+        const deadline     = document.getElementById("formDeadline").value;
+        const status       = document.getElementById("formStatus").value;
+        const l1Status     = document.getElementById("formL1Status").value;
+        const l1Date       = document.getElementById("formL1Date").value;
+        const l2Status     = document.getElementById("formL2Status").value;
+        const l2Date       = document.getElementById("formL2Date").value;
+        const l3Status     = document.getElementById("formL3Status").value;
+        const l3Date       = document.getElementById("formL3Date").value;
+        const officer      = document.getElementById("formOfficer").value.trim();
+        const notes        = document.getElementById("formNotes").value.trim();
+
+        if (!name || !assignee || !deadline) {
+            showToast("Vui lòng nhập đầy đủ thông tin bắt buộc!", "error");
+            return;
+        }
+
+        if (id) {
+            const idx = projects.findIndex(x => x.id === id);
+            if (idx !== -1) {
+                const old = projects[idx];
+                const changes = [];
+                if (old.name !== name) changes.push(`Tên: "${old.name}" → "${name}"`);
+                if (old.status !== status) changes.push(`Trạng thái: ${old.status} → ${status}`);
+                if (old.assignee !== assignee) changes.push(`Người thực hiện: ${old.assignee} → ${assignee}`);
+                if (old.deadline !== deadline) changes.push(`Deadline: ${old.deadline} → ${deadline}`);
+
+                projects[idx] = { ...projects[idx], name, contractValue, assignee, deadline, status, l1Status, l1Date, l2Status, l2Date, l3Status, l3Date, officer, notes };
+                addAuditEntry("UPDATE", `Cập nhật dự án: ${name}`, changes.length > 0 ? changes.join(" | ") : "Chỉnh sửa chi tiết");
+                showToast(`Cập nhật dự án "${name}" thành công!`, "success");
+            }
+        } else {
+            const nums = projects.map(p => parseInt(p.id.replace("DA",""))).filter(n => !isNaN(n));
+            const nextId = `DA${String(Math.max(0,...nums)+1).padStart(3,'0')}`;
+            projects.push({ id:nextId, name, contractValue, assignee, deadline, status, l1Status, l1Date, l2Status, l2Date, l3Status, l3Date, officer, notes });
+            addAuditEntry("CREATE", `Thêm dự án mới: ${name}`, `Mã: ${nextId} | Người thực hiện: ${assignee} | Deadline: ${deadline}`);
+            showToast(`Thêm dự án mới ${nextId} thành công!`, "success");
+        }
+
+        saveData();
+        closeProjectModal();
+        calculateKPIs();
+        renderAllTables();
+        renderCharts();
+        updateNotifBell();
+        renderDeadlineBanner();
+    }
+
+    function editProject(id) { openProjectModal(id); }
+
+    function deleteProject(id) {
+        const p = projects.find(x => x.id === id);
+        if (!p) return;
+        if (!confirm(`Xóa vĩnh viễn dự án: "${p.name}"?`)) return;
+        projects = projects.filter(x => x.id !== id);
+        addAuditEntry("DELETE", `Xóa dự án: ${p.name}`, `Mã: ${p.id} | Người thực hiện: ${p.assignee} | Giá trị: ${formatVND(p.contractValue)}`);
+        saveData();
+        calculateKPIs();
+        renderAllTables();
+        renderCharts();
+        updateNotifBell();
+        renderDeadlineBanner();
+        showToast("Đã xóa hồ sơ khỏi hệ thống!", "warning");
+    }
+
+    // ======= STAFF =======
+    function renderStaffCards() {
+        const grid = document.getElementById("staffCardsGrid");
+        grid.innerHTML = "";
+        staff.forEach(person => {
+            const pp = projects.filter(p => p.assignee === person.name);
+            const done = pp.filter(p => p.status === "Đã ra giấy").length;
+            const run  = pp.length - done;
+            const loadVal = pp.filter(p => p.status !== "Đã ra giấy").reduce((a,p) => a+p.contractValue, 0);
+            const card = document.createElement("div");
+            card.className = "kpi-card print-card bg-brand-darkblue/40 border border-blue-900/50 rounded-2xl p-5 flex flex-col justify-between";
+            card.innerHTML = `
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-brand-blue/25 rounded-2xl border border-brand-blue flex items-center justify-center text-brand-gold font-black text-lg">${person.name.charAt(0)}</div>
+                        <button onclick="deleteStaff('${person.id}')" class="no-print text-slate-500 hover:text-red-400 transition" title="Xóa nhân viên"><i class="fa-solid fa-trash-can text-sm"></i></button>
+                    </div>
+                    <h4 class="text-base font-bold text-white mb-0.5">${person.name}</h4>
+                    <p class="text-[11px] text-slate-400">${person.role}</p>
+                    <p class="text-[10px] text-slate-500 mt-1"><i class="fa-solid fa-envelope mr-1"></i>${person.contact||"N/A"}</p>
+                    <div class="mt-4 pt-3 border-t border-blue-950/50 grid grid-cols-2 gap-2 text-center">
+                        <div class="bg-slate-950/50 p-2 rounded-xl border border-blue-950">
+                            <div class="text-[9px] text-slate-500">ĐANG CHẠY</div>
+                            <div class="text-sm font-black text-brand-gold mt-0.5">${run}</div>
+                        </div>
+                        <div class="bg-slate-950/50 p-2 rounded-xl border border-blue-950">
+                            <div class="text-[9px] text-slate-500">ĐÃ RA GIẤY</div>
+                            <div class="text-sm font-black text-brand-teal mt-0.5">${done}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 pt-3 border-t border-blue-950">
+                    <span class="text-[9px] text-slate-400">TẢI TRỌNG ĐANG CHỊU TRÁCH NHIỆM:</span>
+                    <span class="text-xs font-black text-brand-gold mt-1 block">${formatVND(loadVal)}</span>
+                </div>`;
+            grid.appendChild(card);
+        });
+    }
+
+    function openStaffModal()  { document.getElementById("staffModal").classList.remove("hidden"); }
+    function closeStaffModal() { document.getElementById("staffModal").classList.add("hidden"); }
+
+    function saveStaff(e) {
+        e.preventDefault();
+        const name    = document.getElementById("formStaffName").value.trim();
+        const role    = document.getElementById("formStaffRole").value.trim();
+        const contact = document.getElementById("formStaffContact").value.trim();
+        if (!name || !role) { showToast("Vui lòng điền Tên và Chức vụ!", "error"); return; }
+        if (staff.some(s => s.name.toLowerCase() === name.toLowerCase())) { showToast("Tên nhân sự đã tồn tại!", "error"); return; }
+        const nums = staff.map(s => parseInt(s.id.replace("NV",""))).filter(n => !isNaN(n));
+        const newId = `NV${String(Math.max(0,...nums)+1).padStart(3,"0")}`;
+        staff.push({ id:newId, name, role, contact });
+        addAuditEntry("STAFF", `Thêm nhân sự: ${name}`, `Mã: ${newId} | Chức vụ: ${role}`);
+        saveData();
+        closeStaffModal();
+        syncFilterOptions();
+        renderStaffCards();
+        showToast(`Đã thêm nhân sự: ${name}!`, "success");
+    }
+
+    function deleteStaff(staffId) {
+        const person = staff.find(s => s.id === staffId);
+        if (!person) return;
+        const active = projects.filter(p => p.assignee === person.name).length;
+        if (active > 0) { showToast(`Không thể xóa! "${person.name}" đang phụ trách ${active} dự án. Hãy chuyển giao trước!`, "error"); return; }
+        if (!confirm(`Xóa nhân viên "${person.name}" khỏi hệ thống?`)) return;
+        staff = staff.filter(s => s.id !== staffId);
+        addAuditEntry("STAFF", `Xóa nhân sự: ${person.name}`, `Mã: ${person.id} | Chức vụ: ${person.role}`);
+        saveData();
+        syncFilterOptions();
+        renderStaffCards();
+        showToast(`Đã xóa nhân sự.`, "warning");
+    }
+
+    function executeTransfer() {
+        const src  = document.getElementById("reassignSource").value;
+        const dest = document.getElementById("reassignDest").value;
+        if (!src || !dest) { showToast("Vui lòng chọn nhân sự chuyển đi và tiếp quản!", "error"); return; }
+        if (src === dest) { showToast("Nhân viên tiếp quản phải là người khác!", "error"); return; }
+        const pending = projects.filter(p => p.assignee === src && p.status !== "Đã ra giấy");
+        if (pending.length === 0) { showToast(`"${src}" không có dự án dở dang nào!`, "warning"); return; }
+        if (!confirm(`Chuyển toàn bộ ${pending.length} hồ sơ chưa hoàn thành từ "${src}" → "${dest}"?`)) return;
+        projects.forEach(p => {
+            if (p.assignee === src && p.status !== "Đã ra giấy") {
+                p.assignee = dest;
+                p.notes = `[Bàn giao từ ${src}] ` + (p.notes || "");
+            }
+        });
+        addAuditEntry("TRANSFER", `Bàn giao hồ sơ: ${src} → ${dest}`, `${pending.length} dự án được chuyển giao`);
+        saveData();
+        calculateKPIs();
+        renderAllTables();
+        renderCharts();
+        renderStaffCards();
+        document.getElementById("reassignSource").value = "";
+        document.getElementById("reassignDest").value   = "";
+        showToast(`Chuyển giao ${pending.length} hồ sơ cho ${dest} thành công!`, "success");
+    }
+
+    function triggerPrint() {
+        showToast("Đang chuẩn bị xuất PDF...", "success");
+        setTimeout(() => window.print(), 500);
+    }
+
+    // Close panels when clicking outside
+    document.addEventListener("click", function(e) {
+        const panel = document.getElementById("notifPanel");
+        const bell  = document.getElementById("bellBtn");
+        if (notifPanelOpen && !panel.contains(e.target) && !bell.contains(e.target)) {
+            notifPanelOpen = false;
+            panel.classList.add("hidden-panel");
+        }
+    });
+
+    window.onload = () => initializeApplication();
+    </script>
+</body>
+</html>
