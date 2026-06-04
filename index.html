@@ -261,8 +261,8 @@
                     <span class="bell-badge hidden" id="auditBadge">0</span>
                 </button>
 
-                <span class="hidden md:inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-brand-gold/10 text-brand-gold border border-brand-gold/20">
-                    <span class="w-2 h-2 rounded-full bg-brand-gold mr-1.5 animate-pulse"></span>LocalStorage
+                <span class="hidden md:inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-brand-teal/10 text-brand-teal border border-brand-teal/20">
+                    <span class="w-2 h-2 rounded-full bg-brand-teal mr-1.5 animate-pulse"></span>Cloud Sync
                 </span>
 
                 <button onclick="triggerPrint()" class="px-3.5 py-1.5 bg-brand-gold hover:bg-amber-500 text-brand-darkblue font-bold rounded-lg text-xs flex items-center space-x-1.5 transition duration-200 active:scale-95 shadow-lg shadow-brand-gold/20">
@@ -1114,12 +1114,14 @@ function importFullData(event) {
     let notifPanelOpen = false;
 
     // ======= AUDIT LOG =======
+    // 3. Đẩy lịch sử thao tác của phòng lên mây độc lập
     function addAuditEntry(type, action, detail) {
         const entry = {
             id: Date.now(),
             type,       // CREATE | UPDATE | DELETE | TRANSFER | STAFF
             action,     // human-readable verb
-            detail,     // what changed
+            details: detail,
+            detail,     // giữ lại để tương thích với renderAuditLog
             timestamp: new Date().toISOString(),
             user: "Thái"
         };
@@ -1127,6 +1129,12 @@ function importFullData(event) {
         if (auditLog.length > 200) auditLog.pop(); // cap at 200
         localStorage.setItem("NLP_TVTK_AuditLog", JSON.stringify(auditLog));
         updateAuditBadge();
+
+        fetch(`${WORKER_URL}/api/add-audit`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(entry)
+        }).catch(err => console.error("Lỗi lưu lịch sử mây:", err));
     }
 
     function loadAuditLog() {
@@ -1321,19 +1329,62 @@ function importFullData(event) {
         `).join("");
     }
 
-    // ======= CORE FUNCTIONS =======
-    function loadData() {
-        const sp = localStorage.getItem("NLP_TVTK_Projects");
-        const ss = localStorage.getItem("NLP_TVTK_Staff");
-        projects = sp ? JSON.parse(sp) : JSON.parse(JSON.stringify(defaultProjects));
-        staff = ss ? JSON.parse(ss) : JSON.parse(JSON.stringify(defaultStaff));
-        if (!sp) localStorage.setItem("NLP_TVTK_Projects", JSON.stringify(projects));
-        if (!ss) localStorage.setItem("NLP_TVTK_Staff", JSON.stringify(staff));
+    // ======= CORE FUNCTIONS (CLOUDFLARE D1 CLOUD SYNC) =======
+    // ⚠️ HÃY THAY ĐƯỜNG LINK DƯỚI ĐÂY THÀNH ĐÚNG LINK TRÊN TERMINAL CỦA BẠN
+    const WORKER_URL = "https://tvtk-backend.YOUR-SUBDOMAIN.workers.dev";
+
+    // 1. Tải dữ liệu trực tuyến từ Cloudflare D1
+    async function loadDataFromServer() {
+        try {
+            const response = await fetch(`${WORKER_URL}/api/data`);
+            if (!response.ok) throw new Error("Không thể kết nối cổng API");
+            const data = await response.json();
+
+            if (data.projects && data.projects.length > 0) {
+                projects = data.projects;
+                staff = data.staff || [];
+                auditLog = data.auditLog || [];
+
+                // Sao lưu một bản tại máy đề phòng lúc mất mạng
+                localStorage.setItem("NLP_TVTK_Projects", JSON.stringify(projects));
+                localStorage.setItem("NLP_TVTK_Staff", JSON.stringify(staff));
+                localStorage.setItem("NLP_TVTK_AuditLog", JSON.stringify(auditLog));
+            } else {
+                console.log("Database trống, đang đồng bộ dữ liệu gốc lên mây...");
+                projects = JSON.parse(JSON.stringify(defaultProjects));
+                staff = JSON.parse(JSON.stringify(defaultStaff));
+                auditLog = [];
+                await saveData(); // Đẩy dữ liệu mẫu ban đầu lên D1
+            }
+        } catch (error) {
+            console.error("Lỗi tải dữ liệu đám mây, kích hoạt chế độ Local dự phòng:", error);
+            const sp = localStorage.getItem("NLP_TVTK_Projects");
+            const ss = localStorage.getItem("NLP_TVTK_Staff");
+            const sa = localStorage.getItem("NLP_TVTK_AuditLog");
+            projects = sp ? JSON.parse(sp) : JSON.parse(JSON.stringify(defaultProjects));
+            staff = ss ? JSON.parse(ss) : JSON.parse(JSON.stringify(defaultStaff));
+            auditLog = sa ? JSON.parse(sa) : [];
+            if (typeof showToast === "function") showToast("Đang chạy ở chế độ mạng dự phòng (Offline)!", "warning");
+        }
     }
 
-    function saveData() {
+    // 2. Lưu dữ liệu trực tiếp lên mây khi thao tác trên giao diện
+    async function saveData() {
         localStorage.setItem("NLP_TVTK_Projects", JSON.stringify(projects));
         localStorage.setItem("NLP_TVTK_Staff", JSON.stringify(staff));
+
+        try {
+            const response = await fetch(`${WORKER_URL}/api/sync-all`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ projects, staff })
+            });
+            if (!response.ok) throw new Error("Lỗi kết nối đồng bộ");
+            console.log("Đồng bộ đám mây Cloudflare D1 thành công!");
+        } catch (e) {
+            console.error("Lỗi đồng bộ mây:", e);
+            if (typeof showToast === "function") showToast("Lưu trực tuyến thất bại! Dữ liệu đang lưu tạm tại máy này.", "warning");
+        }
     }
 
     function resetToDefaultData() {
@@ -1346,9 +1397,10 @@ function importFullData(event) {
         showToast("Khôi phục dữ liệu gốc thành công!", "success");
     }
 
-    function initializeApplication() {
-        loadData();
-        loadAuditLog();
+    // 4. Khởi chạy hệ thống (chờ dữ liệu mây về trước rồi mới dựng giao diện)
+    async function initializeApplication() {
+        await loadDataFromServer();
+        updateAuditBadge();
         syncFilterOptions();
         calculateKPIs();
         renderAllTables();
