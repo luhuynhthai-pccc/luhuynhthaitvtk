@@ -754,9 +754,10 @@
     <div id="staffModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden no-print">
         <div class="bg-slate-900 border border-blue-900/40 w-full max-w-md rounded-2xl overflow-hidden shadow-2xl m-4">
             <div class="bg-brand-darkblue px-6 py-4 flex items-center justify-between border-b border-blue-900/30">
-                <h3 class="text-sm font-bold uppercase text-white">Thêm Nhân Sự TVTK Mới</h3>
+                <h3 id="staffModalTitle" class="text-sm font-bold uppercase text-white">Thêm Nhân Sự TVTK Mới</h3>
                 <button onclick="closeStaffModal()" class="text-slate-400 hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
+            <input type="hidden" id="formStaffId">
             <form id="staffForm" onsubmit="saveStaff(event)" class="p-6 space-y-4">
                 <div>
                     <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1.5">Họ Và Tên *</label>
@@ -772,7 +773,7 @@
                 </div>
                 <div class="pt-4 flex justify-end space-x-3 border-t border-blue-950">
                     <button type="button" onclick="closeStaffModal()" class="px-5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold transition">Đóng</button>
-                    <button type="submit" class="px-5 py-2 bg-brand-gold hover:bg-amber-500 text-brand-darkblue rounded-xl text-xs font-bold transition">Đăng ký</button>
+                    <button type="submit" id="staffSubmitBtn" class="px-5 py-2 bg-brand-gold hover:bg-amber-500 text-brand-darkblue rounded-xl text-xs font-bold transition">Đăng ký</button>
                 </div>
             </form>
         </div>
@@ -1814,7 +1815,10 @@ function importFullData(event) {
                 <div>
                     <div class="flex items-center justify-between mb-4">
                         <div class="w-12 h-12 bg-brand-blue/25 rounded-2xl border border-brand-blue flex items-center justify-center text-brand-gold font-black text-lg">${person.name.charAt(0)}</div>
-                        <button onclick="deleteStaff('${person.id}')" class="no-print text-slate-500 hover:text-red-400 transition" title="Xóa nhân viên"><i class="fa-solid fa-trash-can text-sm"></i></button>
+                        <div class="flex items-center space-x-2 no-print">
+                            <button onclick="editStaff('${person.id}')" class="text-slate-500 hover:text-brand-gold transition" title="Chỉnh sửa nhân viên"><i class="fa-solid fa-pen-to-square text-sm"></i></button>
+                            <button onclick="deleteStaff('${person.id}')" class="text-slate-500 hover:text-red-400 transition" title="Xóa nhân viên"><i class="fa-solid fa-trash-can text-sm"></i></button>
+                        </div>
                     </div>
                     <h4 class="text-base font-bold text-white mb-0.5">${person.name}</h4>
                     <p class="text-[11px] text-slate-400">${person.role}</p>
@@ -1838,25 +1842,63 @@ function importFullData(event) {
         });
     }
 
-    function openStaffModal()  { document.getElementById("staffModal").classList.remove("hidden"); }
+    function openStaffModal() {
+        document.getElementById("staffModalTitle").textContent = "Thêm Nhân Sự TVTK Mới";
+        document.getElementById("staffSubmitBtn").textContent = "Đăng ký";
+        document.getElementById("formStaffId").value = "";
+        document.getElementById("formStaffName").value = "";
+        document.getElementById("formStaffRole").value = "";
+        document.getElementById("formStaffContact").value = "";
+        document.getElementById("staffModal").classList.remove("hidden");
+    }
     function closeStaffModal() { document.getElementById("staffModal").classList.add("hidden"); }
+
+    function editStaff(staffId) {
+        const person = staff.find(s => s.id === staffId);
+        if (!person) return;
+        document.getElementById("staffModalTitle").textContent = "Chỉnh Sửa Thông Tin Nhân Sự";
+        document.getElementById("staffSubmitBtn").textContent = "Lưu thay đổi";
+        document.getElementById("formStaffId").value = person.id;
+        document.getElementById("formStaffName").value = person.name;
+        document.getElementById("formStaffRole").value = person.role;
+        document.getElementById("formStaffContact").value = person.contact || "";
+        document.getElementById("staffModal").classList.remove("hidden");
+    }
 
     function saveStaff(e) {
         e.preventDefault();
+        const editingId = document.getElementById("formStaffId").value;
         const name    = document.getElementById("formStaffName").value.trim();
         const role    = document.getElementById("formStaffRole").value.trim();
         const contact = document.getElementById("formStaffContact").value.trim();
         if (!name || !role) { showToast("Vui lòng điền Tên và Chức vụ!", "error"); return; }
-        if (staff.some(s => s.name.toLowerCase() === name.toLowerCase())) { showToast("Tên nhân sự đã tồn tại!", "error"); return; }
-        const nums = staff.map(s => parseInt(s.id.replace("NV",""))).filter(n => !isNaN(n));
-        const newId = `NV${String(Math.max(0,...nums)+1).padStart(3,"0")}`;
-        staff.push({ id:newId, name, role, contact });
-        addAuditEntry("STAFF", `Thêm nhân sự: ${name}`, `Mã: ${newId} | Chức vụ: ${role}`);
+
+        if (editingId) {
+            // MODE SỬA
+            const idx = staff.findIndex(s => s.id === editingId);
+            if (idx === -1) return;
+            const old = staff[idx];
+            // Nếu đổi tên → cập nhật luôn trong projects
+            if (old.name !== name) {
+                projects.forEach(p => { if (p.assignee === old.name) p.assignee = name; });
+            }
+            staff[idx] = { ...old, name, role, contact };
+            addAuditEntry("STAFF", `Cập nhật nhân sự: ${name}`, `Mã: ${editingId} | Chức vụ: ${role}`);
+            showToast(`Đã cập nhật thông tin: ${name}!`, "success");
+        } else {
+            // MODE THÊM MỚI
+            if (staff.some(s => s.name.toLowerCase() === name.toLowerCase())) { showToast("Tên nhân sự đã tồn tại!", "error"); return; }
+            const nums = staff.map(s => parseInt(s.id.replace("NV",""))).filter(n => !isNaN(n));
+            const newId = `NV${String(Math.max(0,...nums)+1).padStart(3,"0")}`;
+            staff.push({ id:newId, name, role, contact });
+            addAuditEntry("STAFF", `Thêm nhân sự: ${name}`, `Mã: ${newId} | Chức vụ: ${role}`);
+            showToast(`Đã thêm nhân sự: ${name}!`, "success");
+        }
+
         saveData();
         closeStaffModal();
         syncFilterOptions();
         renderStaffCards();
-        showToast(`Đã thêm nhân sự: ${name}!`, "success");
     }
 
     function deleteStaff(staffId) {
