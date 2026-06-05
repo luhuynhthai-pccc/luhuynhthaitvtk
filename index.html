@@ -176,15 +176,6 @@
     border-color: #F5A623;
     color: #F5A623;
 }
-#viewerBanner {
-    position: sticky; top: 64px; z-index: 39;
-    background: rgba(30,27,75,0.97);
-    border-bottom: 1px solid rgba(99,102,241,0.4);
-    padding: 6px 16px;
-    display: flex; align-items: center; justify-content: center;
-    gap: 8px; font-size: 11px; color: #a5b4fc;
-    font-weight: 600; letter-spacing: 0.03em;
-}
     </style>
 </head>
 <body class="min-h-screen flex flex-col pb-10">
@@ -281,7 +272,6 @@
                 <div class="text-right hidden sm:block border-l border-slate-700 pl-3">
                     <p class="text-[10px] text-slate-400">Điều hành:</p>
                     <p class="text-sm font-semibold text-brand-gold">Thái (TVTK)</p>
-                    <p id="roleBadge" class="text-[10px] font-bold"></p>
                 </div>
                 <div class="w-9 h-9 rounded-full bg-brand-blue/20 border border-brand-blue flex items-center justify-center">
                     <i class="fa-solid fa-user-shield text-brand-gold text-sm"></i>
@@ -289,13 +279,6 @@
             </div>
         </div>
     </header>
-
-    <!-- VIEWER BANNER -->
-    <div id="viewerBanner" style="display:none;">
-        <i class="fa-solid fa-eye"></i>
-        <span>CHẾ ĐỘ CHỈ XEM — Bạn không có quyền chỉnh sửa dữ liệu</span>
-        <span class="ml-2 px-2 py-0.5 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-[10px] text-indigo-300 font-bold">👁 Viewer</span>
-    </div>
 
     <!-- MOBILE TAB NAV -->
     <div id="mobileTabNav" class="block md:hidden bg-brand-darkblue/90 border-b border-blue-900/30 p-2 text-center no-print">
@@ -336,13 +319,11 @@
         <div class="w-16 h-16 bg-brand-blue rounded-2xl mx-auto flex items-center justify-center mb-6 shadow-lg">
             <i class="fa-solid fa-shield-halved text-2xl text-brand-gold"></i>
         </div>
-        <h2 class="text-xl font-bold text-white mb-1 uppercase tracking-tighter">TRACKING BỘ PHẬN TVTK 2026</h2>
-        <p class="text-slate-500 text-[10px] mb-1 uppercase tracking-widest">Nam Lợi Phát</p>
-        <p class="text-slate-400 text-[10px] mb-6">Nhập mật khẩu để tiếp tục</p>
+        <h2 class="text-xl font-bold text-white mb-2 uppercase tracking-tighter">TRAKING BỘ PHẬN TVTK 2026</h2>
+        <p class="text-slate-400 text-[10px] mb-6 uppercase tracking-widest">Vui lòng nhập mật khẩu để tiếp tục</p>
         <input type="password" id="accessKeyInput" onkeyup="if(event.key==='Enter') checkAccessKey()" class="w-full bg-slate-950 border border-blue-900/40 rounded-xl px-4 py-3 text-center text-white tracking-[0.5em] outline-none mb-4 focus:border-brand-gold transition-all" placeholder="••••">
         <button onclick="checkAccessKey()" class="w-full bg-brand-gold hover:bg-amber-500 text-brand-darkblue font-black py-3 rounded-xl transition-all uppercase text-xs">Xác nhận</button>
         <p id="loginError" class="text-red-400 text-[10px] mt-4 hidden font-bold italic text-center">MẬT KHẨU KHÔNG CHÍNH XÁC!</p>
-        <p class="text-slate-600 text-[9px] mt-6 border-t border-blue-900/30 pt-4">Developed by <span class="text-brand-gold font-bold">Thái — TVTK PCCC 2026</span></p>
     </div>
 </div>
 
@@ -610,7 +591,7 @@
                     </h3>
                     <p class="text-xs text-slate-400 mt-1">Đăng ký thành viên, phân bổ và bàn giao hồ sơ nhanh chóng.</p>
                 </div>
-                <button onclick="openStaffModal()" class="px-4 py-2.5 bg-brand-gold hover:bg-amber-500 text-brand-darkblue font-extrabold rounded-xl text-xs flex items-center space-x-2 transition duration-200 shadow-md">
+                <button onclick="openStaffModal()" class="px-4 py-2.5 bg-brand-gold hover:bg-amber-500 text-brand-darkblue font-extrabold rounded-xl text-xs flex items-center space-x-2 transition duration-200 shadow-md ${currentRole === 'viewer' ? 'hidden' : ''}">
                     <i class="fa-solid fa-user-plus"></i><span>Thêm nhân viên mới</span>
                 </button>
             </div>
@@ -802,12 +783,12 @@
 
     <!-- ====== JAVASCRIPT ====== -->
     <script>
-// --- HỆ THỐNG PHÂN QUYỀN 2 CẤP ---
+// --- PHẦN BỔ SUNG: LOGIC HỆ THỐNG ---
 const ADMIN_KEY  = "2026"; // Admin — toàn quyền
 const VIEWER_KEY = "0000"; // Viewer — chỉ xem
-
 let currentRole = null;
 
+// 1. Kiểm tra mật khẩu & phân quyền
 function checkAccessKey() {
     const input = document.getElementById("accessKeyInput").value;
     if (input === ADMIN_KEY) {
@@ -823,60 +804,61 @@ function checkAccessKey() {
     }
     document.getElementById("loginOverlay").style.display = "none";
     document.getElementById("mainContent").classList.remove("hidden-ui");
-    applyRoleUI();
     if (typeof initializeApplication === "function") initializeApplication();
 }
 
-function applyRoleUI() {
-    const isViewer = currentRole === "viewer";
-
-    // Viewer banner
-    document.getElementById("viewerBanner").style.display = isViewer ? "flex" : "none";
-
-    // Badge trên header
-    const badge = document.getElementById("roleBadge");
-    if (badge) {
-        badge.textContent = isViewer ? "👁 Chỉ xem" : "⚡ Admin";
-        badge.style.color = isViewer ? "#a5b4fc" : "#F5A623";
-    }
-
-    if (!isViewer) return; // Admin không cần ẩn gì
-
-    // Ẩn tất cả nút edit/xóa/thêm với Viewer
-    const hideSelectors = [
-        "button[onclick='openProjectModal()']",
-        "button[onclick*='editProject']",
-        "button[onclick*='deleteProject']",
-        "button[onclick='openStaffModal()']",
-        "button[onclick*='editStaff']",
-        "button[onclick*='deleteStaff']",
-        "button[onclick='executeTransfer()']",
-        "button[onclick='exportFullData()']",
-        "button[onclick*='importFile']",
-        "button[onclick='resetToDefaultData()']",
-        "button[onclick='clearAuditLog()']",
-        "#importFile"
-    ];
-    hideSelectors.forEach(sel => {
-        document.querySelectorAll(sel).forEach(el => el.style.display = "none");
-    });
-
-    // Ẩn cụm nút xuất/nhập
-    document.querySelectorAll(".btn-system").forEach(el => el.style.display = "none");
+// 2. Xuất dữ liệu ra file JSON
+function exportFullData() {
+    const data = {
+        projects: JSON.parse(localStorage.getItem("NLP_TVTK_Projects") || "[]"),
+        staff: JSON.parse(localStorage.getItem("NLP_TVTK_Staff") || "[]"),
+        auditLog: JSON.parse(localStorage.getItem("NLP_TVTK_AuditLog") || "[]"),
+        exportDate: new Date().toLocaleString()
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], {type: "application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `BACKUP_TVTK_NLP_${new Date().toLocaleDateString()}.json`;
+    a.click();
+    if (typeof showToast === "function") showToast("Đã xuất file lưu trữ thành công!", "success");
 }
 
-// Giữ trạng thái khi F5
-const _origOnload = window.onload;
+// 3. Nhập dữ liệu từ file JSON
+function importFullData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = JSON.parse(e.target.result);
+            if(confirm("Dữ liệu nhập vào sẽ thay thế toàn bộ dữ liệu hiện tại. Bạn có chắc chắn không?")) {
+                localStorage.setItem("NLP_TVTK_Projects", JSON.stringify(data.projects || []));
+                localStorage.setItem("NLP_TVTK_Staff", JSON.stringify(data.staff || []));
+                localStorage.setItem("NLP_TVTK_AuditLog", JSON.stringify(data.auditLog || []));
+                alert("Nhập dữ liệu thành công! Trang sẽ tải lại.");
+                location.reload();
+            }
+        } catch(err) { alert("Lỗi: File dữ liệu không đúng định dạng!"); }
+    };
+    reader.readAsText(file);
+}
+
+// 4. Đăng xuất
+function logout() {
+    sessionStorage.removeItem("nlp_authorized");
+    location.reload();
+}
+
+// 5. Giữ trạng thái đăng nhập khi F5
 window.onload = () => {
     const saved = sessionStorage.getItem("nlp_role");
     if (saved === "admin" || saved === "viewer") {
         currentRole = saved;
         document.getElementById("loginOverlay").style.display = "none";
         document.getElementById("mainContent").classList.remove("hidden-ui");
-        applyRoleUI();
         if (typeof initializeApplication === "function") initializeApplication();
     }
-    if (_origOnload) _origOnload();
 };
 // --- HÀM XUẤT DỮ LIỆU RA FILE .JSON ---
 function exportFullData() {
@@ -1696,14 +1678,14 @@ function importFullData(event) {
                     <div class="text-[10px] text-slate-400 mt-1 max-w-[180px] break-words italic">${p.notes || "—"}</div>
                 </td>
                 <td class="py-3 px-3 text-center no-print">
-                    <div class="flex items-center justify-center space-x-2">
+                    ${currentRole === "viewer" ? `<span class="text-[10px] text-slate-600">—</span>` : `<div class="flex items-center justify-center space-x-2">
                         <button onclick="editProject('${p.id}')" title="Chỉnh sửa" class="w-7 h-7 bg-blue-900/30 hover:bg-brand-blue/40 text-blue-400 hover:text-white rounded-lg flex items-center justify-center transition">
                             <i class="fa-solid fa-pen-to-square text-xs"></i>
                         </button>
                         <button onclick="deleteProject('${p.id}')" title="Xóa" class="w-7 h-7 bg-red-950/20 hover:bg-red-500 text-red-400 hover:text-white rounded-lg flex items-center justify-center transition">
                             <i class="fa-solid fa-trash-can text-xs"></i>
                         </button>
-                    </div>
+                    </div>`}
                 </td>`;
             tbody.appendChild(tr);
         });
@@ -1806,9 +1788,13 @@ function importFullData(event) {
         renderDeadlineBanner();
     }
 
-    function editProject(id) { openProjectModal(id); }
+    function editProject(id) {
+        if (currentRole === "viewer") return;
+        openProjectModal(id);
+    }
 
     function deleteProject(id) {
+        if (currentRole === "viewer") return;
         const p = projects.find(x => x.id === id);
         if (!p) return;
         if (!confirm(`Xóa vĩnh viễn dự án: "${p.name}"?`)) return;
@@ -1838,7 +1824,7 @@ function importFullData(event) {
                 <div>
                     <div class="flex items-center justify-between mb-4">
                         <div class="w-12 h-12 bg-brand-blue/25 rounded-2xl border border-brand-blue flex items-center justify-center text-brand-gold font-black text-lg">${person.name.charAt(0)}</div>
-                        <button onclick="deleteStaff('${person.id}')" class="no-print text-slate-500 hover:text-red-400 transition" title="Xóa nhân viên"><i class="fa-solid fa-trash-can text-sm"></i></button>
+                        <button onclick="deleteStaff('${person.id}')" class="no-print text-slate-500 hover:text-red-400 transition ${currentRole === 'viewer' ? 'hidden' : ''}" title="Xóa nhân viên"><i class="fa-solid fa-trash-can text-sm"></i></button>
                     </div>
                     <h4 class="text-base font-bold text-white mb-0.5">${person.name}</h4>
                     <p class="text-[11px] text-slate-400">${person.role}</p>
@@ -1884,6 +1870,7 @@ function importFullData(event) {
     }
 
     function deleteStaff(staffId) {
+        if (currentRole === "viewer") return;
         const person = staff.find(s => s.id === staffId);
         if (!person) return;
         const active = projects.filter(p => p.assignee === person.name).length;
@@ -1937,6 +1924,7 @@ function importFullData(event) {
         }
     });
 
+    window.onload = () => initializeApplication();
     </script>
 </body>
 </html>
