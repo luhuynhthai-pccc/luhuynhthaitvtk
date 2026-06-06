@@ -239,21 +239,7 @@
                     <i class="fa-solid fa-bell text-slate-300 text-sm" id="bellIcon"></i>
                     <span class="bell-badge hidden" id="bellBadge">0</span>
                 </button>
-<!-- CỤM NÚT NHẬP XUẤT DỮ LIỆU -->
-<div class="flex items-center space-x-2 border-r border-blue-900/30 pr-3 mr-2">
-    <button onclick="exportFullData()" class="btn-system px-3 py-1.5 rounded-lg text-[10px] font-bold text-slate-300 flex items-center space-x-1.5" title="Tải toàn bộ dữ liệu dự án về máy">
-        <i class="fa-solid fa-file-export text-brand-gold"></i>
-        <span>XUẤT DỮ LIỆU</span>
-    </button>
-    
-    <button onclick="document.getElementById('importFile').click()" class="btn-system px-3 py-1.5 rounded-lg text-[10px] font-bold text-slate-300 flex items-center space-x-1.5" title="Khôi phục dữ liệu từ file backup">
-        <i class="fa-solid fa-file-import text-brand-teal"></i>
-        <span>NHẬP DỮ LIỆU</span>
-    </button>
-    
-    <!-- Input ẩn để chọn file -->
-    <input type="file" id="importFile" class="hidden" accept=".json" onchange="importFullData(event)">
-</div>
+
 
                 <!-- AUDIT LOG QUICK BUTTON -->
                 <button onclick="switchTab('audit')" class="hidden md:flex relative w-9 h-9 bg-slate-800/80 hover:bg-slate-700 border border-blue-900/40 rounded-xl items-center justify-center transition duration-200" title="Lịch sử thay đổi">
@@ -808,43 +794,6 @@ function checkAccessKey() {
     if (typeof initializeApplication === "function") initializeApplication();
 }
 
-// 2. Xuất dữ liệu ra file JSON
-function exportFullData() {
-    const data = {
-        projects: JSON.parse(localStorage.getItem("NLP_TVTK_Projects") || "[]"),
-        staff: JSON.parse(localStorage.getItem("NLP_TVTK_Staff") || "[]"),
-        auditLog: JSON.parse(localStorage.getItem("NLP_TVTK_AuditLog") || "[]"),
-        exportDate: new Date().toLocaleString()
-    };
-    const blob = new Blob([JSON.stringify(data, null, 2)], {type: "application/json"});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `BACKUP_TVTK_NLP_${new Date().toLocaleDateString()}.json`;
-    a.click();
-    if (typeof showToast === "function") showToast("Đã xuất file lưu trữ thành công!", "success");
-}
-
-// 3. Nhập dữ liệu từ file JSON
-function importFullData(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        try {
-            const data = JSON.parse(e.target.result);
-            if(confirm("Dữ liệu nhập vào sẽ thay thế toàn bộ dữ liệu hiện tại. Bạn có chắc chắn không?")) {
-                localStorage.setItem("NLP_TVTK_Projects", JSON.stringify(data.projects || []));
-                localStorage.setItem("NLP_TVTK_Staff", JSON.stringify(data.staff || []));
-                localStorage.setItem("NLP_TVTK_AuditLog", JSON.stringify(data.auditLog || []));
-                alert("Nhập dữ liệu thành công! Trang sẽ tải lại.");
-                location.reload();
-            }
-        } catch(err) { alert("Lỗi: File dữ liệu không đúng định dạng!"); }
-    };
-    reader.readAsText(file);
-}
-
 // 4. Đăng xuất
 function logout() {
     sessionStorage.removeItem("nlp_authorized");
@@ -861,63 +810,7 @@ window.onload = () => {
         if (typeof initializeApplication === "function") initializeApplication();
     }
 };
-// --- HÀM XUẤT DỮ LIỆU RA FILE .JSON ---
-function exportFullData() {
-    // Gom tất cả dữ liệu từ LocalStorage
-    const data = {
-        projects: JSON.parse(localStorage.getItem("NLP_TVTK_Projects") || "[]"),
-        staff: JSON.parse(localStorage.getItem("NLP_TVTK_Staff") || "[]"),
-        auditLog: JSON.parse(localStorage.getItem("NLP_TVTK_AuditLog") || "[]"),
-        backupDate: new Date().toISOString()
-    };
 
-    // Chuyển dữ liệu thành file để tải về
-    const dataStr = JSON.stringify(data, null, 2);
-    const blob = new Blob([dataStr], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    
-    const link = document.createElement("a");
-    const today = new Date().toLocaleDateString().replace(/\//g, '-');
-    link.download = `BACKUP_TVTK_NAMLOIPHAT_${today}.json`;
-    link.href = url;
-    link.click();
-    
-    // Nếu bạn có hàm showToast thì gọi, không thì dùng alert
-    if (typeof showToast === "function") showToast("Đã xuất file lưu trữ thành công!");
-    else alert("Đã xuất file lưu trữ thành công!");
-}
-
-// --- HÀM NHẬP DỮ LIỆU TỪ FILE .JSON VÀO HỆ THỐNG ---
-function importFullData(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        try {
-            const importedData = JSON.parse(e.target.result);
-            
-            // Kiểm tra xem file có đúng định dạng không
-            if (!importedData.projects) {
-                throw new Error("File không đúng định dạng hệ thống!");
-            }
-
-            if (confirm("CẢNH BÁO: Toàn bộ dự án hiện tại sẽ bị ghi đè bởi dữ liệu từ file này. Bạn có chắc chắn muốn nhập không?")) {
-                localStorage.setItem("NLP_TVTK_Projects", JSON.stringify(importedData.projects));
-                localStorage.setItem("NLP_TVTK_Staff", JSON.stringify(importedData.staff));
-                localStorage.setItem("NLP_TVTK_AuditLog", JSON.stringify(importedData.auditLog));
-                
-                alert("Nhập dữ liệu thành công! Trang web sẽ tự động tải lại.");
-                location.reload(); // Tải lại trang để cập nhật bảng và biểu đồ
-            }
-        } catch (err) {
-            alert("Lỗi: " + err.message);
-        }
-    };
-    reader.readAsText(file);
-    // Reset input file để có thể chọn lại cùng 1 file nếu cần
-    event.target.value = '';
-}
     // ======= DỮ LIỆU MẶC ĐỊNH =======
     // ─── DỮ LIỆU 26 DỰ ÁN — cập nhật từ Excel FILE_TỔNG_HỢP r1 ───
     // Ngày L1/L2/L3 được convert từ Excel serial date sang ISO
@@ -1134,7 +1027,6 @@ function importFullData(event) {
         };
         auditLog.unshift(entry); // newest first
         if (auditLog.length > 200) auditLog.pop(); // cap at 200
-        localStorage.setItem("NLP_TVTK_AuditLog", JSON.stringify(auditLog));
         updateAuditBadge();
 
         fetch(`${WORKER_URL}/api/add-audit`, {
@@ -1145,8 +1037,8 @@ function importFullData(event) {
     }
 
     function loadAuditLog() {
-        const stored = localStorage.getItem("NLP_TVTK_AuditLog");
-        auditLog = stored ? JSON.parse(stored) : [];
+        // auditLog đã được tải từ cloud trong loadDataFromServer()
+        // Hàm này chỉ cập nhật badge
         updateAuditBadge();
     }
 
@@ -1213,13 +1105,22 @@ function importFullData(event) {
         }).join("");
     }
 
-    function clearAuditLog() {
-        if (!confirm("Bạn có chắc muốn xóa toàn bộ lịch sử thay đổi?")) return;
+    async function clearAuditLog() {
+        if (!confirm("Bạn có chắc muốn xóa toàn bộ lịch sử thay đổi?\n\nThao tác này sẽ xóa vĩnh viễn trên cả hệ thống đám mây.")) return;
         auditLog = [];
         localStorage.removeItem("NLP_TVTK_AuditLog");
         updateAuditBadge();
         renderAuditLog();
-        showToast("Đã xóa toàn bộ lịch sử!", "warning");
+
+        // Xóa lịch sử trên Cloudflare D1
+        try {
+            const res = await fetch(`${WORKER_URL}/api/clear-audit`, { method: 'POST' });
+            if (!res.ok) throw new Error("Server lỗi");
+            showToast("Đã xóa toàn bộ lịch sử (cả mây)!", "warning");
+        } catch (e) {
+            console.error("Lỗi xóa lịch sử mây:", e);
+            showToast("Đã xóa local. Lỗi kết nối mây — hãy thử lại!", "error");
+        }
     }
 
     // ======= DEADLINE NOTIFICATIONS =======
