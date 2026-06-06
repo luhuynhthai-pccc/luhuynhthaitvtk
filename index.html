@@ -1027,18 +1027,13 @@ window.onload = () => {
         };
         auditLog.unshift(entry); // newest first
         if (auditLog.length > 200) auditLog.pop(); // cap at 200
+        // Lưu vào sessionStorage (tồn tại trong phiên, F5 xóa sạch)
+        sessionStorage.setItem("NLP_TVTK_AuditLog", JSON.stringify(auditLog));
         updateAuditBadge();
-
-        fetch(`${WORKER_URL}/api/add-audit`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(entry)
-        }).catch(err => console.error("Lỗi lưu lịch sử mây:", err));
     }
 
     function loadAuditLog() {
-        // auditLog đã được tải từ cloud trong loadDataFromServer()
-        // Hàm này chỉ cập nhật badge
+        // auditLog được tải từ sessionStorage trong loadDataFromServer()
         updateAuditBadge();
     }
 
@@ -1105,22 +1100,13 @@ window.onload = () => {
         }).join("");
     }
 
-    async function clearAuditLog() {
-        if (!confirm("Bạn có chắc muốn xóa toàn bộ lịch sử thay đổi?\n\nThao tác này sẽ xóa vĩnh viễn trên cả hệ thống đám mây.")) return;
+    function clearAuditLog() {
+        if (!confirm("Bạn có chắc muốn xóa toàn bộ lịch sử thay đổi trong phiên này?")) return;
         auditLog = [];
-        localStorage.removeItem("NLP_TVTK_AuditLog");
+        sessionStorage.removeItem("NLP_TVTK_AuditLog");
         updateAuditBadge();
         renderAuditLog();
-
-        // Xóa lịch sử trên Cloudflare D1
-        try {
-            const res = await fetch(`${WORKER_URL}/api/clear-audit`, { method: 'POST' });
-            if (!res.ok) throw new Error("Server lỗi");
-            showToast("Đã xóa toàn bộ lịch sử (cả mây)!", "warning");
-        } catch (e) {
-            console.error("Lỗi xóa lịch sử mây:", e);
-            showToast("Đã xóa local. Lỗi kết nối mây — hãy thử lại!", "error");
-        }
+        showToast("Đã xóa toàn bộ lịch sử!", "warning");
     }
 
     // ======= DEADLINE NOTIFICATIONS =======
@@ -1243,6 +1229,11 @@ window.onload = () => {
 
     // 1. Tải dữ liệu trực tuyến từ Cloudflare D1
     async function loadDataFromServer() {
+        // auditLog chỉ tồn tại trong phiên làm việc (sessionStorage)
+        // Không đọc/ghi auditLog từ cloud — tránh xung đột khi xóa lịch sử
+        const sa = sessionStorage.getItem("NLP_TVTK_AuditLog");
+        auditLog = sa ? JSON.parse(sa) : [];
+
         try {
             const response = await fetch(`${WORKER_URL}/api/data`);
             if (!response.ok) throw new Error("Không thể kết nối cổng API");
@@ -1251,27 +1242,21 @@ window.onload = () => {
             if (data.projects && data.projects.length > 0) {
                 projects = data.projects;
                 staff = data.staff || [];
-                auditLog = data.auditLog || [];
-
-                // Sao lưu một bản tại máy đề phòng lúc mất mạng
+                // Sao lưu projects/staff tại máy đề phòng mất mạng
                 localStorage.setItem("NLP_TVTK_Projects", JSON.stringify(projects));
                 localStorage.setItem("NLP_TVTK_Staff", JSON.stringify(staff));
-                localStorage.setItem("NLP_TVTK_AuditLog", JSON.stringify(auditLog));
             } else {
                 console.log("Database trống, đang đồng bộ dữ liệu gốc lên mây...");
                 projects = JSON.parse(JSON.stringify(defaultProjects));
                 staff = JSON.parse(JSON.stringify(defaultStaff));
-                auditLog = [];
-                await saveData(); // Đẩy dữ liệu mẫu ban đầu lên D1
+                await saveData();
             }
         } catch (error) {
             console.error("Lỗi tải dữ liệu đám mây, kích hoạt chế độ Local dự phòng:", error);
             const sp = localStorage.getItem("NLP_TVTK_Projects");
             const ss = localStorage.getItem("NLP_TVTK_Staff");
-            const sa = localStorage.getItem("NLP_TVTK_AuditLog");
             projects = sp ? JSON.parse(sp) : JSON.parse(JSON.stringify(defaultProjects));
             staff = ss ? JSON.parse(ss) : JSON.parse(JSON.stringify(defaultStaff));
-            auditLog = sa ? JSON.parse(sa) : [];
             if (typeof showToast === "function") showToast("Đang chạy ở chế độ mạng dự phòng (Offline)!", "warning");
         }
     }
