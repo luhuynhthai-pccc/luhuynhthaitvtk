@@ -165,7 +165,6 @@
             border-color: #F5A623;
             color: #F5A623;
         }
-        /* ── ADVANCE BADGE ── */
         .advance-badge {
             display: inline-flex; align-items: center;
             background: rgba(139,92,246,0.12);
@@ -174,6 +173,14 @@
             font-size: 9px; font-weight: 700;
             padding: 2px 6px; border-radius: 6px;
             white-space: nowrap;
+        }
+        /* ── QUALITY KPI SECTION ── */
+        .quality-kpi-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .quality-kpi-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(15,82,186,0.2);
         }
     </style>
 </head>
@@ -369,7 +376,6 @@
 
                 <!-- CHARTS + FINANCE -->
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <!-- ── FINANCE CARD ── BỔ SUNG: hiển thị tạm ứng riêng biệt -->
                     <div class="print-card bg-brand-darkblue/40 border border-blue-900/40 rounded-2xl p-6 flex flex-col justify-between">
                         <div>
                             <div class="flex items-center space-x-2 mb-1">
@@ -378,7 +384,6 @@
                             </div>
                             <p class="text-[11px] text-slate-400 mb-4">Cam kết của bộ phận TVTK với Ban Giám Đốc</p>
                             <div class="space-y-3">
-                                <!-- Đã ra giấy -->
                                 <div>
                                     <div class="flex justify-between text-xs text-slate-300 mb-1">
                                         <span>Giá trị Đã Ra Giấy</span>
@@ -388,7 +393,6 @@
                                         <div class="bg-brand-teal h-full rounded-full progress-fill" id="progressCompletedValBar" style="width:0%"></div>
                                     </div>
                                 </div>
-                                <!-- ── MỚI: Tạm ứng đã thu ── -->
                                 <div>
                                     <div class="flex justify-between text-xs text-slate-300 mb-1">
                                         <span class="flex items-center gap-1">
@@ -401,7 +405,6 @@
                                         <div class="bg-violet-500 h-full rounded-full progress-fill" id="progressAdvanceBar" style="width:0%"></div>
                                     </div>
                                 </div>
-                                <!-- ── MỚI: Tổng doanh thu thực tế = Đã ra giấy + Tạm ứng ── -->
                                 <div class="bg-brand-gold/5 border border-brand-gold/20 rounded-xl p-3">
                                     <div class="flex justify-between text-xs mb-1">
                                         <span class="text-brand-gold font-bold flex items-center gap-1">
@@ -419,7 +422,6 @@
                                         <span class="text-[9px] text-brand-gold font-bold" id="statRealRevenuePct">0%</span>
                                     </div>
                                 </div>
-                                <!-- Tổng giá trị HĐ -->
                                 <div>
                                     <div class="flex justify-between text-xs text-slate-300 mb-1">
                                         <span>Tổng giá trị hợp đồng quản lý</span>
@@ -464,6 +466,108 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- ══════════════════════════════════════════════════════ -->
+                <!-- QUALITY KPI SECTION — MỚI                            -->
+                <!-- ══════════════════════════════════════════════════════ -->
+                <div class="print-card bg-brand-darkblue/40 border border-blue-900/40 rounded-2xl p-6">
+                    <div class="flex items-center space-x-2 mb-5 pb-4 border-b border-blue-900/30">
+                        <div class="w-9 h-9 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+                            <i class="fa-solid fa-medal text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold uppercase text-white">Chất Lượng Hồ Sơ — KPI Số Lần Nộp & Thời Gian Chỉnh Sửa</h3>
+                            <p class="text-[11px] text-slate-400 mt-0.5">Phân tích dựa trên các dự án <span class="text-brand-teal font-semibold">Đã Ra Giấy</span> · Mục tiêu: phê duyệt trong tối đa 3 lần nộp</p>
+                        </div>
+                    </div>
+
+                    <!-- KPI CARDS ROW -->
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
+                        <!-- Tỷ lệ đạt L1 -->
+                        <div class="quality-kpi-card bg-emerald-950/20 border border-emerald-500/25 rounded-2xl p-4 text-center">
+                            <div class="w-9 h-9 bg-emerald-500/15 rounded-xl flex items-center justify-center mx-auto mb-2">
+                                <i class="fa-solid fa-1 text-emerald-400 text-sm font-black"></i>
+                            </div>
+                            <div class="text-2xl font-extrabold text-emerald-400" id="statL1Rate">0%</div>
+                            <div class="text-[10px] text-slate-400 mt-1 leading-tight">Đạt ngay<br><span class="font-bold text-emerald-300">Lần nộp 1</span></div>
+                            <div class="text-[9px] text-slate-500 mt-1" id="statL1Count">0 / 0 DA</div>
+                        </div>
+                        <!-- Tỷ lệ đạt L2 -->
+                        <div class="quality-kpi-card bg-amber-950/20 border border-amber-500/25 rounded-2xl p-4 text-center">
+                            <div class="w-9 h-9 bg-amber-500/15 rounded-xl flex items-center justify-center mx-auto mb-2">
+                                <i class="fa-solid fa-2 text-amber-400 text-sm font-black"></i>
+                            </div>
+                            <div class="text-2xl font-extrabold text-amber-400" id="statL2Rate">0%</div>
+                            <div class="text-[10px] text-slate-400 mt-1 leading-tight">Đạt sau<br><span class="font-bold text-amber-300">Lần nộp 2</span></div>
+                            <div class="text-[9px] text-slate-500 mt-1" id="statL2Count">0 / 0 DA</div>
+                        </div>
+                        <!-- Tỷ lệ phải nộp L3 -->
+                        <div class="quality-kpi-card bg-red-950/20 border border-red-500/25 rounded-2xl p-4 text-center">
+                            <div class="w-9 h-9 bg-red-500/15 rounded-xl flex items-center justify-center mx-auto mb-2">
+                                <i class="fa-solid fa-3 text-red-400 text-sm font-black"></i>
+                            </div>
+                            <div class="text-2xl font-extrabold text-red-400" id="statL3Rate">0%</div>
+                            <div class="text-[10px] text-slate-400 mt-1 leading-tight">Phải nộp đến<br><span class="font-bold text-red-300">Lần nộp 3</span></div>
+                            <div class="text-[9px] text-slate-500 mt-1" id="statL3Count">0 / 0 DA</div>
+                        </div>
+                        <!-- Số lần nộp TB -->
+                        <div class="quality-kpi-card bg-blue-950/20 border border-blue-500/25 rounded-2xl p-4 text-center">
+                            <div class="w-9 h-9 bg-blue-500/15 rounded-xl flex items-center justify-center mx-auto mb-2">
+                                <i class="fa-solid fa-rotate text-blue-400 text-sm"></i>
+                            </div>
+                            <div class="text-2xl font-extrabold text-blue-400" id="statAvgSubmissions">0.0</div>
+                            <div class="text-[10px] text-slate-400 mt-1 leading-tight">Lần nộp<br><span class="font-bold text-blue-300">trung bình</span></div>
+                            <div class="text-[9px] text-slate-500 mt-1">lần / dự án</div>
+                        </div>
+                        <!-- Thời gian chỉnh sửa TB -->
+                        <div class="quality-kpi-card bg-violet-950/20 border border-violet-500/25 rounded-2xl p-4 text-center">
+                            <div class="w-9 h-9 bg-violet-500/15 rounded-xl flex items-center justify-center mx-auto mb-2">
+                                <i class="fa-solid fa-clock text-violet-400 text-sm"></i>
+                            </div>
+                            <div class="text-2xl font-extrabold text-violet-400" id="statAvgEditDays">0</div>
+                            <div class="text-[10px] text-slate-400 mt-1 leading-tight">Ngày chỉnh sửa<br><span class="font-bold text-violet-300">trung bình</span></div>
+                            <div class="text-[9px] text-slate-500 mt-1">ngày / lần chỉnh</div>
+                        </div>
+                    </div>
+
+                    <!-- QUALITY CHARTS ROW -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                        <!-- Chart 1: Phân bố L1/L2/L3 -->
+                        <div class="bg-slate-900/50 border border-blue-900/30 rounded-xl p-4">
+                            <div class="flex items-center space-x-2 mb-3">
+                                <i class="fa-solid fa-chart-pie text-emerald-400 text-sm"></i>
+                                <h4 class="text-xs font-bold text-slate-200 uppercase">Phân Bố Theo Số Lần Nộp</h4>
+                            </div>
+                            <p class="text-[10px] text-slate-500 mb-3">Dự án Đã Ra Giấy — phân theo L1 / L2 / L3</p>
+                            <div class="relative h-44">
+                                <canvas id="qualityDistChart"></canvas>
+                            </div>
+                        </div>
+                        <!-- Chart 2: Chất lượng theo nhân sự -->
+                        <div class="bg-slate-900/50 border border-blue-900/30 rounded-xl p-4">
+                            <div class="flex items-center space-x-2 mb-3">
+                                <i class="fa-solid fa-users text-amber-400 text-sm"></i>
+                                <h4 class="text-xs font-bold text-slate-200 uppercase">Chất Lượng Theo Nhân Sự</h4>
+                            </div>
+                            <p class="text-[10px] text-slate-500 mb-3">Số lần nộp trung bình mỗi kỹ sư</p>
+                            <div class="relative h-44">
+                                <canvas id="qualityPersonnelChart"></canvas>
+                            </div>
+                        </div>
+                        <!-- Chart 3: Thời gian chỉnh sửa TB theo nhân sự -->
+                        <div class="bg-slate-900/50 border border-blue-900/30 rounded-xl p-4">
+                            <div class="flex items-center space-x-2 mb-3">
+                                <i class="fa-solid fa-hourglass-half text-violet-400 text-sm"></i>
+                                <h4 class="text-xs font-bold text-slate-200 uppercase">Thời Gian Chỉnh Sửa TB</h4>
+                            </div>
+                            <p class="text-[10px] text-slate-500 mb-3">Ngày chỉnh sửa trung bình mỗi kỹ sư</p>
+                            <div class="relative h-44">
+                                <canvas id="editTimePersonnelChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ══ END QUALITY KPI SECTION ══ -->
 
                 <!-- DEADLINE ALERT BANNER -->
                 <div id="deadlineBanner" class="hidden print-card bg-amber-950/20 border border-amber-500/30 rounded-2xl p-5">
@@ -530,14 +634,13 @@
 
                 <!-- MAIN TABLE -->
                 <div class="print-card bg-brand-darkblue/30 border border-blue-900/40 rounded-2xl overflow-hidden print-new-page">
-                    <!-- FILTERS -->
                     <div class="p-6 border-b border-blue-900/40 flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-brand-darkblue/60 no-print">
                         <div>
                             <h3 class="text-lg font-bold text-white flex items-center">
                                 Bảng Quản Lý & Tracking Tiến Độ Chi Tiết
-                                <span class="ml-2 text-xs bg-brand-gold/15 text-brand-gold border border-brand-gold/20 px-2 py-0.5 rounded-full font-medium">V3.0</span>
+                                <span class="ml-2 text-xs bg-brand-gold/15 text-brand-gold border border-brand-gold/20 px-2 py-0.5 rounded-full font-medium">V4.0</span>
                             </h3>
-                            <p class="text-[11px] text-slate-400 mt-1">Quản lý mốc thời gian thẩm duyệt L1, L2, L3 · Ngày ký HĐ · Tạm ứng</p>
+                            <p class="text-[11px] text-slate-400 mt-1">Quản lý mốc thẩm duyệt L1, L2, L3 · Ngày phản hồi · Thời gian chỉnh sửa</p>
                         </div>
                         <div class="flex flex-wrap items-center gap-3">
                             <div class="relative">
@@ -560,7 +663,6 @@
                             </button>
                         </div>
                     </div>
-                    <!-- TABLE -->
                     <div class="overflow-x-auto table-container">
                         <table class="w-full text-left border-collapse">
                             <thead>
@@ -573,7 +675,8 @@
                                     <th class="py-3.5 px-3">Người Thực Hiện</th>
                                     <th class="py-3.5 px-3">Hạn Nộp</th>
                                     <th class="py-3.5 px-3">Tình Trạng</th>
-                                    <th class="py-3.5 px-3 min-w-[150px]">Mốc L1 · L2 · L3</th>
+                                    <th class="py-3.5 px-3 min-w-[200px]">Mốc L1 · L2 · L3 & Phản Hồi</th>
+                                    <th class="py-3.5 px-3 text-center text-emerald-400 min-w-[80px]">Số lần nộp</th>
                                     <th class="py-3.5 px-3 min-w-[150px]">Vướng mắc / Cán bộ PC07</th>
                                     <th class="py-3.5 px-3 text-center no-print w-24">Hành Động</th>
                                 </tr>
@@ -581,7 +684,6 @@
                             <tbody id="projectTableBody" class="divide-y divide-blue-950/40 text-xs"></tbody>
                         </table>
                     </div>
-                    <!-- TABLE FOOTER -->
                     <div class="p-4 bg-brand-darkblue/50 border-t border-blue-900/40 flex items-center justify-between text-[11px] text-slate-400">
                         <p>Hiển thị <span id="displayedCount" class="font-bold text-brand-gold">0</span> / <span id="totalCount" class="font-bold text-brand-gold">0</span> dự án</p>
                     </div>
@@ -603,7 +705,6 @@
                     </button>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="staffCardsGrid"></div>
-                <!-- TRANSFER PANEL -->
                 <div class="bg-slate-900/60 border border-blue-900/40 rounded-2xl p-6">
                     <div class="flex items-center space-x-3 mb-6 pb-4 border-b border-blue-900/30">
                         <div class="w-10 h-10 bg-brand-gold/15 rounded-xl flex items-center justify-center text-brand-gold">
@@ -666,7 +767,7 @@
                 </div>
             </div>
 
-        </div><!-- end mainContent -->
+        </div>
     </main>
 
     <!-- MODAL: DỰ ÁN -->
@@ -689,7 +790,6 @@
                     </div>
                 </div>
 
-                <!-- ── MỚI: Ngày ký HĐ + Tạm ứng ── -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-violet-950/20 border border-violet-900/30 rounded-xl p-3">
                     <div>
                         <label class="block text-[10px] font-bold text-violet-300 uppercase mb-1.5">
@@ -724,34 +824,80 @@
                         </select>
                     </div>
                 </div>
+
+                <!-- ══ MILESTONE SECTION — MỚI: thêm ngày phản hồi ══ -->
                 <div class="border-t border-blue-950 py-3">
                     <h4 class="text-xs font-bold text-brand-gold mb-3 flex items-center">
                         <i class="fa-solid fa-list-check mr-2"></i>Tiến Độ 3 Giai Đoạn Thẩm Duyệt (L1, L2, L3)
                     </h4>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-950/50 p-4 rounded-xl border border-blue-950">
-                        <div>
-                            <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Nộp lần 1</label>
-                            <select id="formL1Status" class="w-full bg-slate-950 border border-blue-900/30 rounded-lg px-2 py-1 text-[11px] text-slate-200 mb-2 focus:outline-none">
-                                <option>Chưa nộp</option><option>Đang duyệt</option><option>Đã duyệt</option>
-                            </select>
-                            <input type="date" id="formL1Date" class="w-full bg-slate-950 border border-blue-900/30 rounded-lg px-2 py-1 text-[11px] text-slate-200 focus:outline-none">
+                        <!-- L1 -->
+                        <div class="space-y-2">
+                            <div class="text-[9px] font-black text-emerald-400 uppercase tracking-wider mb-1 flex items-center gap-1">
+                                <span class="w-4 h-4 rounded bg-emerald-500/20 flex items-center justify-center text-[8px]">1</span>
+                                Lần nộp 1
+                            </div>
+                            <div>
+                                <label class="block text-[9px] text-slate-500 mb-0.5">Trạng thái</label>
+                                <select id="formL1Status" class="w-full bg-slate-950 border border-blue-900/30 rounded-lg px-2 py-1.5 text-[11px] text-slate-200 focus:outline-none">
+                                    <option>Chưa nộp</option><option>Đang duyệt</option><option>Đã duyệt</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[9px] text-slate-500 mb-0.5">Ngày nộp L1</label>
+                                <input type="date" id="formL1Date" class="w-full bg-slate-950 border border-blue-900/30 rounded-lg px-2 py-1.5 text-[11px] text-slate-200 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[9px] text-amber-400 mb-0.5 flex items-center gap-1"><i class="fa-solid fa-reply text-[8px]"></i>Ngày phản hồi L1</label>
+                                <input type="date" id="formL1FeedbackDate" class="w-full bg-slate-950 border border-amber-900/30 rounded-lg px-2 py-1.5 text-[11px] text-slate-200 focus:outline-none focus:ring-1 focus:ring-amber-500/40">
+                            </div>
                         </div>
-                        <div>
-                            <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Nộp lần 2</label>
-                            <select id="formL2Status" class="w-full bg-slate-950 border border-blue-900/30 rounded-lg px-2 py-1 text-[11px] text-slate-200 mb-2 focus:outline-none">
-                                <option>Chưa nộp</option><option>Đang duyệt</option><option>Đã duyệt</option>
-                            </select>
-                            <input type="date" id="formL2Date" class="w-full bg-slate-950 border border-blue-900/30 rounded-lg px-2 py-1 text-[11px] text-slate-200 focus:outline-none">
+                        <!-- L2 -->
+                        <div class="space-y-2">
+                            <div class="text-[9px] font-black text-amber-400 uppercase tracking-wider mb-1 flex items-center gap-1">
+                                <span class="w-4 h-4 rounded bg-amber-500/20 flex items-center justify-center text-[8px]">2</span>
+                                Lần nộp 2
+                            </div>
+                            <div>
+                                <label class="block text-[9px] text-slate-500 mb-0.5">Trạng thái</label>
+                                <select id="formL2Status" class="w-full bg-slate-950 border border-blue-900/30 rounded-lg px-2 py-1.5 text-[11px] text-slate-200 focus:outline-none">
+                                    <option>Chưa nộp</option><option>Đang duyệt</option><option>Đã duyệt</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[9px] text-slate-500 mb-0.5">Ngày nộp L2</label>
+                                <input type="date" id="formL2Date" class="w-full bg-slate-950 border border-blue-900/30 rounded-lg px-2 py-1.5 text-[11px] text-slate-200 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[9px] text-amber-400 mb-0.5 flex items-center gap-1"><i class="fa-solid fa-reply text-[8px]"></i>Ngày phản hồi L2</label>
+                                <input type="date" id="formL2FeedbackDate" class="w-full bg-slate-950 border border-amber-900/30 rounded-lg px-2 py-1.5 text-[11px] text-slate-200 focus:outline-none focus:ring-1 focus:ring-amber-500/40">
+                            </div>
                         </div>
-                        <div>
-                            <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Nộp lần 3</label>
-                            <select id="formL3Status" class="w-full bg-slate-950 border border-blue-900/30 rounded-lg px-2 py-1 text-[11px] text-slate-200 mb-2 focus:outline-none">
-                                <option>Chưa nộp</option><option>Đang duyệt</option><option>Đã duyệt</option>
-                            </select>
-                            <input type="date" id="formL3Date" class="w-full bg-slate-950 border border-blue-900/30 rounded-lg px-2 py-1 text-[11px] text-slate-200 focus:outline-none">
+                        <!-- L3 -->
+                        <div class="space-y-2">
+                            <div class="text-[9px] font-black text-red-400 uppercase tracking-wider mb-1 flex items-center gap-1">
+                                <span class="w-4 h-4 rounded bg-red-500/20 flex items-center justify-center text-[8px]">3</span>
+                                Lần nộp 3
+                            </div>
+                            <div>
+                                <label class="block text-[9px] text-slate-500 mb-0.5">Trạng thái</label>
+                                <select id="formL3Status" class="w-full bg-slate-950 border border-blue-900/30 rounded-lg px-2 py-1.5 text-[11px] text-slate-200 focus:outline-none">
+                                    <option>Chưa nộp</option><option>Đang duyệt</option><option>Đã duyệt</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[9px] text-slate-500 mb-0.5">Ngày nộp L3</label>
+                                <input type="date" id="formL3Date" class="w-full bg-slate-950 border border-blue-900/30 rounded-lg px-2 py-1.5 text-[11px] text-slate-200 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[9px] text-amber-400 mb-0.5 flex items-center gap-1"><i class="fa-solid fa-reply text-[8px]"></i>Ngày phản hồi L3</label>
+                                <input type="date" id="formL3FeedbackDate" class="w-full bg-slate-950 border border-amber-900/30 rounded-lg px-2 py-1.5 text-[11px] text-slate-200 focus:outline-none focus:ring-1 focus:ring-amber-500/40">
+                            </div>
                         </div>
                     </div>
+                    <p class="text-[9px] text-slate-500 mt-2 italic"><i class="fa-solid fa-info-circle mr-1"></i>Ngày phản hồi dùng để tính thời gian chỉnh sửa giữa các lần nộp (phản hồi L1 → nộp L2, phản hồi L2 → nộp L3)</p>
                 </div>
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1.5">Cán Bộ PC07 Thụ Lý</label>
@@ -837,111 +983,111 @@
         }
     };
 
-    // ─── DEFAULT DATA — thêm contractDate & advancePayment vào mỗi dự án ───
+    // ─── DEFAULT DATA ───
     const defaultProjects = [
         { id:"DA001", name:"Trường Liên Cấp", contractValue:199000000, contractDate:"", advancePayment:0,
           assignee:"Thái", deadline:"2026-12-01", status:"Đang tạm dừng",
-          l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
+          l1Status:"Chưa nộp", l1Date:"", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
           officer:"Ms Trâm", notes:"Sai về pháp lý — tạm dừng pháp lý" },
         { id:"DA002", name:"Aloha Beach Bình Thuận", contractValue:1350000000, contractDate:"", advancePayment:0,
           assignee:"Thái", deadline:"2026-12-01", status:"Đang tạm dừng",
-          l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
+          l1Status:"Chưa nộp", l1Date:"", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
           officer:"N/A", notes:"Đang giai đoạn TKCS — tạm dừng pháp lý — đang thương thảo" },
         { id:"DA003", name:"Bệnh viện Đà Nẵng", contractValue:315000000, contractDate:"", advancePayment:0,
           assignee:"Thiện", deadline:"2026-05-30", status:"Đang triển khai",
-          l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
+          l1Status:"Chưa nộp", l1Date:"", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
           officer:"N/A", notes:"Cài Morley, đã gởi CĐT review" },
         { id:"DA004", name:"Cao ốc văn phòng PMH", contractValue:450000000, contractDate:"", advancePayment:0,
           assignee:"Thắng", deadline:"2026-05-20", status:"Đang triển khai",
-          l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
+          l1Status:"Chưa nộp", l1Date:"", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
           officer:"Mr Mtrung", notes:"Đã ký số gởi Nam Việt làm việc với CĐT — mức độ ưu tiên: Cao" },
         { id:"DA005", name:"Điều chỉnh Vạn Đạt khối 1", contractValue:100000000, contractDate:"", advancePayment:0,
           assignee:"Thái, Thiện", deadline:"2026-12-31", status:"Đã ra giấy",
-          l1Status:"Đã duyệt", l1Date:"2026-03-10", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
+          l1Status:"Đã duyệt", l1Date:"2026-03-10", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
           officer:"N/A", notes:"Đã xong" },
         { id:"DA006", name:"103 Trần Quốc Toản", contractValue:200000000, contractDate:"", advancePayment:0,
           assignee:"Thái, Thiện", deadline:"2026-12-31", status:"Đã ra giấy",
-          l1Status:"Đã duyệt", l1Date:"2026-04-09", l2Status:"Đã duyệt", l2Date:"2026-04-24", l3Status:"Chưa nộp", l3Date:"",
+          l1Status:"Đã duyệt", l1Date:"2026-04-09", l1FeedbackDate:"2026-04-17", l2Status:"Đã duyệt", l2Date:"2026-04-24", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
           officer:"Mr Mtrung", notes:"Cài Morley — đã xong — mức độ ưu tiên: Trung bình" },
         { id:"DA007", name:"74 - 76 Trần Quốc Thảo", contractValue:216000000, contractDate:"", advancePayment:0,
           assignee:"Thái, Thiện", deadline:"2026-05-30", status:"Đang triển khai",
-          l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
+          l1Status:"Chưa nộp", l1Date:"", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
           officer:"Mr Nguyệt", notes:"TK CĐT đang triển khai" },
         { id:"DA008", name:"Bệnh Viện Tâm Anh", contractValue:378000000, contractDate:"", advancePayment:0,
           assignee:"Thái, Thiện", deadline:"2026-05-30", status:"Đang triển khai",
-          l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
+          l1Status:"Chưa nộp", l1Date:"", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
           officer:"Mr Khoa", notes:"Làm việc với Mr Tuấn hỗ trợ hồ sơ — mức độ ưu tiên: Cao" },
         { id:"DA009", name:"Kho Nguyễn Minh", contractValue:250000000, contractDate:"", advancePayment:0,
           assignee:"Trường", deadline:"2026-05-30", status:"Đang triển khai",
-          l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
+          l1Status:"Chưa nộp", l1Date:"", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
           officer:"N/A", notes:"OS đang triển khai — mức độ ưu tiên: Cao" },
         { id:"DA010", name:"4-6A Trần Cao Vân", contractValue:300000000, contractDate:"", advancePayment:0,
           assignee:"Thiện", deadline:"2026-05-30", status:"Đang triển khai",
-          l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
+          l1Status:"Chưa nộp", l1Date:"", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
           officer:"N/A", notes:"Kiểm tra/Góp ý" },
         { id:"DA011", name:"19b Phạm Ngọc Thạch", contractValue:160000000, contractDate:"", advancePayment:0,
           assignee:"Thái", deadline:"2026-12-31", status:"Đã ra giấy",
-          l1Status:"Đã duyệt", l1Date:"2025-10-23", l2Status:"Đã duyệt", l2Date:"2025-12-05", l3Status:"Chưa nộp", l3Date:"",
+          l1Status:"Đã duyệt", l1Date:"2025-10-23", l1FeedbackDate:"2025-11-10", l2Status:"Đã duyệt", l2Date:"2025-12-05", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
           officer:"Mr Hiếu", notes:"Thuyết minh chưa đầy đủ — đã xong" },
         { id:"DA012", name:"151-157 Nguyễn Văn Thủ", contractValue:0, contractDate:"", advancePayment:0,
           assignee:"Thiện", deadline:"2026-12-31", status:"Đang tạm dừng",
-          l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
+          l1Status:"Chưa nộp", l1Date:"", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
           officer:"N/A", notes:"Chào giá" },
         { id:"DA013", name:"31AB Lê Quý Đôn", contractValue:150000000, contractDate:"", advancePayment:0,
           assignee:"Thiện", deadline:"2026-12-31", status:"Đã ra giấy",
-          l1Status:"Đã duyệt", l1Date:"", l2Status:"Đã duyệt", l2Date:"", l3Status:"Đã duyệt", l3Date:"",
+          l1Status:"Đã duyệt", l1Date:"2026-01-15", l1FeedbackDate:"2026-01-28", l2Status:"Đã duyệt", l2Date:"2026-02-10", l2FeedbackDate:"2026-02-20", l3Status:"Đã duyệt", l3Date:"2026-03-01", l3FeedbackDate:"",
           officer:"Ms Trâm", notes:"Đã xong" },
         { id:"DA014", name:"Văn phòng KLC", contractValue:200000000, contractDate:"", advancePayment:0,
           assignee:"Thái, Thiện", deadline:"2026-12-31", status:"Đã ra giấy",
-          l1Status:"Đã duyệt", l1Date:"", l2Status:"Đã duyệt", l2Date:"", l3Status:"Đã duyệt", l3Date:"",
+          l1Status:"Đã duyệt", l1Date:"2026-01-05", l1FeedbackDate:"2026-01-15", l2Status:"Đã duyệt", l2Date:"2026-01-25", l2FeedbackDate:"2026-02-05", l3Status:"Đã duyệt", l3Date:"2026-02-15", l3FeedbackDate:"",
           officer:"Mr HTrung", notes:"PC07, thiết kế cải tạo — đã xong" },
         { id:"DA015", name:"NOXH Hàm Kiệm", contractValue:500000000, contractDate:"", advancePayment:0,
           assignee:"Thái", deadline:"2026-05-30", status:"Đang tạm dừng",
-          l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
+          l1Status:"Chưa nộp", l1Date:"", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
           officer:"N/A", notes:"Chờ CĐT tạm ứng triển khai" },
         { id:"DA016", name:"Căn Hộ Đạt Phước Ven Sông", contractValue:800000000, contractDate:"", advancePayment:0,
           assignee:"Thắng", deadline:"2026-05-18", status:"Đang triển khai",
-          l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
+          l1Status:"Chưa nộp", l1Date:"", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
           officer:"N/A", notes:"Gởi review cho khách hàng" },
         { id:"DA017", name:"Điều chỉnh Dat Bike", contractValue:100000000, contractDate:"", advancePayment:0,
           assignee:"Thái, Thiện", deadline:"2026-05-30", status:"Đã ra giấy",
-          l1Status:"Đã duyệt", l1Date:"2026-05-14", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
+          l1Status:"Đã duyệt", l1Date:"2026-05-14", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
           officer:"Mr Tín", notes:"Đã gởi cho Mr Tín check — mức độ ưu tiên: Trung bình" },
         { id:"DA018", name:"Nhà ở Chiến Sỹ", contractValue:600000000, contractDate:"", advancePayment:0,
           assignee:"Thắng", deadline:"2026-05-20", status:"Đang triển khai",
-          l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
+          l1Status:"Chưa nộp", l1Date:"", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
           officer:"N/A", notes:"Kiểm tra hồ sơ — mức độ ưu tiên: Trung bình" },
         { id:"DA019", name:"32H Hồ Hảo Hớn", contractValue:220000000, contractDate:"", advancePayment:0,
           assignee:"Thái", deadline:"2026-05-30", status:"Đang tạm dừng",
-          l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
+          l1Status:"Chưa nộp", l1Date:"", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
           officer:"N/A", notes:"CĐT đang xin TKCS" },
         { id:"DA020", name:"Kho Việt Phong", contractValue:0, contractDate:"", advancePayment:0,
           assignee:"Thái", deadline:"2026-05-30", status:"Đang tạm dừng",
-          l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
+          l1Status:"Chưa nộp", l1Date:"", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
           officer:"N/A", notes:"Đang thương thảo" },
         { id:"DA021", name:"Hòa Phát Had Decor", contractValue:500000000, contractDate:"", advancePayment:0,
           assignee:"Trường", deadline:"2026-12-31", status:"Đã ra giấy",
-          l1Status:"Đã duyệt", l1Date:"2026-05-04", l2Status:"Đã duyệt", l2Date:"2026-05-13", l3Status:"Đã duyệt", l3Date:"2026-05-19",
+          l1Status:"Đã duyệt", l1Date:"2026-05-04", l1FeedbackDate:"2026-05-09", l2Status:"Đã duyệt", l2Date:"2026-05-13", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
           officer:"N/A", notes:"Đã xong ra giấy — mức độ ưu tiên: Trung bình" },
         { id:"DA022", name:"Hòa Phát KLH + Năng lượng", contractValue:10800000000, contractDate:"", advancePayment:0,
           assignee:"Trường", deadline:"2026-05-30", status:"Đang triển khai",
-          l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
+          l1Status:"Chưa nộp", l1Date:"", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
           officer:"N/A", notes:"Chưa triển khai" },
         { id:"DA023", name:"31AB Lê Quý Đôn - điều chỉnh trạm điện", contractValue:50000000, contractDate:"", advancePayment:0,
           assignee:"Thiện", deadline:"2026-12-31", status:"Đã ra giấy",
-          l1Status:"Đã duyệt", l1Date:"", l2Status:"Đã duyệt", l2Date:"", l3Status:"Đã duyệt", l3Date:"",
+          l1Status:"Đã duyệt", l1Date:"2026-02-01", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
           officer:"Ms Trâm", notes:"Đã xong" },
         { id:"DA024", name:"Ixora Hồ Tràm", contractValue:1350000000, contractDate:"", advancePayment:0,
           assignee:"Thiện", deadline:"2026-05-30", status:"Đang triển khai",
-          l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
+          l1Status:"Chưa nộp", l1Date:"", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
           officer:"N/A", notes:"Kiểm tra/Góp ý" },
         { id:"DA025", name:"BBKT SBPQ", contractValue:300000000, contractDate:"", advancePayment:0,
           assignee:"Thiện", deadline:"2026-05-30", status:"Đang triển khai",
-          l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
+          l1Status:"Chưa nộp", l1Date:"", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
           officer:"N/A", notes:"Đã gởi hồ sơ thiết kế cho Mr Phong" },
         { id:"DA026", name:"BBKT NAM TRUNG", contractValue:330000000, contractDate:"", advancePayment:0,
           assignee:"Thắng", deadline:"2026-05-30", status:"Đang triển khai",
-          l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
+          l1Status:"Chưa nộp", l1Date:"", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
           officer:"N/A", notes:"Gởi thi công khảo sát triển khai" }
     ];
 
@@ -954,7 +1100,37 @@
 
     let projects = [], staff = [], auditLog = [];
     let statusChartInstance = null, personnelChartInstance = null;
+    let qualityDistChartInstance = null, qualityPersonnelChartInstance = null, editTimePersonnelChartInstance = null;
     let notifPanelOpen = false;
+
+    // ─── HELPER: tính số ngày giữa 2 date string ───
+    function daysBetween(dateStr1, dateStr2) {
+        if (!dateStr1 || !dateStr2) return null;
+        const d1 = new Date(dateStr1); d1.setHours(0,0,0,0);
+        const d2 = new Date(dateStr2); d2.setHours(0,0,0,0);
+        const diff = Math.round((d2 - d1) / (1000*60*60*24));
+        return diff >= 0 ? diff : null;
+    }
+
+    // ─── HELPER: tính số lần nộp của 1 dự án ───
+    function countSubmissions(p) {
+        let count = 0;
+        if (p.l1Date) count = 1;
+        if (p.l2Date) count = 2;
+        if (p.l3Date) count = 3;
+        return count;
+    }
+
+    // ─── HELPER: tính thời gian chỉnh sửa của 1 dự án ───
+    function getEditDays(p) {
+        const editL1L2 = daysBetween(p.l1FeedbackDate, p.l2Date);   // phản hồi L1 → nộp L2
+        const editL2L3 = daysBetween(p.l2FeedbackDate, p.l3Date);   // phản hồi L2 → nộp L3
+        const segments = [];
+        if (editL1L2 !== null) segments.push(editL1L2);
+        if (editL2L3 !== null) segments.push(editL2L3);
+        const total = segments.length > 0 ? segments.reduce((a,b) => a+b, 0) : null;
+        return { editL1L2, editL2L3, total, segments };
+    }
 
     // ─── AUDIT LOG ───
     function addAuditEntry(type, action, detail) {
@@ -1095,9 +1271,10 @@
             if (!response.ok) throw new Error("Không thể kết nối cổng API");
             const data = await response.json();
             if (data.projects && data.projects.length > 0) {
-                // Migrate dữ liệu cũ: đảm bảo contractDate & advancePayment tồn tại
                 projects = data.projects.map(p => ({
-                    contractDate: "", advancePayment: 0, ...p
+                    contractDate: "", advancePayment: 0,
+                    l1FeedbackDate: "", l2FeedbackDate: "", l3FeedbackDate: "",
+                    ...p
                 }));
                 staff = data.staff || [];
                 localStorage.setItem("NLP_TVTK_Projects", JSON.stringify(projects));
@@ -1112,7 +1289,7 @@
             console.error("Lỗi tải dữ liệu đám mây, kích hoạt chế độ Local dự phòng:", error);
             const sp = localStorage.getItem("NLP_TVTK_Projects");
             const ss = localStorage.getItem("NLP_TVTK_Staff");
-            projects = sp ? JSON.parse(sp).map(p => ({ contractDate:"", advancePayment:0, ...p })) : JSON.parse(JSON.stringify(defaultProjects));
+            projects = sp ? JSON.parse(sp).map(p => ({ contractDate:"", advancePayment:0, l1FeedbackDate:"", l2FeedbackDate:"", l3FeedbackDate:"", ...p })) : JSON.parse(JSON.stringify(defaultProjects));
             staff = ss ? JSON.parse(ss) : JSON.parse(JSON.stringify(defaultStaff));
             if (typeof showToast === "function") showToast("Đang chạy ở chế độ mạng dự phòng (Offline)!", "warning");
         }
@@ -1196,7 +1373,7 @@
         return new Intl.NumberFormat('vi-VN').format(val) + " VNĐ";
     }
 
-    // ─── KPIs — BỔ SUNG tính tạm ứng & doanh thu thực tế ───
+    // ─── KPIs ───
     function calculateKPIs() {
         const today = new Date(); today.setHours(0,0,0,0);
         projects.forEach(p => {
@@ -1225,7 +1402,6 @@
             if (p.status === "Đã ra giấy") {
                 completedVal += (p.contractValue || 0);
             } else {
-                // Tạm ứng chỉ tính từ các dự án CHƯA hoàn thành
                 totalAdvance += (p.advancePayment || 0);
             }
         });
@@ -1244,7 +1420,6 @@
         document.getElementById("progressCompletedValBar").style.width = totalVal > 0 ? `${(completedVal/totalVal*100).toFixed(1)}%` : "0%";
         document.getElementById("progressAdvanceBar").style.width = totalVal > 0 ? `${Math.min(totalAdvance/totalVal*100,100).toFixed(1)}%` : "0%";
 
-        // Alert badges
         const alertContainer = document.getElementById("alertBoxBadges");
         alertContainer.innerHTML = "";
         projects.filter(p => p.status === "TRỄ HẠN").forEach(p => {
@@ -1254,11 +1429,60 @@
             badge.onclick = () => editProject(p.id);
             alertContainer.appendChild(badge);
         });
+
+        calculateQualityKPIs();
     }
 
+    // ─── QUALITY KPIs — MỚI ───
+    function calculateQualityKPIs() {
+        // Chỉ xét dự án Đã Ra Giấy
+        const doneProjects = projects.filter(p => p.status === "Đã ra giấy");
+        const doneCount = doneProjects.length;
+
+        // Phân loại theo số lần nộp
+        const l1Only = doneProjects.filter(p => p.l1Date && !p.l2Date);   // chỉ nộp L1
+        const l2Only = doneProjects.filter(p => p.l2Date && !p.l3Date);   // nộp đến L2
+        const l3Plus = doneProjects.filter(p => p.l3Date);                  // nộp đến L3
+
+        const l1Rate = doneCount > 0 ? ((l1Only.length / doneCount) * 100).toFixed(1) : 0;
+        const l2Rate = doneCount > 0 ? ((l2Only.length / doneCount) * 100).toFixed(1) : 0;
+        const l3Rate = doneCount > 0 ? ((l3Plus.length / doneCount) * 100).toFixed(1) : 0;
+
+        document.getElementById("statL1Rate").textContent = l1Rate + "%";
+        document.getElementById("statL2Rate").textContent = l2Rate + "%";
+        document.getElementById("statL3Rate").textContent = l3Rate + "%";
+        document.getElementById("statL1Count").textContent = `${l1Only.length} / ${doneCount} DA`;
+        document.getElementById("statL2Count").textContent = `${l2Only.length} / ${doneCount} DA`;
+        document.getElementById("statL3Count").textContent = `${l3Plus.length} / ${doneCount} DA`;
+
+        // Số lần nộp TB — tính trên tất cả dự án có ít nhất 1 lần nộp
+        const projectsWithSubmission = projects.filter(p => p.l1Date);
+        const totalSubmissions = projectsWithSubmission.reduce((sum, p) => sum + countSubmissions(p), 0);
+        const avgSubmissions = projectsWithSubmission.length > 0 ? (totalSubmissions / projectsWithSubmission.length).toFixed(1) : "0.0";
+        document.getElementById("statAvgSubmissions").textContent = avgSubmissions;
+
+        // Thời gian chỉnh sửa TB
+        const allEditDays = [];
+        projects.forEach(p => {
+            const ed = getEditDays(p);
+            ed.segments.forEach(d => allEditDays.push(d));
+        });
+        const avgEditDays = allEditDays.length > 0
+            ? Math.round(allEditDays.reduce((a,b) => a+b, 0) / allEditDays.length)
+            : 0;
+        document.getElementById("statAvgEditDays").textContent = avgEditDays;
+    }
+
+    // ─── CHARTS ───
     function renderCharts() {
-        if (statusChartInstance) statusChartInstance.destroy();
-        if (personnelChartInstance) personnelChartInstance.destroy();
+        // Destroy existing
+        if (statusChartInstance)          statusChartInstance.destroy();
+        if (personnelChartInstance)       personnelChartInstance.destroy();
+        if (qualityDistChartInstance)     qualityDistChartInstance.destroy();
+        if (qualityPersonnelChartInstance) qualityPersonnelChartInstance.destroy();
+        if (editTimePersonnelChartInstance) editTimePersonnelChartInstance.destroy();
+
+        // ── Chart 1: Status doughnut ──
         const completed = projects.filter(p => p.status === "Đã ra giấy").length;
         const active    = projects.filter(p => p.status === "Đang triển khai").length;
         const suspended = projects.filter(p => p.status === "Đang tạm dừng").length;
@@ -1268,6 +1492,8 @@
             data:{ labels:["Đã ra giấy","Đang triển khai","Đang tạm dừng","Trễ hạn"], datasets:[{ data:[completed,active,suspended,delayed], backgroundColor:["#00A896","#0F52BA","#475569","#EF4444"], borderWidth:2, borderColor:"#040d1a" }] },
             options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:"bottom", labels:{ color:"#e2e8f0", font:{size:9}, boxWidth:12 } } }, cutout:"65%" }
         });
+
+        // ── Chart 2: Personnel load bar ──
         const staffNames = staff.map(s => s.name);
         personnelChartInstance = new Chart(document.getElementById("personnelChart").getContext("2d"), {
             type:"bar",
@@ -1277,11 +1503,117 @@
             ]},
             options:{ responsive:true, maintainAspectRatio:false, scales:{ x:{stacked:true,grid:{display:false},ticks:{color:"#94a3b8",font:{size:9}}}, y:{stacked:true,grid:{color:"rgba(30,41,59,0.5)"},ticks:{color:"#94a3b8",font:{size:9}}} }, plugins:{ legend:{ position:"bottom", labels:{color:"#e2e8f0",font:{size:9},boxWidth:10} } } }
         });
+
+        // ── Chart 3 (NEW): Phân bố L1/L2/L3 ──
+        const doneProjects = projects.filter(p => p.status === "Đã ra giấy");
+        const l1Count = doneProjects.filter(p => p.l1Date && !p.l2Date).length;
+        const l2Count = doneProjects.filter(p => p.l2Date && !p.l3Date).length;
+        const l3Count = doneProjects.filter(p => p.l3Date).length;
+        const noSubmit = doneProjects.filter(p => !p.l1Date).length;
+        qualityDistChartInstance = new Chart(document.getElementById("qualityDistChart").getContext("2d"), {
+            type: "doughnut",
+            data: {
+                labels: ["Đạt L1 (1 lần)", "Đạt L2 (2 lần)", "Phải L3 (3 lần)", "Chưa ghi nhận"],
+                datasets: [{
+                    data: [l1Count, l2Count, l3Count, noSubmit],
+                    backgroundColor: ["#00A896", "#F5A623", "#EF4444", "#475569"],
+                    borderWidth: 2, borderColor: "#040d1a"
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { position: "bottom", labels: { color: "#e2e8f0", font: { size: 9 }, boxWidth: 10 } } },
+                cutout: "60%"
+            }
+        });
+
+        // ── Chart 4 (NEW): Chất lượng theo nhân sự (số lần nộp TB) ──
+        const qualityData = staffNames.map(name => {
+            const pp = projects.filter(p => p.assignee === name && p.l1Date);
+            if (pp.length === 0) return 0;
+            const total = pp.reduce((sum, p) => sum + countSubmissions(p), 0);
+            return parseFloat((total / pp.length).toFixed(2));
+        });
+        qualityPersonnelChartInstance = new Chart(document.getElementById("qualityPersonnelChart").getContext("2d"), {
+            type: "bar",
+            data: {
+                labels: staffNames,
+                datasets: [{
+                    label: "Lần nộp TB",
+                    data: qualityData,
+                    backgroundColor: staffNames.map((_,i) => ["#00A896","#F5A623","#0F52BA","#8B5CF6"][i % 4]),
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                scales: {
+                    x: { grid: { display: false }, ticks: { color: "#94a3b8", font: { size: 9 } } },
+                    y: {
+                        grid: { color: "rgba(30,41,59,0.5)" },
+                        ticks: { color: "#94a3b8", font: { size: 9 } },
+                        min: 0,
+                        suggestedMax: 3,
+                        title: { display: true, text: "Lần nộp", color: "#64748b", font: { size: 9 } }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: ctx => ` ${ctx.raw} lần nộp TB`
+                        }
+                    }
+                }
+            }
+        });
+
+        // ── Chart 5 (NEW): Thời gian chỉnh sửa TB theo nhân sự ──
+        const editTimeData = staffNames.map(name => {
+            const segs = [];
+            projects.filter(p => p.assignee === name).forEach(p => {
+                const ed = getEditDays(p);
+                ed.segments.forEach(d => segs.push(d));
+            });
+            if (segs.length === 0) return 0;
+            return Math.round(segs.reduce((a,b) => a+b, 0) / segs.length);
+        });
+        editTimePersonnelChartInstance = new Chart(document.getElementById("editTimePersonnelChart").getContext("2d"), {
+            type: "bar",
+            data: {
+                labels: staffNames,
+                datasets: [{
+                    label: "Ngày TB",
+                    data: editTimeData,
+                    backgroundColor: staffNames.map((_,i) => ["#7C3AED","#DB2777","#0F52BA","#059669"][i % 4]),
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                scales: {
+                    x: { grid: { display: false }, ticks: { color: "#94a3b8", font: { size: 9 } } },
+                    y: {
+                        grid: { color: "rgba(30,41,59,0.5)" },
+                        ticks: { color: "#94a3b8", font: { size: 9 } },
+                        min: 0,
+                        title: { display: true, text: "Ngày", color: "#64748b", font: { size: 9 } }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: ctx => ` ${ctx.raw} ngày TB`
+                        }
+                    }
+                }
+            }
+        });
     }
 
     function renderAllTables() { renderProjectTable(); renderFinancePersonnelTable(); }
 
-    // ─── FINANCE TABLE — BỔ SUNG cột tạm ứng ───
     function renderFinancePersonnelTable() {
         const tbody = document.getElementById("financePersonnelTableBody");
         tbody.innerHTML = "";
@@ -1310,7 +1642,6 @@
         });
     }
 
-    // ─── PROJECT TABLE — BỔ SUNG hiển thị ngày ký HĐ + tạm ứng ───
     function renderProjectTable(filteredProjects = null) {
         const tbody = document.getElementById("projectTableBody");
         tbody.innerHTML = "";
@@ -1318,7 +1649,7 @@
         document.getElementById("displayedCount").textContent = list.length;
         document.getElementById("totalCount").textContent = projects.length;
         if (list.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="11" class="py-10 text-center text-slate-500 italic">Không tìm thấy hồ sơ phù hợp!</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="12" class="py-10 text-center text-slate-500 italic">Không tìm thấy hồ sơ phù hợp!</td></tr>`;
             return;
         }
         const statusBadge = (s) => {
@@ -1330,15 +1661,22 @@
             };
             return map[s] || map["Đang triển khai"];
         };
-        const milestone = (label, status, date) => {
+
+        // Render milestone với ngày phản hồi
+        const milestone = (label, status, submitDate, feedbackDate) => {
             let cls = "text-slate-500 border-slate-800 bg-slate-950/20";
             if (status === "Đã duyệt") cls = "text-brand-teal border-emerald-950/40 bg-emerald-950/20";
             else if (status === "Đang duyệt") cls = "text-brand-gold border-amber-950/40 bg-amber-950/20";
-            return `<div class="flex items-center justify-between text-[10px] px-2 py-1 rounded-lg border ${cls} mb-1">
-                <span class="font-bold">${label}: ${status}</span>
-                <span class="text-[9px] opacity-85">${date ? date.split("-").reverse().join("/") : "--/--"}</span>
+            const submitStr = submitDate ? submitDate.split("-").reverse().join("/") : "--/--";
+            const feedStr   = feedbackDate ? `<span class="text-amber-400/80 ml-1">↩${feedbackDate.split("-").reverse().join("/")}</span>` : "";
+            return `<div class="text-[10px] px-2 py-1 rounded-lg border ${cls} mb-1">
+                <div class="flex items-center justify-between">
+                    <span class="font-bold">${label}: ${status}</span>
+                    <span class="text-[9px] opacity-85">${submitStr}${feedStr}</span>
+                </div>
             </div>`;
         };
+
         const today = new Date(); today.setHours(0,0,0,0);
         const getRowUrgency = (p) => {
             if (p.status === "Đã ra giấy") return "";
@@ -1353,14 +1691,31 @@
             const tr = document.createElement("tr");
             tr.className = `hover:bg-slate-900/30 transition duration-150 align-top ${rowBg}`;
 
-            // Ngày ký HĐ
             const contractDateDisplay = p.contractDate
                 ? `<div class="font-semibold text-slate-200 whitespace-nowrap">${p.contractDate.split("-").reverse().join("/")}</div>`
                 : `<div class="text-slate-600 text-[10px] italic">Chưa cập nhật</div>`;
 
-            // Tạm ứng
             const advanceDisplay = (p.advancePayment && p.advancePayment > 0)
                 ? `<span class="advance-badge"><i class="fa-solid fa-hand-holding-dollar mr-1"></i>${new Intl.NumberFormat('vi-VN').format(p.advancePayment)}</span>`
+                : `<span class="text-slate-600 text-[10px]">—</span>`;
+
+            // Số lần nộp badge
+            const subCount = countSubmissions(p);
+            const { editL1L2, editL2L3, total: totalEdit } = getEditDays(p);
+            let subBadgeColor = "bg-slate-700/30 text-slate-400 border-slate-700/40";
+            if (subCount === 1) subBadgeColor = "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
+            else if (subCount === 2) subBadgeColor = "bg-amber-500/10 text-amber-400 border-amber-500/20";
+            else if (subCount >= 3) subBadgeColor = "bg-red-500/10 text-red-400 border-red-500/20";
+
+            const editInfo = [];
+            if (editL1L2 !== null) editInfo.push(`L1→L2: ${editL1L2}ng`);
+            if (editL2L3 !== null) editInfo.push(`L2→L3: ${editL2L3}ng`);
+
+            const subDisplay = subCount > 0
+                ? `<div class="flex flex-col items-center gap-1">
+                    <span class="inline-flex items-center justify-center w-8 h-8 rounded-xl border text-sm font-extrabold ${subBadgeColor}">${subCount}</span>
+                    ${editInfo.length > 0 ? `<div class="text-[9px] text-slate-500 text-center leading-tight">${editInfo.join('<br>')}</div>` : ''}
+                   </div>`
                 : `<span class="text-slate-600 text-[10px]">—</span>`;
 
             tr.innerHTML = `
@@ -1388,11 +1743,12 @@
                 <td class="py-3 px-3">${statusBadge(p.status)}</td>
                 <td class="py-3 px-3">
                     <div class="space-y-1">
-                        ${milestone("L1", p.l1Status, p.l1Date)}
-                        ${milestone("L2", p.l2Status, p.l2Date)}
-                        ${milestone("L3", p.l3Status, p.l3Date)}
+                        ${milestone("L1", p.l1Status, p.l1Date, p.l1FeedbackDate)}
+                        ${milestone("L2", p.l2Status, p.l2Date, p.l2FeedbackDate)}
+                        ${milestone("L3", p.l3Status, p.l3Date, p.l3FeedbackDate)}
                     </div>
                 </td>
+                <td class="py-3 px-3 text-center">${subDisplay}</td>
                 <td class="py-3 px-3">
                     <div class="font-medium text-brand-gold text-[11px]">${p.officer || "N/A"}</div>
                     <div class="text-[10px] text-slate-400 mt-1 max-w-[180px] break-words italic">${p.notes || "—"}</div>
@@ -1419,7 +1775,7 @@
         renderProjectTable(filtered);
     }
 
-    // ─── PROJECT MODAL — BỔ SUNG load/save contractDate & advancePayment ───
+    // ─── PROJECT MODAL ───
     function openProjectModal(projectId = null) {
         const modal = document.getElementById("projectModal");
         document.getElementById("projectForm").reset();
@@ -1437,10 +1793,13 @@
                 document.getElementById("formStatus").value = p.status === "TRỄ HẠN" ? "Đang triển khai" : p.status;
                 document.getElementById("formL1Status").value = p.l1Status;
                 document.getElementById("formL1Date").value = p.l1Date;
+                document.getElementById("formL1FeedbackDate").value = p.l1FeedbackDate || "";
                 document.getElementById("formL2Status").value = p.l2Status;
                 document.getElementById("formL2Date").value = p.l2Date;
+                document.getElementById("formL2FeedbackDate").value = p.l2FeedbackDate || "";
                 document.getElementById("formL3Status").value = p.l3Status;
                 document.getElementById("formL3Date").value = p.l3Date;
+                document.getElementById("formL3FeedbackDate").value = p.l3FeedbackDate || "";
                 document.getElementById("formOfficer").value = p.officer || "";
                 document.getElementById("formNotes").value = p.notes || "";
             }
@@ -1455,22 +1814,25 @@
 
     function saveProject(e) {
         e.preventDefault();
-        const id            = document.getElementById("formProjectId").value;
-        const name          = document.getElementById("formProjectName").value.trim();
-        const contractValue  = parseInt(document.getElementById("formContractValue").value) || 0;
-        const contractDate   = document.getElementById("formContractDate").value;
-        const advancePayment = parseInt(document.getElementById("formAdvancePayment").value) || 0;
-        const assignee      = document.getElementById("formAssignee").value;
-        const deadline      = document.getElementById("formDeadline").value;
-        const status        = document.getElementById("formStatus").value;
-        const l1Status = document.getElementById("formL1Status").value;
-        const l1Date   = document.getElementById("formL1Date").value;
-        const l2Status = document.getElementById("formL2Status").value;
-        const l2Date   = document.getElementById("formL2Date").value;
-        const l3Status = document.getElementById("formL3Status").value;
-        const l3Date   = document.getElementById("formL3Date").value;
-        const officer  = document.getElementById("formOfficer").value.trim();
-        const notes    = document.getElementById("formNotes").value.trim();
+        const id              = document.getElementById("formProjectId").value;
+        const name            = document.getElementById("formProjectName").value.trim();
+        const contractValue   = parseInt(document.getElementById("formContractValue").value) || 0;
+        const contractDate    = document.getElementById("formContractDate").value;
+        const advancePayment  = parseInt(document.getElementById("formAdvancePayment").value) || 0;
+        const assignee        = document.getElementById("formAssignee").value;
+        const deadline        = document.getElementById("formDeadline").value;
+        const status          = document.getElementById("formStatus").value;
+        const l1Status        = document.getElementById("formL1Status").value;
+        const l1Date          = document.getElementById("formL1Date").value;
+        const l1FeedbackDate  = document.getElementById("formL1FeedbackDate").value;
+        const l2Status        = document.getElementById("formL2Status").value;
+        const l2Date          = document.getElementById("formL2Date").value;
+        const l2FeedbackDate  = document.getElementById("formL2FeedbackDate").value;
+        const l3Status        = document.getElementById("formL3Status").value;
+        const l3Date          = document.getElementById("formL3Date").value;
+        const l3FeedbackDate  = document.getElementById("formL3FeedbackDate").value;
+        const officer         = document.getElementById("formOfficer").value.trim();
+        const notes           = document.getElementById("formNotes").value.trim();
 
         if (!name || !assignee || !deadline) { showToast("Vui lòng nhập đầy đủ thông tin bắt buộc!", "error"); return; }
 
@@ -1479,21 +1841,24 @@
             if (idx !== -1) {
                 const old = projects[idx];
                 const changes = [];
-                if (old.name !== name)                         changes.push(`Tên: "${old.name}" → "${name}"`);
-                if (old.status !== status)                     changes.push(`Trạng thái: ${old.status} → ${status}`);
-                if (old.assignee !== assignee)                 changes.push(`Người thực hiện: ${old.assignee} → ${assignee}`);
-                if (old.deadline !== deadline)                 changes.push(`Deadline: ${old.deadline} → ${deadline}`);
-                if ((old.contractDate||"") !== contractDate)   changes.push(`Ngày ký HĐ: ${old.contractDate||"—"} → ${contractDate||"—"}`);
-                if ((old.advancePayment||0) !== advancePayment) changes.push(`Tạm ứng: ${formatVND(old.advancePayment||0)} → ${formatVND(advancePayment)}`);
-                projects[idx] = { ...projects[idx], name, contractValue, contractDate, advancePayment, assignee, deadline, status, l1Status, l1Date, l2Status, l2Date, l3Status, l3Date, officer, notes };
+                if (old.name !== name)                              changes.push(`Tên: "${old.name}" → "${name}"`);
+                if (old.status !== status)                          changes.push(`Trạng thái: ${old.status} → ${status}`);
+                if (old.assignee !== assignee)                      changes.push(`Người thực hiện: ${old.assignee} → ${assignee}`);
+                if (old.deadline !== deadline)                      changes.push(`Deadline: ${old.deadline} → ${deadline}`);
+                if ((old.contractDate||"") !== contractDate)        changes.push(`Ngày ký HĐ: ${old.contractDate||"—"} → ${contractDate||"—"}`);
+                if ((old.advancePayment||0) !== advancePayment)     changes.push(`Tạm ứng: ${formatVND(old.advancePayment||0)} → ${formatVND(advancePayment)}`);
+                if ((old.l1FeedbackDate||"") !== l1FeedbackDate)    changes.push(`Phản hồi L1: ${old.l1FeedbackDate||"—"} → ${l1FeedbackDate||"—"}`);
+                if ((old.l2FeedbackDate||"") !== l2FeedbackDate)    changes.push(`Phản hồi L2: ${old.l2FeedbackDate||"—"} → ${l2FeedbackDate||"—"}`);
+                if ((old.l3FeedbackDate||"") !== l3FeedbackDate)    changes.push(`Phản hồi L3: ${old.l3FeedbackDate||"—"} → ${l3FeedbackDate||"—"}`);
+                projects[idx] = { ...projects[idx], name, contractValue, contractDate, advancePayment, assignee, deadline, status, l1Status, l1Date, l1FeedbackDate, l2Status, l2Date, l2FeedbackDate, l3Status, l3Date, l3FeedbackDate, officer, notes };
                 addAuditEntry("UPDATE", `Cập nhật dự án: ${name}`, changes.length > 0 ? changes.join(" | ") : "Chỉnh sửa chi tiết");
                 showToast(`Cập nhật dự án "${name}" thành công!`, "success");
             }
         } else {
             const nums  = projects.map(p => parseInt(p.id.replace("DA",""))).filter(n => !isNaN(n));
             const nextId = `DA${String(Math.max(0,...nums)+1).padStart(3,'0')}`;
-            projects.push({ id:nextId, name, contractValue, contractDate, advancePayment, assignee, deadline, status, l1Status, l1Date, l2Status, l2Date, l3Status, l3Date, officer, notes });
-            addAuditEntry("CREATE", `Thêm dự án mới: ${name}`, `Mã: ${nextId} | Người thực hiện: ${assignee} | Deadline: ${deadline}${contractDate ? ' | Ngày ký: '+contractDate : ''}${advancePayment ? ' | Tạm ứng: '+formatVND(advancePayment) : ''}`);
+            projects.push({ id:nextId, name, contractValue, contractDate, advancePayment, assignee, deadline, status, l1Status, l1Date, l1FeedbackDate, l2Status, l2Date, l2FeedbackDate, l3Status, l3Date, l3FeedbackDate, officer, notes });
+            addAuditEntry("CREATE", `Thêm dự án mới: ${name}`, `Mã: ${nextId} | Người thực hiện: ${assignee} | Deadline: ${deadline}`);
             showToast(`Thêm dự án mới ${nextId} thành công!`, "success");
         }
 
@@ -1526,6 +1891,18 @@
             const run  = pp.filter(p => p.status === "Đang triển khai").length;
             const loadVal = pp.filter(p => p.status !== "Đã ra giấy").reduce((a,p) => a+(p.contractValue||0), 0);
             const advanceVal = pp.filter(p => p.status !== "Đã ra giấy").reduce((a,p) => a+(p.advancePayment||0), 0);
+
+            // Quality metrics for this person
+            const ppWithSub = pp.filter(p => p.l1Date);
+            const avgSub = ppWithSub.length > 0
+                ? (ppWithSub.reduce((sum,p) => sum + countSubmissions(p), 0) / ppWithSub.length).toFixed(1)
+                : null;
+            const allSegs = [];
+            pp.forEach(p => { getEditDays(p).segments.forEach(d => allSegs.push(d)); });
+            const avgEdit = allSegs.length > 0
+                ? Math.round(allSegs.reduce((a,b) => a+b,0) / allSegs.length)
+                : null;
+
             const card = document.createElement("div");
             card.className = "kpi-card print-card bg-brand-darkblue/40 border border-blue-900/50 rounded-2xl p-5 flex flex-col justify-between";
             card.innerHTML = `
@@ -1551,6 +1928,17 @@
                             <div class="text-sm font-black text-brand-teal mt-0.5">${done}</div>
                         </div>
                     </div>
+                    ${avgSub !== null || avgEdit !== null ? `
+                    <div class="mt-2 grid grid-cols-2 gap-2 text-center">
+                        ${avgSub !== null ? `<div class="bg-slate-950/50 p-2 rounded-xl border border-blue-950">
+                            <div class="text-[9px] text-slate-500">SỐ LẦN NỘP TB</div>
+                            <div class="text-sm font-black text-emerald-400 mt-0.5">${avgSub}</div>
+                        </div>` : '<div></div>'}
+                        ${avgEdit !== null ? `<div class="bg-slate-950/50 p-2 rounded-xl border border-blue-950">
+                            <div class="text-[9px] text-slate-500">CHỈNH SỬA TB</div>
+                            <div class="text-sm font-black text-violet-400 mt-0.5">${avgEdit}ng</div>
+                        </div>` : ''}
+                    </div>` : ''}
                 </div>
                 <div class="mt-4 pt-3 border-t border-blue-950 space-y-1">
                     <div class="flex justify-between items-center">
@@ -1658,16 +2046,6 @@
             notifPanelOpen = false; panel.classList.add("hidden-panel");
         }
     });
-
-    window.onload = () => {
-        const saved = sessionStorage.getItem("nlp_role");
-        if (saved === "admin" || saved === "viewer") {
-            currentRole = saved;
-            document.getElementById("loginOverlay").style.display = "none";
-            document.getElementById("mainContent").classList.remove("hidden-ui");
-            if (typeof initializeApplication === "function") initializeApplication();
-        }
-    };
     </script>
 </body>
 </html>
