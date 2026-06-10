@@ -204,7 +204,7 @@
 
     <!-- HEADER -->
     <header class="bg-brand-darkblue border-b border-blue-900/40 sticky top-0 z-40 no-print">
-        <div class="w-full px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3.5">
                 <div class="w-11 h-11 bg-brand-blue rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/20 flex-shrink-0">
                     <i class="fa-solid fa-fire-extinguisher text-xl text-brand-gold"></i>
@@ -289,7 +289,7 @@
     </div>
 
     <!-- MAIN BODY -->
-    <main class="flex-grow px-4 sm:px-6 lg:px-8 py-8 w-full">
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
 
         <!-- LOGIN OVERLAY -->
         <div id="loginOverlay">
@@ -524,14 +524,14 @@
                             <div class="w-9 h-9 bg-violet-500/15 rounded-xl flex items-center justify-center mx-auto mb-2">
                                 <i class="fa-solid fa-clock text-violet-400 text-sm"></i>
                             </div>
-                            <div class="text-2xl font-extrabold text-violet-400" id="statAvgEditDays">0</div>
-                            <div class="text-[10px] text-slate-400 mt-1 leading-tight">Ngày chỉnh sửa<br><span class="font-bold text-violet-300">trung bình</span></div>
-                            <div class="text-[9px] text-slate-500 mt-1">ngày / lần chỉnh</div>
+                            <div class="text-2xl font-extrabold text-violet-400" id="statL1L2Rate">0%</div>
+                            <div class="text-[10px] text-slate-400 mt-1 leading-tight">Hoàn thành<br><span class="font-bold text-teal-300">trong ≤ 2 lần</span></div>
+                            <div class="text-[9px] text-slate-500 mt-1" id="statL1L2Count">Mục tiêu BGĐ</div>
                         </div>
                     </div>
 
                     <!-- QUALITY CHARTS ROW -->
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
                         <!-- Chart 1: Phân bố L1/L2/L3 -->
                         <div class="bg-slate-900/50 border border-blue-900/30 rounded-xl p-4">
                             <div class="flex items-center space-x-2 mb-3">
@@ -554,20 +554,45 @@
                                 <canvas id="qualityPersonnelChart"></canvas>
                             </div>
                         </div>
-                        <!-- Chart 3: Thời gian chỉnh sửa TB theo nhân sự -->
-                        <div class="bg-slate-900/50 border border-blue-900/30 rounded-xl p-4">
-                            <div class="flex items-center space-x-2 mb-3">
-                                <i class="fa-solid fa-hourglass-half text-violet-400 text-sm"></i>
-                                <h4 class="text-xs font-bold text-slate-200 uppercase">Thời Gian Chỉnh Sửa TB</h4>
-                            </div>
-                            <p class="text-[10px] text-slate-500 mb-3">Ngày chỉnh sửa trung bình mỗi kỹ sư</p>
-                            <div class="relative h-44">
-                                <canvas id="editTimePersonnelChart"></canvas>
-                            </div>
+                </div>
+                </div>
+                <!-- ══ END QUALITY KPI SECTION ══ -->
+
+
+                <!-- BẢNG THỜI GIAN CHỈNH SỬA CHI TIẾT -->
+                <div id="editTimeSection" class="print-card bg-brand-darkblue/40 border border-blue-900/40 rounded-2xl p-6">
+                    <div class="flex items-center space-x-2 mb-4 pb-3 border-b border-blue-900/30">
+                        <div class="w-9 h-9 rounded-xl bg-violet-500/10 flex items-center justify-center text-violet-400">
+                            <i class="fa-solid fa-hourglass-half text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold uppercase text-white">Thời Gian Chỉnh Sửa Hồ Sơ</h3>
+                            <p class="text-[11px] text-slate-400 mt-0.5">Tính từ ngày phản hồi đến ngày nộp lại · Chỉ hiển thị dự án có dữ liệu phản hồi</p>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-brand-darkblue/80 text-[10px] font-bold text-slate-300 uppercase tracking-wider border-b border-blue-900/30">
+                                    <th class="py-2.5 px-4">Tên Dự Án</th>
+                                    <th class="py-2.5 px-4">Người Thực Hiện</th>
+                                    <th class="py-2.5 px-4 text-center">Ngày PH L1</th>
+                                    <th class="py-2.5 px-4 text-center">Ngày Nộp L2</th>
+                                    <th class="py-2.5 px-4 text-center text-amber-400">L1→L2 (ngày)</th>
+                                    <th class="py-2.5 px-4 text-center">Ngày PH L2</th>
+                                    <th class="py-2.5 px-4 text-center">Ngày Nộp L3</th>
+                                    <th class="py-2.5 px-4 text-center text-amber-400">L2→L3 (ngày)</th>
+                                    <th class="py-2.5 px-4 text-center text-brand-gold">Tổng (ngày)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="editTimeTableBody" class="divide-y divide-blue-950/40 text-xs"></tbody>
+                        </table>
+                        <div id="editTimeEmpty" class="hidden py-10 text-center text-slate-500 italic text-sm">
+                            <i class="fa-solid fa-inbox text-2xl mb-2 block text-slate-700"></i>
+                            Chưa có dự án nào có dữ liệu ngày phản hồi.
                         </div>
                     </div>
                 </div>
-                <!-- ══ END QUALITY KPI SECTION ══ -->
 
                 <!-- DEADLINE ALERT BANNER -->
                 <div id="deadlineBanner" class="hidden print-card bg-amber-950/20 border border-amber-500/30 rounded-2xl p-5">
@@ -1461,16 +1486,45 @@
         const avgSubmissions = projectsWithSubmission.length > 0 ? (totalSubmissions / projectsWithSubmission.length).toFixed(1) : "0.0";
         document.getElementById("statAvgSubmissions").textContent = avgSubmissions;
 
-        // Thời gian chỉnh sửa TB
-        const allEditDays = [];
-        projects.forEach(p => {
+        // % hoàn thành trong ≤ 2 lần (mục tiêu BGĐ)
+        const l1l2Count = l1Only.length + l2Only.length;
+        const l1l2Rate = doneCount > 0 ? ((l1l2Count / doneCount) * 100).toFixed(1) : 0;
+        const elRate = document.getElementById("statL1L2Rate");
+        const elCount = document.getElementById("statL1L2Count");
+        if (elRate) elRate.textContent = l1l2Rate + "%";
+        if (elCount) elCount.textContent = l1l2Count + " / " + doneCount + " DA đạt mục tiêu";
+
+        renderEditTimeTable();
+    }
+
+    // ─── BẢNG THỜI GIAN CHỈNH SỬA ───
+    function renderEditTimeTable() {
+        const tbody = document.getElementById("editTimeTableBody");
+        const emptyEl = document.getElementById("editTimeEmpty");
+        if (!tbody || !emptyEl) return;
+        const rows = projects.filter(p => (p.l1FeedbackDate && p.l2Date) || (p.l2FeedbackDate && p.l3Date));
+        if (rows.length === 0) { tbody.innerHTML = ""; emptyEl.classList.remove("hidden"); return; }
+        emptyEl.classList.add("hidden");
+        function dayBadge(d) {
+            if (d === null || d === undefined) return '<span class="text-slate-600">—</span>';
+            const cls = d > 14 ? 'text-red-400 font-bold' : d > 7 ? 'text-amber-400 font-bold' : 'text-emerald-400 font-semibold';
+            return '<span class="' + cls + '">' + d + ' ngày</span>';
+        }
+        function fmtD(s) { return s ? s.split("-").reverse().join("/") : "—"; }
+        tbody.innerHTML = rows.map(function(p, i) {
             const ed = getEditDays(p);
-            ed.segments.forEach(d => allEditDays.push(d));
-        });
-        const avgEditDays = allEditDays.length > 0
-            ? Math.round(allEditDays.reduce((a,b) => a+b, 0) / allEditDays.length)
-            : 0;
-        document.getElementById("statAvgEditDays").textContent = avgEditDays;
+            return '<tr class="hover:bg-slate-900/30 transition ' + (i%2===0 ? '' : 'bg-blue-950/5') + '">' +
+                '<td class="py-2.5 px-4 font-semibold text-slate-200">' + p.name + '</td>' +
+                '<td class="py-2.5 px-4 text-slate-300">' + p.assignee + '</td>' +
+                '<td class="py-2.5 px-4 text-center text-[11px] text-amber-300">' + fmtD(p.l1FeedbackDate) + '</td>' +
+                '<td class="py-2.5 px-4 text-center text-[11px] text-slate-300">' + fmtD(p.l2Date) + '</td>' +
+                '<td class="py-2.5 px-4 text-center">' + dayBadge(ed.editL1L2) + '</td>' +
+                '<td class="py-2.5 px-4 text-center text-[11px] text-amber-300">' + fmtD(p.l2FeedbackDate) + '</td>' +
+                '<td class="py-2.5 px-4 text-center text-[11px] text-slate-300">' + fmtD(p.l3Date) + '</td>' +
+                '<td class="py-2.5 px-4 text-center">' + dayBadge(ed.editL2L3) + '</td>' +
+                '<td class="py-2.5 px-4 text-center font-bold text-brand-gold">' + (ed.total !== null ? ed.total + ' ngày' : '—') + '</td>' +
+                '</tr>';
+        }).join("");
     }
 
     // ─── CHARTS ───
@@ -1891,6 +1945,12 @@
             const run  = pp.filter(p => p.status === "Đang triển khai").length;
             const loadVal = pp.filter(p => p.status !== "Đã ra giấy").reduce((a,p) => a+(p.contractValue||0), 0);
             const advanceVal = pp.filter(p => p.status !== "Đã ra giấy").reduce((a,p) => a+(p.advancePayment||0), 0);
+            const l1Only = done.filter(p => p.l1Date && !p.l2Date).length;
+            const l2Only = done.filter(p => p.l2Date && !p.l3Date).length;
+            const l3Plus = done.filter(p => p.l3Date).length;
+            const l1Pct = done.length > 0 ? Math.round((l1Only/done.length)*100) : 0;
+            const l2Pct = done.length > 0 ? Math.round((l2Only/done.length)*100) : 0;
+            const l3Pct = done.length > 0 ? Math.round((l3Plus/done.length)*100) : 0;
 
             // Quality metrics for this person
             const ppWithSub = pp.filter(p => p.l1Date);
@@ -1928,17 +1988,29 @@
                             <div class="text-sm font-black text-brand-teal mt-0.5">${done}</div>
                         </div>
                     </div>
-                    ${avgSub !== null || avgEdit !== null ? `
-                    <div class="mt-2 grid grid-cols-2 gap-2 text-center">
-                        ${avgSub !== null ? `<div class="bg-slate-950/50 p-2 rounded-xl border border-blue-950">
-                            <div class="text-[9px] text-slate-500">SỐ LẦN NỘP TB</div>
-                            <div class="text-sm font-black text-emerald-400 mt-0.5">${avgSub}</div>
-                        </div>` : '<div></div>'}
-                        ${avgEdit !== null ? `<div class="bg-slate-950/50 p-2 rounded-xl border border-blue-950">
-                            <div class="text-[9px] text-slate-500">CHỈNH SỬA TB</div>
-                            <div class="text-sm font-black text-violet-400 mt-0.5">${avgEdit}ng</div>
-                        </div>` : ''}
-                    </div>` : ''}
+                    <div class="mt-3 pt-3 border-t border-blue-950/50">
+                        <div class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1">
+                            <i class="fa-solid fa-medal text-brand-gold text-[8px]"></i>
+                            Chất lượng hồ sơ (${done} DA ra giấy)
+                        </div>
+                        <div class="grid grid-cols-3 gap-1.5 text-center">
+                            <div class="bg-emerald-950/30 border border-emerald-500/20 p-2 rounded-xl">
+                                <div class="text-[9px] text-slate-500">LẦN 1</div>
+                                <div class="text-sm font-black text-emerald-400 mt-0.5">${l1Only}</div>
+                                <div class="text-[9px] text-emerald-300 font-bold">${l1Pct}%</div>
+                            </div>
+                            <div class="bg-amber-950/30 border border-amber-500/20 p-2 rounded-xl">
+                                <div class="text-[9px] text-slate-500">LẦN 2</div>
+                                <div class="text-sm font-black text-amber-400 mt-0.5">${l2Only}</div>
+                                <div class="text-[9px] text-amber-300 font-bold">${l2Pct}%</div>
+                            </div>
+                            <div class="bg-red-950/30 border border-red-500/20 p-2 rounded-xl">
+                                <div class="text-[9px] text-slate-500">LẦN 3</div>
+                                <div class="text-sm font-black text-red-400 mt-0.5">${l3Plus}</div>
+                                <div class="text-[9px] text-red-300 font-bold">${l3Pct}%</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="mt-4 pt-3 border-t border-blue-950 space-y-1">
                     <div class="flex justify-between items-center">
