@@ -165,6 +165,7 @@
             border-color: #F5A623;
             color: #F5A623;
         }
+        /* ── ADVANCE BADGE ── */
         .advance-badge {
             display: inline-flex; align-items: center;
             background: rgba(139,92,246,0.12);
@@ -173,14 +174,6 @@
             font-size: 9px; font-weight: 700;
             padding: 2px 6px; border-radius: 6px;
             white-space: nowrap;
-        }
-        /* ── QUALITY KPI SECTION ── */
-        .quality-kpi-card {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .quality-kpi-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 30px rgba(15,82,186,0.2);
         }
     </style>
 </head>
@@ -204,7 +197,7 @@
 
     <!-- HEADER -->
     <header class="bg-brand-darkblue border-b border-blue-900/40 sticky top-0 z-40 no-print">
-        <div class="w-full px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3.5">
                 <div class="w-11 h-11 bg-brand-blue rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/20 flex-shrink-0">
                     <i class="fa-solid fa-fire-extinguisher text-xl text-brand-gold"></i>
@@ -224,6 +217,9 @@
             <div class="hidden md:flex items-center space-x-1 bg-slate-950/80 p-1 rounded-xl border border-blue-900/30 tab-navigation">
                 <button onclick="switchTab('dashboard')" id="tabBtnDashboard" class="px-4 py-2 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 bg-brand-blue text-white">
                     <i class="fa-solid fa-chart-line"></i><span>Dashboard & Dự án</span>
+                </button>
+                <button onclick="switchTab('quality')" id="tabBtnQuality" class="px-4 py-2 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-medal"></i><span>Đánh giá chất lượng</span>
                 </button>
                 <button onclick="switchTab('personnel')" id="tabBtnPersonnel" class="px-4 py-2 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 text-slate-400 hover:text-white">
                     <i class="fa-solid fa-users-gear"></i><span>Quản lý Nhân Sự</span>
@@ -263,6 +259,7 @@
     <div id="mobileTabNav" class="block md:hidden bg-brand-darkblue/90 border-b border-blue-900/30 p-2 text-center no-print">
         <div class="inline-flex rounded-lg p-1 bg-slate-950 gap-1">
             <button onclick="switchTab('dashboard')" id="mobileTabBtnDashboard" class="px-3 py-1.5 rounded-md text-xs font-bold bg-brand-blue text-white">Dashboard</button>
+            <button onclick="switchTab('quality')" id="mobileTabBtnQuality" class="px-3 py-1.5 rounded-md text-xs font-bold text-slate-400">Chất lượng</button>
             <button onclick="switchTab('personnel')" id="mobileTabBtnPersonnel" class="px-3 py-1.5 rounded-md text-xs font-bold text-slate-400">Nhân Sự</button>
             <button onclick="switchTab('audit')" id="mobileTabBtnAudit" class="px-3 py-1.5 rounded-md text-xs font-bold text-slate-400">Lịch sử</button>
         </div>
@@ -289,7 +286,7 @@
     </div>
 
     <!-- MAIN BODY -->
-    <main class="flex-grow px-4 sm:px-6 lg:px-8 py-8 w-full">
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
 
         <!-- LOGIN OVERLAY -->
         <div id="loginOverlay">
@@ -376,6 +373,7 @@
 
                 <!-- CHARTS + FINANCE -->
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- ── FINANCE CARD ── BỔ SUNG: hiển thị tạm ứng riêng biệt -->
                     <div class="print-card bg-brand-darkblue/40 border border-blue-900/40 rounded-2xl p-6 flex flex-col justify-between">
                         <div>
                             <div class="flex items-center space-x-2 mb-1">
@@ -384,6 +382,7 @@
                             </div>
                             <p class="text-[11px] text-slate-400 mb-4">Cam kết của bộ phận TVTK với Ban Giám Đốc</p>
                             <div class="space-y-3">
+                                <!-- Đã ra giấy -->
                                 <div>
                                     <div class="flex justify-between text-xs text-slate-300 mb-1">
                                         <span>Giá trị Đã Ra Giấy</span>
@@ -393,6 +392,7 @@
                                         <div class="bg-brand-teal h-full rounded-full progress-fill" id="progressCompletedValBar" style="width:0%"></div>
                                     </div>
                                 </div>
+                                <!-- ── MỚI: Tạm ứng đã thu ── -->
                                 <div>
                                     <div class="flex justify-between text-xs text-slate-300 mb-1">
                                         <span class="flex items-center gap-1">
@@ -405,6 +405,7 @@
                                         <div class="bg-violet-500 h-full rounded-full progress-fill" id="progressAdvanceBar" style="width:0%"></div>
                                     </div>
                                 </div>
+                                <!-- ── MỚI: Tổng doanh thu thực tế = Đã ra giấy + Tạm ứng ── -->
                                 <div class="bg-brand-gold/5 border border-brand-gold/20 rounded-xl p-3">
                                     <div class="flex justify-between text-xs mb-1">
                                         <span class="text-brand-gold font-bold flex items-center gap-1">
@@ -422,6 +423,7 @@
                                         <span class="text-[9px] text-brand-gold font-bold" id="statRealRevenuePct">0%</span>
                                     </div>
                                 </div>
+                                <!-- Tổng giá trị HĐ -->
                                 <div>
                                     <div class="flex justify-between text-xs text-slate-300 mb-1">
                                         <span>Tổng giá trị hợp đồng quản lý</span>
@@ -466,108 +468,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- ══════════════════════════════════════════════════════ -->
-                <!-- QUALITY KPI SECTION — MỚI                            -->
-                <!-- ══════════════════════════════════════════════════════ -->
-                <div class="print-card bg-brand-darkblue/40 border border-blue-900/40 rounded-2xl p-6">
-                    <div class="flex items-center space-x-2 mb-5 pb-4 border-b border-blue-900/30">
-                        <div class="w-9 h-9 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400">
-                            <i class="fa-solid fa-medal text-lg"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-sm font-bold uppercase text-white">Chất Lượng Hồ Sơ — KPI Số Lần Nộp & Thời Gian Chỉnh Sửa</h3>
-                            <p class="text-[11px] text-slate-400 mt-0.5">Phân tích dựa trên các dự án <span class="text-brand-teal font-semibold">Đã Ra Giấy</span> · Mục tiêu: phê duyệt trong tối đa 3 lần nộp</p>
-                        </div>
-                    </div>
-
-                    <!-- KPI CARDS ROW -->
-                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
-                        <!-- Tỷ lệ đạt L1 -->
-                        <div class="quality-kpi-card bg-emerald-950/20 border border-emerald-500/25 rounded-2xl p-4 text-center">
-                            <div class="w-9 h-9 bg-emerald-500/15 rounded-xl flex items-center justify-center mx-auto mb-2">
-                                <i class="fa-solid fa-1 text-emerald-400 text-sm font-black"></i>
-                            </div>
-                            <div class="text-2xl font-extrabold text-emerald-400" id="statL1Rate">0%</div>
-                            <div class="text-[10px] text-slate-400 mt-1 leading-tight">Đạt ngay<br><span class="font-bold text-emerald-300">Lần nộp 1</span></div>
-                            <div class="text-[9px] text-slate-500 mt-1" id="statL1Count">0 / 0 DA</div>
-                        </div>
-                        <!-- Tỷ lệ đạt L2 -->
-                        <div class="quality-kpi-card bg-amber-950/20 border border-amber-500/25 rounded-2xl p-4 text-center">
-                            <div class="w-9 h-9 bg-amber-500/15 rounded-xl flex items-center justify-center mx-auto mb-2">
-                                <i class="fa-solid fa-2 text-amber-400 text-sm font-black"></i>
-                            </div>
-                            <div class="text-2xl font-extrabold text-amber-400" id="statL2Rate">0%</div>
-                            <div class="text-[10px] text-slate-400 mt-1 leading-tight">Đạt sau<br><span class="font-bold text-amber-300">Lần nộp 2</span></div>
-                            <div class="text-[9px] text-slate-500 mt-1" id="statL2Count">0 / 0 DA</div>
-                        </div>
-                        <!-- Tỷ lệ phải nộp L3 -->
-                        <div class="quality-kpi-card bg-red-950/20 border border-red-500/25 rounded-2xl p-4 text-center">
-                            <div class="w-9 h-9 bg-red-500/15 rounded-xl flex items-center justify-center mx-auto mb-2">
-                                <i class="fa-solid fa-3 text-red-400 text-sm font-black"></i>
-                            </div>
-                            <div class="text-2xl font-extrabold text-red-400" id="statL3Rate">0%</div>
-                            <div class="text-[10px] text-slate-400 mt-1 leading-tight">Phải nộp đến<br><span class="font-bold text-red-300">Lần nộp 3</span></div>
-                            <div class="text-[9px] text-slate-500 mt-1" id="statL3Count">0 / 0 DA</div>
-                        </div>
-                        <!-- Số lần nộp TB -->
-                        <div class="quality-kpi-card bg-blue-950/20 border border-blue-500/25 rounded-2xl p-4 text-center">
-                            <div class="w-9 h-9 bg-blue-500/15 rounded-xl flex items-center justify-center mx-auto mb-2">
-                                <i class="fa-solid fa-rotate text-blue-400 text-sm"></i>
-                            </div>
-                            <div class="text-2xl font-extrabold text-blue-400" id="statAvgSubmissions">0.0</div>
-                            <div class="text-[10px] text-slate-400 mt-1 leading-tight">Lần nộp<br><span class="font-bold text-blue-300">trung bình</span></div>
-                            <div class="text-[9px] text-slate-500 mt-1">lần / dự án</div>
-                        </div>
-                        <!-- Thời gian chỉnh sửa TB -->
-                        <div class="quality-kpi-card bg-violet-950/20 border border-violet-500/25 rounded-2xl p-4 text-center">
-                            <div class="w-9 h-9 bg-violet-500/15 rounded-xl flex items-center justify-center mx-auto mb-2">
-                                <i class="fa-solid fa-clock text-violet-400 text-sm"></i>
-                            </div>
-                            <div class="text-2xl font-extrabold text-violet-400" id="statAvgEditDays">0</div>
-                            <div class="text-[10px] text-slate-400 mt-1 leading-tight">Ngày chỉnh sửa<br><span class="font-bold text-violet-300">trung bình</span></div>
-                            <div class="text-[9px] text-slate-500 mt-1">ngày / lần chỉnh</div>
-                        </div>
-                    </div>
-
-                    <!-- QUALITY CHARTS ROW -->
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
-                        <!-- Chart 1: Phân bố L1/L2/L3 -->
-                        <div class="bg-slate-900/50 border border-blue-900/30 rounded-xl p-4">
-                            <div class="flex items-center space-x-2 mb-3">
-                                <i class="fa-solid fa-chart-pie text-emerald-400 text-sm"></i>
-                                <h4 class="text-xs font-bold text-slate-200 uppercase">Phân Bố Theo Số Lần Nộp</h4>
-                            </div>
-                            <p class="text-[10px] text-slate-500 mb-3">Dự án Đã Ra Giấy — phân theo L1 / L2 / L3</p>
-                            <div class="relative h-44">
-                                <canvas id="qualityDistChart"></canvas>
-                            </div>
-                        </div>
-                        <!-- Chart 2: Chất lượng theo nhân sự -->
-                        <div class="bg-slate-900/50 border border-blue-900/30 rounded-xl p-4">
-                            <div class="flex items-center space-x-2 mb-3">
-                                <i class="fa-solid fa-users text-amber-400 text-sm"></i>
-                                <h4 class="text-xs font-bold text-slate-200 uppercase">Chất Lượng Theo Nhân Sự</h4>
-                            </div>
-                            <p class="text-[10px] text-slate-500 mb-3">Số lần nộp trung bình mỗi kỹ sư</p>
-                            <div class="relative h-44">
-                                <canvas id="qualityPersonnelChart"></canvas>
-                            </div>
-                        </div>
-                        <!-- Chart 3: Thời gian chỉnh sửa TB theo nhân sự -->
-                        <div class="bg-slate-900/50 border border-blue-900/30 rounded-xl p-4">
-                            <div class="flex items-center space-x-2 mb-3">
-                                <i class="fa-solid fa-hourglass-half text-violet-400 text-sm"></i>
-                                <h4 class="text-xs font-bold text-slate-200 uppercase">Thời Gian Chỉnh Sửa TB</h4>
-                            </div>
-                            <p class="text-[10px] text-slate-500 mb-3">Ngày chỉnh sửa trung bình mỗi kỹ sư</p>
-                            <div class="relative h-44">
-                                <canvas id="editTimePersonnelChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- ══ END QUALITY KPI SECTION ══ -->
 
                 <!-- DEADLINE ALERT BANNER -->
                 <div id="deadlineBanner" class="hidden print-card bg-amber-950/20 border border-amber-500/30 rounded-2xl p-5">
@@ -634,13 +534,14 @@
 
                 <!-- MAIN TABLE -->
                 <div class="print-card bg-brand-darkblue/30 border border-blue-900/40 rounded-2xl overflow-hidden print-new-page">
+                    <!-- FILTERS -->
                     <div class="p-6 border-b border-blue-900/40 flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-brand-darkblue/60 no-print">
                         <div>
                             <h3 class="text-lg font-bold text-white flex items-center">
                                 Bảng Quản Lý & Tracking Tiến Độ Chi Tiết
-                                <span class="ml-2 text-xs bg-brand-gold/15 text-brand-gold border border-brand-gold/20 px-2 py-0.5 rounded-full font-medium">V4.0</span>
+                                <span class="ml-2 text-xs bg-brand-gold/15 text-brand-gold border border-brand-gold/20 px-2 py-0.5 rounded-full font-medium">V3.0</span>
                             </h3>
-                            <p class="text-[11px] text-slate-400 mt-1">Quản lý mốc thẩm duyệt L1, L2, L3 · Ngày phản hồi · Thời gian chỉnh sửa</p>
+                            <p class="text-[11px] text-slate-400 mt-1">Quản lý mốc thời gian thẩm duyệt L1, L2, L3 · Ngày ký HĐ · Tạm ứng</p>
                         </div>
                         <div class="flex flex-wrap items-center gap-3">
                             <div class="relative">
@@ -663,20 +564,17 @@
                             </button>
                         </div>
                     </div>
+                    <!-- TABLE -->
                     <div class="overflow-x-auto table-container">
                         <table class="w-full text-left border-collapse">
                             <thead>
                                 <tr class="bg-brand-darkblue text-[11px] font-bold text-slate-300 uppercase tracking-wider border-b border-blue-900/40">
                                     <th class="py-3.5 px-3 text-center w-10">STT</th>
-                                    <th class="py-3.5 px-3 min-w-[200px]">Chi tiết dự án</th>
-                                    <th class="py-3.5 px-3 text-right">Giá Trị HĐ</th>
-                                    <th class="py-3.5 px-3 text-center">Ngày Ký HĐ</th>
-                                    <th class="py-3.5 px-3 text-right text-violet-400">Tạm Ứng</th>
-                                    <th class="py-3.5 px-3">Người Thực Hiện</th>
-                                    <th class="py-3.5 px-3">Hạn Nộp</th>
+                                    <th class="py-3.5 px-3 min-w-[220px]">Chi tiết dự án</th>
+                                    <th class="py-3.5 px-3 min-w-[150px]">Hợp đồng</th>
+                                    <th class="py-3.5 px-3 min-w-[150px]">Phụ trách / Hạn nộp</th>
                                     <th class="py-3.5 px-3">Tình Trạng</th>
-                                    <th class="py-3.5 px-3 min-w-[200px]">Mốc L1 · L2 · L3 & Phản Hồi</th>
-                                    <th class="py-3.5 px-3 text-center text-emerald-400 min-w-[80px]">Số lần nộp</th>
+                                    <th class="py-3.5 px-3 min-w-[190px]">Mốc L1 · L2 · L3</th>
                                     <th class="py-3.5 px-3 min-w-[150px]">Vướng mắc / Cán bộ PC07</th>
                                     <th class="py-3.5 px-3 text-center no-print w-24">Hành Động</th>
                                 </tr>
@@ -684,13 +582,153 @@
                             <tbody id="projectTableBody" class="divide-y divide-blue-950/40 text-xs"></tbody>
                         </table>
                     </div>
+                    <!-- TABLE FOOTER -->
                     <div class="p-4 bg-brand-darkblue/50 border-t border-blue-900/40 flex items-center justify-between text-[11px] text-slate-400">
                         <p>Hiển thị <span id="displayedCount" class="font-bold text-brand-gold">0</span> / <span id="totalCount" class="font-bold text-brand-gold">0</span> dự án</p>
                     </div>
                 </div>
             </div>
 
-            <!-- ====== TAB 2: NHÂN SỰ ====== -->
+
+            <!-- ====== TAB 2: ĐÁNH GIÁ CHẤT LƯỢNG ====== -->
+            <div id="qualityTab" class="space-y-8 hidden">
+                <div class="bg-brand-darkblue/40 border border-blue-900/50 rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-white flex items-center space-x-2">
+                            <i class="fa-solid fa-medal text-brand-gold"></i>
+                            <span>Đánh Giá Chất Lượng Hồ Sơ</span>
+                        </h3>
+                        <p class="text-xs text-slate-400 mt-1">Theo dõi số lần nộp, tỷ lệ đạt L1/L2/L3 và thời gian chỉnh sửa giữa các lần nộp.</p>
+                    </div>
+                    <div class="text-[11px] text-slate-400 bg-slate-950/50 border border-blue-900/30 rounded-xl px-3 py-2">
+                        Mục tiêu: phê duyệt tối đa <span class="font-bold text-brand-gold">3 lần nộp</span>
+                    </div>
+                </div>
+
+                <!-- QUALITY KPI GRID -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                    <div class="kpi-card print-card bg-emerald-950/15 border border-emerald-500/30 rounded-2xl p-5">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-emerald-300">Đạt L1</span>
+                            <div class="w-8 h-8 rounded-lg bg-emerald-500/15 flex items-center justify-center text-emerald-300">
+                                <i class="fa-solid fa-circle-check text-sm"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <h3 class="text-2xl font-bold text-emerald-300" id="statPassL1Pct">0%</h3>
+                            <p class="text-[10px] text-slate-400 mt-1" id="statPassL1Count">0 hồ sơ đã ra giấy</p>
+                        </div>
+                    </div>
+                    <div class="kpi-card print-card bg-blue-950/20 border border-blue-500/30 rounded-2xl p-5">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-blue-300">Đạt L2</span>
+                            <div class="w-8 h-8 rounded-lg bg-blue-500/15 flex items-center justify-center text-blue-300">
+                                <i class="fa-solid fa-layer-group text-sm"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <h3 class="text-2xl font-bold text-blue-300" id="statPassL2Pct">0%</h3>
+                            <p class="text-[10px] text-slate-400 mt-1" id="statPassL2Count">0 hồ sơ đã ra giấy</p>
+                        </div>
+                    </div>
+                    <div class="kpi-card print-card bg-amber-950/20 border border-amber-500/30 rounded-2xl p-5">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-brand-gold">Phải đến L3</span>
+                            <div class="w-8 h-8 rounded-lg bg-brand-gold/15 flex items-center justify-center text-brand-gold">
+                                <i class="fa-solid fa-route text-sm"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <h3 class="text-2xl font-bold text-brand-gold" id="statPassL3Pct">0%</h3>
+                            <p class="text-[10px] text-slate-400 mt-1" id="statPassL3Count">0 hồ sơ đã ra giấy</p>
+                        </div>
+                    </div>
+                    <div class="kpi-card print-card bg-brand-darkblue/40 border border-blue-900/50 rounded-2xl p-5">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-300">Số lần nộp TB</span>
+                            <div class="w-8 h-8 rounded-lg bg-brand-blue/20 flex items-center justify-center text-brand-gold">
+                                <i class="fa-solid fa-paper-plane text-sm"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <h3 class="text-2xl font-bold text-white" id="statAvgSubmissions">0</h3>
+                            <p class="text-[10px] text-slate-400 mt-1">Tính trên tất cả dự án</p>
+                        </div>
+                    </div>
+                    <div class="kpi-card print-card bg-brand-darkblue/40 border border-blue-900/50 rounded-2xl p-5">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-300">Sửa hồ sơ TB</span>
+                            <div class="w-8 h-8 rounded-lg bg-violet-500/15 flex items-center justify-center text-violet-300">
+                                <i class="fa-solid fa-stopwatch text-sm"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <h3 class="text-2xl font-bold text-violet-300" id="statAvgRevisionDays">0 ngày</h3>
+                            <p class="text-[10px] text-slate-400 mt-1">Từ phản hồi đến lần nộp tiếp theo</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- QUALITY CHARTS -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="print-card bg-brand-darkblue/40 border border-blue-900/40 rounded-2xl p-6">
+                        <div class="flex items-center space-x-2 text-brand-gold mb-3">
+                            <i class="fa-solid fa-chart-simple"></i>
+                            <h3 class="text-base font-bold uppercase text-white">Phân Bố Hồ Sơ L1 / L2 / L3</h3>
+                        </div>
+                        <div class="relative h-52 w-full flex items-center justify-center">
+                            <canvas id="submissionLevelChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="print-card bg-brand-darkblue/40 border border-blue-900/40 rounded-2xl p-6">
+                        <div class="flex items-center space-x-2 text-brand-gold mb-3">
+                            <i class="fa-solid fa-user-check"></i>
+                            <h3 class="text-base font-bold uppercase text-white">Chất Lượng Theo Nhân Sự</h3>
+                        </div>
+                        <div class="relative h-52 w-full flex items-center justify-center">
+                            <canvas id="qualityByStaffChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="print-card bg-brand-darkblue/40 border border-blue-900/40 rounded-2xl p-6">
+                        <div class="flex items-center space-x-2 text-brand-gold mb-3">
+                            <i class="fa-solid fa-business-time"></i>
+                            <h3 class="text-base font-bold uppercase text-white">Thời Gian Sửa TB Theo Nhân Sự</h3>
+                        </div>
+                        <div class="relative h-52 w-full flex items-center justify-center">
+                            <canvas id="editTimeByStaffChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="print-card bg-brand-darkblue/30 border border-blue-900/40 rounded-2xl overflow-hidden">
+                    <div class="p-6 border-b border-blue-900/40 bg-brand-darkblue/60">
+                        <h3 class="text-lg font-bold text-white flex items-center">
+                            Bảng Phân Tích Chất Lượng Hồ Sơ
+                            <span class="ml-2 text-xs bg-brand-gold/15 text-brand-gold border border-brand-gold/20 px-2 py-0.5 rounded-full font-medium">L1-L3</span>
+                        </h3>
+                        <p class="text-[11px] text-slate-400 mt-1">Chỉ tập trung vào số lần nộp và thời gian chỉnh sửa, tách khỏi bảng vận hành dự án.</p>
+                    </div>
+                    <div class="overflow-x-auto table-container">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-brand-darkblue text-[11px] font-bold text-slate-300 uppercase tracking-wider border-b border-blue-900/40">
+                                    <th class="py-3.5 px-3 min-w-[220px]">Dự án</th>
+                                    <th class="py-3.5 px-3">Nhân sự</th>
+                                    <th class="py-3.5 px-3 text-center">Tình trạng</th>
+                                    <th class="py-3.5 px-3 text-center">Kết quả</th>
+                                    <th class="py-3.5 px-3 text-center">Số lần nộp</th>
+                                    <th class="py-3.5 px-3 text-center">Sửa L1 → L2</th>
+                                    <th class="py-3.5 px-3 text-center">Sửa L2 → L3</th>
+                                    <th class="py-3.5 px-3 text-center">Tổng sửa</th>
+                                    <th class="py-3.5 px-3 min-w-[220px]">Mốc phản hồi / nộp</th>
+                                </tr>
+                            </thead>
+                            <tbody id="qualityTableBody" class="divide-y divide-blue-950/40 text-xs"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- ====== TAB 3: NHÂN SỰ ====== -->
             <div id="personnelTab" class="space-y-8 hidden">
                 <div class="bg-brand-darkblue/40 border border-blue-900/50 rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div>
@@ -705,6 +743,7 @@
                     </button>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="staffCardsGrid"></div>
+                <!-- TRANSFER PANEL -->
                 <div class="bg-slate-900/60 border border-blue-900/40 rounded-2xl p-6">
                     <div class="flex items-center space-x-3 mb-6 pb-4 border-b border-blue-900/30">
                         <div class="w-10 h-10 bg-brand-gold/15 rounded-xl flex items-center justify-center text-brand-gold">
@@ -733,7 +772,7 @@
                 </div>
             </div>
 
-            <!-- ====== TAB 3: AUDIT LOG ====== -->
+            <!-- ====== TAB 4: AUDIT LOG ====== -->
             <div id="auditTab" class="space-y-6 hidden">
                 <div class="bg-brand-darkblue/40 border border-blue-900/50 rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
@@ -767,7 +806,7 @@
                 </div>
             </div>
 
-        </div>
+        </div><!-- end mainContent -->
     </main>
 
     <!-- MODAL: DỰ ÁN -->
@@ -790,6 +829,7 @@
                     </div>
                 </div>
 
+                <!-- ── MỚI: Ngày ký HĐ + Tạm ứng ── -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-violet-950/20 border border-violet-900/30 rounded-xl p-3">
                     <div>
                         <label class="block text-[10px] font-bold text-violet-300 uppercase mb-1.5">
@@ -824,80 +864,40 @@
                         </select>
                     </div>
                 </div>
-
-                <!-- ══ MILESTONE SECTION — MỚI: thêm ngày phản hồi ══ -->
                 <div class="border-t border-blue-950 py-3">
                     <h4 class="text-xs font-bold text-brand-gold mb-3 flex items-center">
                         <i class="fa-solid fa-list-check mr-2"></i>Tiến Độ 3 Giai Đoạn Thẩm Duyệt (L1, L2, L3)
                     </h4>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-950/50 p-4 rounded-xl border border-blue-950">
-                        <!-- L1 -->
-                        <div class="space-y-2">
-                            <div class="text-[9px] font-black text-emerald-400 uppercase tracking-wider mb-1 flex items-center gap-1">
-                                <span class="w-4 h-4 rounded bg-emerald-500/20 flex items-center justify-center text-[8px]">1</span>
-                                Lần nộp 1
-                            </div>
-                            <div>
-                                <label class="block text-[9px] text-slate-500 mb-0.5">Trạng thái</label>
-                                <select id="formL1Status" class="w-full bg-slate-950 border border-blue-900/30 rounded-lg px-2 py-1.5 text-[11px] text-slate-200 focus:outline-none">
-                                    <option>Chưa nộp</option><option>Đang duyệt</option><option>Đã duyệt</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-[9px] text-slate-500 mb-0.5">Ngày nộp L1</label>
-                                <input type="date" id="formL1Date" class="w-full bg-slate-950 border border-blue-900/30 rounded-lg px-2 py-1.5 text-[11px] text-slate-200 focus:outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-[9px] text-amber-400 mb-0.5 flex items-center gap-1"><i class="fa-solid fa-reply text-[8px]"></i>Ngày phản hồi L1</label>
-                                <input type="date" id="formL1FeedbackDate" class="w-full bg-slate-950 border border-amber-900/30 rounded-lg px-2 py-1.5 text-[11px] text-slate-200 focus:outline-none focus:ring-1 focus:ring-amber-500/40">
-                            </div>
+                        <div>
+                            <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Nộp lần 1</label>
+                            <select id="formL1Status" class="w-full bg-slate-950 border border-blue-900/30 rounded-lg px-2 py-1 text-[11px] text-slate-200 mb-2 focus:outline-none">
+                                <option>Chưa nộp</option><option>Đang duyệt</option><option>Đã duyệt</option>
+                            </select>
+                            <input type="date" id="formL1Date" class="w-full bg-slate-950 border border-blue-900/30 rounded-lg px-2 py-1 text-[11px] text-slate-200 focus:outline-none">
+                            <label class="block text-[9px] font-bold text-slate-500 uppercase mt-2 mb-1">Phản hồi L1</label>
+                            <input type="date" id="formL1ResponseDate" class="w-full bg-slate-950 border border-blue-900/30 rounded-lg px-2 py-1 text-[11px] text-slate-200 focus:outline-none">
                         </div>
-                        <!-- L2 -->
-                        <div class="space-y-2">
-                            <div class="text-[9px] font-black text-amber-400 uppercase tracking-wider mb-1 flex items-center gap-1">
-                                <span class="w-4 h-4 rounded bg-amber-500/20 flex items-center justify-center text-[8px]">2</span>
-                                Lần nộp 2
-                            </div>
-                            <div>
-                                <label class="block text-[9px] text-slate-500 mb-0.5">Trạng thái</label>
-                                <select id="formL2Status" class="w-full bg-slate-950 border border-blue-900/30 rounded-lg px-2 py-1.5 text-[11px] text-slate-200 focus:outline-none">
-                                    <option>Chưa nộp</option><option>Đang duyệt</option><option>Đã duyệt</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-[9px] text-slate-500 mb-0.5">Ngày nộp L2</label>
-                                <input type="date" id="formL2Date" class="w-full bg-slate-950 border border-blue-900/30 rounded-lg px-2 py-1.5 text-[11px] text-slate-200 focus:outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-[9px] text-amber-400 mb-0.5 flex items-center gap-1"><i class="fa-solid fa-reply text-[8px]"></i>Ngày phản hồi L2</label>
-                                <input type="date" id="formL2FeedbackDate" class="w-full bg-slate-950 border border-amber-900/30 rounded-lg px-2 py-1.5 text-[11px] text-slate-200 focus:outline-none focus:ring-1 focus:ring-amber-500/40">
-                            </div>
+                        <div>
+                            <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Nộp lần 2</label>
+                            <select id="formL2Status" class="w-full bg-slate-950 border border-blue-900/30 rounded-lg px-2 py-1 text-[11px] text-slate-200 mb-2 focus:outline-none">
+                                <option>Chưa nộp</option><option>Đang duyệt</option><option>Đã duyệt</option>
+                            </select>
+                            <input type="date" id="formL2Date" class="w-full bg-slate-950 border border-blue-900/30 rounded-lg px-2 py-1 text-[11px] text-slate-200 focus:outline-none">
+                            <label class="block text-[9px] font-bold text-slate-500 uppercase mt-2 mb-1">Phản hồi L2</label>
+                            <input type="date" id="formL2ResponseDate" class="w-full bg-slate-950 border border-blue-900/30 rounded-lg px-2 py-1 text-[11px] text-slate-200 focus:outline-none">
                         </div>
-                        <!-- L3 -->
-                        <div class="space-y-2">
-                            <div class="text-[9px] font-black text-red-400 uppercase tracking-wider mb-1 flex items-center gap-1">
-                                <span class="w-4 h-4 rounded bg-red-500/20 flex items-center justify-center text-[8px]">3</span>
-                                Lần nộp 3
-                            </div>
-                            <div>
-                                <label class="block text-[9px] text-slate-500 mb-0.5">Trạng thái</label>
-                                <select id="formL3Status" class="w-full bg-slate-950 border border-blue-900/30 rounded-lg px-2 py-1.5 text-[11px] text-slate-200 focus:outline-none">
-                                    <option>Chưa nộp</option><option>Đang duyệt</option><option>Đã duyệt</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-[9px] text-slate-500 mb-0.5">Ngày nộp L3</label>
-                                <input type="date" id="formL3Date" class="w-full bg-slate-950 border border-blue-900/30 rounded-lg px-2 py-1.5 text-[11px] text-slate-200 focus:outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-[9px] text-amber-400 mb-0.5 flex items-center gap-1"><i class="fa-solid fa-reply text-[8px]"></i>Ngày phản hồi L3</label>
-                                <input type="date" id="formL3FeedbackDate" class="w-full bg-slate-950 border border-amber-900/30 rounded-lg px-2 py-1.5 text-[11px] text-slate-200 focus:outline-none focus:ring-1 focus:ring-amber-500/40">
-                            </div>
+                        <div>
+                            <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Nộp lần 3</label>
+                            <select id="formL3Status" class="w-full bg-slate-950 border border-blue-900/30 rounded-lg px-2 py-1 text-[11px] text-slate-200 mb-2 focus:outline-none">
+                                <option>Chưa nộp</option><option>Đang duyệt</option><option>Đã duyệt</option>
+                            </select>
+                            <input type="date" id="formL3Date" class="w-full bg-slate-950 border border-blue-900/30 rounded-lg px-2 py-1 text-[11px] text-slate-200 focus:outline-none">
+                            <label class="block text-[9px] font-bold text-slate-500 uppercase mt-2 mb-1">Phản hồi L3</label>
+                            <input type="date" id="formL3ResponseDate" class="w-full bg-slate-950 border border-blue-900/30 rounded-lg px-2 py-1 text-[11px] text-slate-200 focus:outline-none">
                         </div>
                     </div>
-                    <p class="text-[9px] text-slate-500 mt-2 italic"><i class="fa-solid fa-info-circle mr-1"></i>Ngày phản hồi dùng để tính thời gian chỉnh sửa giữa các lần nộp (phản hồi L1 → nộp L2, phản hồi L2 → nộp L3)</p>
                 </div>
-
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1.5">Cán Bộ PC07 Thụ Lý</label>
@@ -983,111 +983,111 @@
         }
     };
 
-    // ─── DEFAULT DATA ───
+    // ─── DEFAULT DATA — thêm contractDate & advancePayment vào mỗi dự án ───
     const defaultProjects = [
         { id:"DA001", name:"Trường Liên Cấp", contractValue:199000000, contractDate:"", advancePayment:0,
           assignee:"Thái", deadline:"2026-12-01", status:"Đang tạm dừng",
-          l1Status:"Chưa nộp", l1Date:"", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
+          l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
           officer:"Ms Trâm", notes:"Sai về pháp lý — tạm dừng pháp lý" },
         { id:"DA002", name:"Aloha Beach Bình Thuận", contractValue:1350000000, contractDate:"", advancePayment:0,
           assignee:"Thái", deadline:"2026-12-01", status:"Đang tạm dừng",
-          l1Status:"Chưa nộp", l1Date:"", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
+          l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
           officer:"N/A", notes:"Đang giai đoạn TKCS — tạm dừng pháp lý — đang thương thảo" },
         { id:"DA003", name:"Bệnh viện Đà Nẵng", contractValue:315000000, contractDate:"", advancePayment:0,
           assignee:"Thiện", deadline:"2026-05-30", status:"Đang triển khai",
-          l1Status:"Chưa nộp", l1Date:"", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
+          l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
           officer:"N/A", notes:"Cài Morley, đã gởi CĐT review" },
         { id:"DA004", name:"Cao ốc văn phòng PMH", contractValue:450000000, contractDate:"", advancePayment:0,
           assignee:"Thắng", deadline:"2026-05-20", status:"Đang triển khai",
-          l1Status:"Chưa nộp", l1Date:"", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
+          l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
           officer:"Mr Mtrung", notes:"Đã ký số gởi Nam Việt làm việc với CĐT — mức độ ưu tiên: Cao" },
         { id:"DA005", name:"Điều chỉnh Vạn Đạt khối 1", contractValue:100000000, contractDate:"", advancePayment:0,
           assignee:"Thái, Thiện", deadline:"2026-12-31", status:"Đã ra giấy",
-          l1Status:"Đã duyệt", l1Date:"2026-03-10", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
+          l1Status:"Đã duyệt", l1Date:"2026-03-10", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
           officer:"N/A", notes:"Đã xong" },
         { id:"DA006", name:"103 Trần Quốc Toản", contractValue:200000000, contractDate:"", advancePayment:0,
           assignee:"Thái, Thiện", deadline:"2026-12-31", status:"Đã ra giấy",
-          l1Status:"Đã duyệt", l1Date:"2026-04-09", l1FeedbackDate:"2026-04-17", l2Status:"Đã duyệt", l2Date:"2026-04-24", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
+          l1Status:"Đã duyệt", l1Date:"2026-04-09", l2Status:"Đã duyệt", l2Date:"2026-04-24", l3Status:"Chưa nộp", l3Date:"",
           officer:"Mr Mtrung", notes:"Cài Morley — đã xong — mức độ ưu tiên: Trung bình" },
         { id:"DA007", name:"74 - 76 Trần Quốc Thảo", contractValue:216000000, contractDate:"", advancePayment:0,
           assignee:"Thái, Thiện", deadline:"2026-05-30", status:"Đang triển khai",
-          l1Status:"Chưa nộp", l1Date:"", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
+          l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
           officer:"Mr Nguyệt", notes:"TK CĐT đang triển khai" },
         { id:"DA008", name:"Bệnh Viện Tâm Anh", contractValue:378000000, contractDate:"", advancePayment:0,
           assignee:"Thái, Thiện", deadline:"2026-05-30", status:"Đang triển khai",
-          l1Status:"Chưa nộp", l1Date:"", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
+          l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
           officer:"Mr Khoa", notes:"Làm việc với Mr Tuấn hỗ trợ hồ sơ — mức độ ưu tiên: Cao" },
         { id:"DA009", name:"Kho Nguyễn Minh", contractValue:250000000, contractDate:"", advancePayment:0,
           assignee:"Trường", deadline:"2026-05-30", status:"Đang triển khai",
-          l1Status:"Chưa nộp", l1Date:"", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
+          l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
           officer:"N/A", notes:"OS đang triển khai — mức độ ưu tiên: Cao" },
         { id:"DA010", name:"4-6A Trần Cao Vân", contractValue:300000000, contractDate:"", advancePayment:0,
           assignee:"Thiện", deadline:"2026-05-30", status:"Đang triển khai",
-          l1Status:"Chưa nộp", l1Date:"", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
+          l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
           officer:"N/A", notes:"Kiểm tra/Góp ý" },
         { id:"DA011", name:"19b Phạm Ngọc Thạch", contractValue:160000000, contractDate:"", advancePayment:0,
           assignee:"Thái", deadline:"2026-12-31", status:"Đã ra giấy",
-          l1Status:"Đã duyệt", l1Date:"2025-10-23", l1FeedbackDate:"2025-11-10", l2Status:"Đã duyệt", l2Date:"2025-12-05", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
+          l1Status:"Đã duyệt", l1Date:"2025-10-23", l2Status:"Đã duyệt", l2Date:"2025-12-05", l3Status:"Chưa nộp", l3Date:"",
           officer:"Mr Hiếu", notes:"Thuyết minh chưa đầy đủ — đã xong" },
         { id:"DA012", name:"151-157 Nguyễn Văn Thủ", contractValue:0, contractDate:"", advancePayment:0,
           assignee:"Thiện", deadline:"2026-12-31", status:"Đang tạm dừng",
-          l1Status:"Chưa nộp", l1Date:"", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
+          l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
           officer:"N/A", notes:"Chào giá" },
         { id:"DA013", name:"31AB Lê Quý Đôn", contractValue:150000000, contractDate:"", advancePayment:0,
           assignee:"Thiện", deadline:"2026-12-31", status:"Đã ra giấy",
-          l1Status:"Đã duyệt", l1Date:"2026-01-15", l1FeedbackDate:"2026-01-28", l2Status:"Đã duyệt", l2Date:"2026-02-10", l2FeedbackDate:"2026-02-20", l3Status:"Đã duyệt", l3Date:"2026-03-01", l3FeedbackDate:"",
+          l1Status:"Đã duyệt", l1Date:"", l2Status:"Đã duyệt", l2Date:"", l3Status:"Đã duyệt", l3Date:"",
           officer:"Ms Trâm", notes:"Đã xong" },
         { id:"DA014", name:"Văn phòng KLC", contractValue:200000000, contractDate:"", advancePayment:0,
           assignee:"Thái, Thiện", deadline:"2026-12-31", status:"Đã ra giấy",
-          l1Status:"Đã duyệt", l1Date:"2026-01-05", l1FeedbackDate:"2026-01-15", l2Status:"Đã duyệt", l2Date:"2026-01-25", l2FeedbackDate:"2026-02-05", l3Status:"Đã duyệt", l3Date:"2026-02-15", l3FeedbackDate:"",
+          l1Status:"Đã duyệt", l1Date:"", l2Status:"Đã duyệt", l2Date:"", l3Status:"Đã duyệt", l3Date:"",
           officer:"Mr HTrung", notes:"PC07, thiết kế cải tạo — đã xong" },
         { id:"DA015", name:"NOXH Hàm Kiệm", contractValue:500000000, contractDate:"", advancePayment:0,
           assignee:"Thái", deadline:"2026-05-30", status:"Đang tạm dừng",
-          l1Status:"Chưa nộp", l1Date:"", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
+          l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
           officer:"N/A", notes:"Chờ CĐT tạm ứng triển khai" },
         { id:"DA016", name:"Căn Hộ Đạt Phước Ven Sông", contractValue:800000000, contractDate:"", advancePayment:0,
           assignee:"Thắng", deadline:"2026-05-18", status:"Đang triển khai",
-          l1Status:"Chưa nộp", l1Date:"", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
+          l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
           officer:"N/A", notes:"Gởi review cho khách hàng" },
         { id:"DA017", name:"Điều chỉnh Dat Bike", contractValue:100000000, contractDate:"", advancePayment:0,
           assignee:"Thái, Thiện", deadline:"2026-05-30", status:"Đã ra giấy",
-          l1Status:"Đã duyệt", l1Date:"2026-05-14", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
+          l1Status:"Đã duyệt", l1Date:"2026-05-14", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
           officer:"Mr Tín", notes:"Đã gởi cho Mr Tín check — mức độ ưu tiên: Trung bình" },
         { id:"DA018", name:"Nhà ở Chiến Sỹ", contractValue:600000000, contractDate:"", advancePayment:0,
           assignee:"Thắng", deadline:"2026-05-20", status:"Đang triển khai",
-          l1Status:"Chưa nộp", l1Date:"", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
+          l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
           officer:"N/A", notes:"Kiểm tra hồ sơ — mức độ ưu tiên: Trung bình" },
         { id:"DA019", name:"32H Hồ Hảo Hớn", contractValue:220000000, contractDate:"", advancePayment:0,
           assignee:"Thái", deadline:"2026-05-30", status:"Đang tạm dừng",
-          l1Status:"Chưa nộp", l1Date:"", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
+          l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
           officer:"N/A", notes:"CĐT đang xin TKCS" },
         { id:"DA020", name:"Kho Việt Phong", contractValue:0, contractDate:"", advancePayment:0,
           assignee:"Thái", deadline:"2026-05-30", status:"Đang tạm dừng",
-          l1Status:"Chưa nộp", l1Date:"", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
+          l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
           officer:"N/A", notes:"Đang thương thảo" },
         { id:"DA021", name:"Hòa Phát Had Decor", contractValue:500000000, contractDate:"", advancePayment:0,
           assignee:"Trường", deadline:"2026-12-31", status:"Đã ra giấy",
-          l1Status:"Đã duyệt", l1Date:"2026-05-04", l1FeedbackDate:"2026-05-09", l2Status:"Đã duyệt", l2Date:"2026-05-13", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
+          l1Status:"Đã duyệt", l1Date:"2026-05-04", l2Status:"Đã duyệt", l2Date:"2026-05-13", l3Status:"Đã duyệt", l3Date:"2026-05-19",
           officer:"N/A", notes:"Đã xong ra giấy — mức độ ưu tiên: Trung bình" },
         { id:"DA022", name:"Hòa Phát KLH + Năng lượng", contractValue:10800000000, contractDate:"", advancePayment:0,
           assignee:"Trường", deadline:"2026-05-30", status:"Đang triển khai",
-          l1Status:"Chưa nộp", l1Date:"", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
+          l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
           officer:"N/A", notes:"Chưa triển khai" },
         { id:"DA023", name:"31AB Lê Quý Đôn - điều chỉnh trạm điện", contractValue:50000000, contractDate:"", advancePayment:0,
           assignee:"Thiện", deadline:"2026-12-31", status:"Đã ra giấy",
-          l1Status:"Đã duyệt", l1Date:"2026-02-01", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
+          l1Status:"Đã duyệt", l1Date:"", l2Status:"Đã duyệt", l2Date:"", l3Status:"Đã duyệt", l3Date:"",
           officer:"Ms Trâm", notes:"Đã xong" },
         { id:"DA024", name:"Ixora Hồ Tràm", contractValue:1350000000, contractDate:"", advancePayment:0,
           assignee:"Thiện", deadline:"2026-05-30", status:"Đang triển khai",
-          l1Status:"Chưa nộp", l1Date:"", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
+          l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
           officer:"N/A", notes:"Kiểm tra/Góp ý" },
         { id:"DA025", name:"BBKT SBPQ", contractValue:300000000, contractDate:"", advancePayment:0,
           assignee:"Thiện", deadline:"2026-05-30", status:"Đang triển khai",
-          l1Status:"Chưa nộp", l1Date:"", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
+          l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
           officer:"N/A", notes:"Đã gởi hồ sơ thiết kế cho Mr Phong" },
         { id:"DA026", name:"BBKT NAM TRUNG", contractValue:330000000, contractDate:"", advancePayment:0,
           assignee:"Thắng", deadline:"2026-05-30", status:"Đang triển khai",
-          l1Status:"Chưa nộp", l1Date:"", l1FeedbackDate:"", l2Status:"Chưa nộp", l2Date:"", l2FeedbackDate:"", l3Status:"Chưa nộp", l3Date:"", l3FeedbackDate:"",
+          l1Status:"Chưa nộp", l1Date:"", l2Status:"Chưa nộp", l2Date:"", l3Status:"Chưa nộp", l3Date:"",
           officer:"N/A", notes:"Gởi thi công khảo sát triển khai" }
     ];
 
@@ -1100,37 +1100,8 @@
 
     let projects = [], staff = [], auditLog = [];
     let statusChartInstance = null, personnelChartInstance = null;
-    let qualityDistChartInstance = null, qualityPersonnelChartInstance = null, editTimePersonnelChartInstance = null;
+    let submissionLevelChartInstance = null, qualityByStaffChartInstance = null, editTimeByStaffChartInstance = null;
     let notifPanelOpen = false;
-
-    // ─── HELPER: tính số ngày giữa 2 date string ───
-    function daysBetween(dateStr1, dateStr2) {
-        if (!dateStr1 || !dateStr2) return null;
-        const d1 = new Date(dateStr1); d1.setHours(0,0,0,0);
-        const d2 = new Date(dateStr2); d2.setHours(0,0,0,0);
-        const diff = Math.round((d2 - d1) / (1000*60*60*24));
-        return diff >= 0 ? diff : null;
-    }
-
-    // ─── HELPER: tính số lần nộp của 1 dự án ───
-    function countSubmissions(p) {
-        let count = 0;
-        if (p.l1Date) count = 1;
-        if (p.l2Date) count = 2;
-        if (p.l3Date) count = 3;
-        return count;
-    }
-
-    // ─── HELPER: tính thời gian chỉnh sửa của 1 dự án ───
-    function getEditDays(p) {
-        const editL1L2 = daysBetween(p.l1FeedbackDate, p.l2Date);   // phản hồi L1 → nộp L2
-        const editL2L3 = daysBetween(p.l2FeedbackDate, p.l3Date);   // phản hồi L2 → nộp L3
-        const segments = [];
-        if (editL1L2 !== null) segments.push(editL1L2);
-        if (editL2L3 !== null) segments.push(editL2L3);
-        const total = segments.length > 0 ? segments.reduce((a,b) => a+b, 0) : null;
-        return { editL1L2, editL2L3, total, segments };
-    }
 
     // ─── AUDIT LOG ───
     function addAuditEntry(type, action, detail) {
@@ -1271,17 +1242,14 @@
             if (!response.ok) throw new Error("Không thể kết nối cổng API");
             const data = await response.json();
             if (data.projects && data.projects.length > 0) {
-                projects = data.projects.map(p => ({
-                    contractDate: "", advancePayment: 0,
-                    l1FeedbackDate: "", l2FeedbackDate: "", l3FeedbackDate: "",
-                    ...p
-                }));
+                // Migrate dữ liệu cũ: đảm bảo contractDate & advancePayment tồn tại
+                projects = data.projects.map(normalizeProject);
                 staff = data.staff || [];
                 localStorage.setItem("NLP_TVTK_Projects", JSON.stringify(projects));
                 localStorage.setItem("NLP_TVTK_Staff", JSON.stringify(staff));
             } else {
                 console.log("Database trống, đang đồng bộ dữ liệu gốc lên mây...");
-                projects = JSON.parse(JSON.stringify(defaultProjects));
+                projects = JSON.parse(JSON.stringify(defaultProjects)).map(normalizeProject);
                 staff = JSON.parse(JSON.stringify(defaultStaff));
                 await saveData();
             }
@@ -1289,7 +1257,7 @@
             console.error("Lỗi tải dữ liệu đám mây, kích hoạt chế độ Local dự phòng:", error);
             const sp = localStorage.getItem("NLP_TVTK_Projects");
             const ss = localStorage.getItem("NLP_TVTK_Staff");
-            projects = sp ? JSON.parse(sp).map(p => ({ contractDate:"", advancePayment:0, l1FeedbackDate:"", l2FeedbackDate:"", l3FeedbackDate:"", ...p })) : JSON.parse(JSON.stringify(defaultProjects));
+            projects = sp ? JSON.parse(sp).map(normalizeProject) : JSON.parse(JSON.stringify(defaultProjects)).map(normalizeProject);
             staff = ss ? JSON.parse(ss) : JSON.parse(JSON.stringify(defaultStaff));
             if (typeof showToast === "function") showToast("Đang chạy ở chế độ mạng dự phòng (Offline)!", "warning");
         }
@@ -1350,7 +1318,7 @@
     }
 
     function switchTab(tabId) {
-        ["dashboard","personnel","audit"].forEach(id => {
+        ["dashboard","quality","personnel","audit"].forEach(id => {
             document.getElementById(id+"Tab").classList.add("hidden");
             const btn = document.getElementById("tabBtn"+capitalize(id));
             const mBtn = document.getElementById("mobileTabBtn"+capitalize(id));
@@ -1362,7 +1330,7 @@
         const activeMBtn = document.getElementById("mobileTabBtn"+capitalize(tabId));
         if (activeBtn)  activeBtn.className  = "px-4 py-2 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 bg-brand-blue text-white";
         if (activeMBtn) activeMBtn.className = "px-3 py-1.5 rounded-md text-xs font-bold bg-brand-blue text-white" + (tabId!=="dashboard"?" ml-1":"");
-        if (tabId === "dashboard") setTimeout(renderCharts, 100);
+        if (tabId === "dashboard" || tabId === "quality") setTimeout(renderCharts, 100);
         if (tabId === "audit") renderAuditLog();
     }
 
@@ -1373,7 +1341,64 @@
         return new Intl.NumberFormat('vi-VN').format(val) + " VNĐ";
     }
 
-    // ─── KPIs ───
+    function normalizeProject(p) {
+        return {
+            contractDate: "", advancePayment: 0,
+            l1ResponseDate: "", l2ResponseDate: "", l3ResponseDate: "",
+            ...p
+        };
+    }
+
+    function parseDateOnly(value) {
+        if (!value) return null;
+        const d = new Date(value);
+        if (Number.isNaN(d.getTime())) return null;
+        d.setHours(0,0,0,0);
+        return d;
+    }
+
+    function diffDays(fromDate, toDate) {
+        const from = parseDateOnly(fromDate);
+        const to = parseDateOnly(toDate);
+        if (!from || !to || to < from) return 0;
+        return Math.round((to - from) / 86400000);
+    }
+
+    function hasSubmission(date, status) {
+        const normalizedStatus = (status || "").trim().toLowerCase();
+        return Boolean(date) || (Boolean(normalizedStatus) && !normalizedStatus.startsWith("ch"));
+    }
+
+    function getSubmissionCount(p) {
+        return [
+            hasSubmission(p.l1Date, p.l1Status),
+            hasSubmission(p.l2Date, p.l2Status),
+            hasSubmission(p.l3Date, p.l3Status)
+        ].filter(Boolean).length;
+    }
+
+    function getApprovedSubmissionLevel(p) {
+        if (hasSubmission(p.l3Date, p.l3Status)) return 3;
+        if (hasSubmission(p.l2Date, p.l2Status)) return 2;
+        if (hasSubmission(p.l1Date, p.l1Status)) return 1;
+        return 0;
+    }
+
+    function getRevisionMetrics(p) {
+        const l1ToL2 = diffDays(p.l1ResponseDate, p.l2Date);
+        const l2ToL3 = diffDays(p.l2ResponseDate, p.l3Date);
+        return { l1ToL2, l2ToL3, total: l1ToL2 + l2ToL3 };
+    }
+
+    function pct(part, total) {
+        return total > 0 ? `${((part / total) * 100).toFixed(1)}%` : "0%";
+    }
+
+    function projectHasAssignee(p, name) {
+        return (p.assignee || "").split(",").map(x => x.trim()).filter(Boolean).includes(name);
+    }
+
+    // ─── KPIs — BỔ SUNG tính tạm ứng & doanh thu thực tế ───
     function calculateKPIs() {
         const today = new Date(); today.setHours(0,0,0,0);
         projects.forEach(p => {
@@ -1402,6 +1427,7 @@
             if (p.status === "Đã ra giấy") {
                 completedVal += (p.contractValue || 0);
             } else {
+                // Tạm ứng chỉ tính từ các dự án CHƯA hoàn thành
                 totalAdvance += (p.advancePayment || 0);
             }
         });
@@ -1420,6 +1446,25 @@
         document.getElementById("progressCompletedValBar").style.width = totalVal > 0 ? `${(completedVal/totalVal*100).toFixed(1)}%` : "0%";
         document.getElementById("progressAdvanceBar").style.width = totalVal > 0 ? `${Math.min(totalAdvance/totalVal*100,100).toFixed(1)}%` : "0%";
 
+        const completedProjects = projects.filter(p => p.status === "Đã ra giấy");
+        const completedCount = completedProjects.length;
+        const passL1 = completedProjects.filter(p => getApprovedSubmissionLevel(p) === 1).length;
+        const passL2 = completedProjects.filter(p => getApprovedSubmissionLevel(p) === 2).length;
+        const passL3 = completedProjects.filter(p => getApprovedSubmissionLevel(p) === 3).length;
+        const avgSubmissions = total > 0 ? (projects.reduce((sum,p) => sum + getSubmissionCount(p), 0) / total) : 0;
+        const revisionTotals = projects.map(getRevisionMetrics).filter(m => m.total > 0);
+        const avgRevisionDays = revisionTotals.length > 0 ? (revisionTotals.reduce((sum,m) => sum + m.total, 0) / revisionTotals.length) : 0;
+
+        document.getElementById("statPassL1Pct").textContent = pct(passL1, completedCount);
+        document.getElementById("statPassL1Count").textContent = `${passL1}/${completedCount} hồ sơ đã ra giấy`;
+        document.getElementById("statPassL2Pct").textContent = pct(passL2, completedCount);
+        document.getElementById("statPassL2Count").textContent = `${passL2}/${completedCount} hồ sơ đã ra giấy`;
+        document.getElementById("statPassL3Pct").textContent = pct(passL3, completedCount);
+        document.getElementById("statPassL3Count").textContent = `${passL3}/${completedCount} hồ sơ đã ra giấy`;
+        document.getElementById("statAvgSubmissions").textContent = avgSubmissions.toFixed(1);
+        document.getElementById("statAvgRevisionDays").textContent = `${avgRevisionDays.toFixed(1)} ngày`;
+
+        // Alert badges
         const alertContainer = document.getElementById("alertBoxBadges");
         alertContainer.innerHTML = "";
         projects.filter(p => p.status === "TRỄ HẠN").forEach(p => {
@@ -1429,60 +1474,14 @@
             badge.onclick = () => editProject(p.id);
             alertContainer.appendChild(badge);
         });
-
-        calculateQualityKPIs();
     }
 
-    // ─── QUALITY KPIs — MỚI ───
-    function calculateQualityKPIs() {
-        // Chỉ xét dự án Đã Ra Giấy
-        const doneProjects = projects.filter(p => p.status === "Đã ra giấy");
-        const doneCount = doneProjects.length;
-
-        // Phân loại theo số lần nộp
-        const l1Only = doneProjects.filter(p => p.l1Date && !p.l2Date);   // chỉ nộp L1
-        const l2Only = doneProjects.filter(p => p.l2Date && !p.l3Date);   // nộp đến L2
-        const l3Plus = doneProjects.filter(p => p.l3Date);                  // nộp đến L3
-
-        const l1Rate = doneCount > 0 ? ((l1Only.length / doneCount) * 100).toFixed(1) : 0;
-        const l2Rate = doneCount > 0 ? ((l2Only.length / doneCount) * 100).toFixed(1) : 0;
-        const l3Rate = doneCount > 0 ? ((l3Plus.length / doneCount) * 100).toFixed(1) : 0;
-
-        document.getElementById("statL1Rate").textContent = l1Rate + "%";
-        document.getElementById("statL2Rate").textContent = l2Rate + "%";
-        document.getElementById("statL3Rate").textContent = l3Rate + "%";
-        document.getElementById("statL1Count").textContent = `${l1Only.length} / ${doneCount} DA`;
-        document.getElementById("statL2Count").textContent = `${l2Only.length} / ${doneCount} DA`;
-        document.getElementById("statL3Count").textContent = `${l3Plus.length} / ${doneCount} DA`;
-
-        // Số lần nộp TB — tính trên tất cả dự án có ít nhất 1 lần nộp
-        const projectsWithSubmission = projects.filter(p => p.l1Date);
-        const totalSubmissions = projectsWithSubmission.reduce((sum, p) => sum + countSubmissions(p), 0);
-        const avgSubmissions = projectsWithSubmission.length > 0 ? (totalSubmissions / projectsWithSubmission.length).toFixed(1) : "0.0";
-        document.getElementById("statAvgSubmissions").textContent = avgSubmissions;
-
-        // Thời gian chỉnh sửa TB
-        const allEditDays = [];
-        projects.forEach(p => {
-            const ed = getEditDays(p);
-            ed.segments.forEach(d => allEditDays.push(d));
-        });
-        const avgEditDays = allEditDays.length > 0
-            ? Math.round(allEditDays.reduce((a,b) => a+b, 0) / allEditDays.length)
-            : 0;
-        document.getElementById("statAvgEditDays").textContent = avgEditDays;
-    }
-
-    // ─── CHARTS ───
     function renderCharts() {
-        // Destroy existing
-        if (statusChartInstance)          statusChartInstance.destroy();
-        if (personnelChartInstance)       personnelChartInstance.destroy();
-        if (qualityDistChartInstance)     qualityDistChartInstance.destroy();
-        if (qualityPersonnelChartInstance) qualityPersonnelChartInstance.destroy();
-        if (editTimePersonnelChartInstance) editTimePersonnelChartInstance.destroy();
-
-        // ── Chart 1: Status doughnut ──
+        if (statusChartInstance) statusChartInstance.destroy();
+        if (personnelChartInstance) personnelChartInstance.destroy();
+        if (submissionLevelChartInstance) submissionLevelChartInstance.destroy();
+        if (qualityByStaffChartInstance) qualityByStaffChartInstance.destroy();
+        if (editTimeByStaffChartInstance) editTimeByStaffChartInstance.destroy();
         const completed = projects.filter(p => p.status === "Đã ra giấy").length;
         const active    = projects.filter(p => p.status === "Đang triển khai").length;
         const suspended = projects.filter(p => p.status === "Đang tạm dừng").length;
@@ -1492,8 +1491,6 @@
             data:{ labels:["Đã ra giấy","Đang triển khai","Đang tạm dừng","Trễ hạn"], datasets:[{ data:[completed,active,suspended,delayed], backgroundColor:["#00A896","#0F52BA","#475569","#EF4444"], borderWidth:2, borderColor:"#040d1a" }] },
             options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:"bottom", labels:{ color:"#e2e8f0", font:{size:9}, boxWidth:12 } } }, cutout:"65%" }
         });
-
-        // ── Chart 2: Personnel load bar ──
         const staffNames = staff.map(s => s.name);
         personnelChartInstance = new Chart(document.getElementById("personnelChart").getContext("2d"), {
             type:"bar",
@@ -1504,116 +1501,83 @@
             options:{ responsive:true, maintainAspectRatio:false, scales:{ x:{stacked:true,grid:{display:false},ticks:{color:"#94a3b8",font:{size:9}}}, y:{stacked:true,grid:{color:"rgba(30,41,59,0.5)"},ticks:{color:"#94a3b8",font:{size:9}}} }, plugins:{ legend:{ position:"bottom", labels:{color:"#e2e8f0",font:{size:9},boxWidth:10} } } }
         });
 
-        // ── Chart 3 (NEW): Phân bố L1/L2/L3 ──
-        const doneProjects = projects.filter(p => p.status === "Đã ra giấy");
-        const l1Count = doneProjects.filter(p => p.l1Date && !p.l2Date).length;
-        const l2Count = doneProjects.filter(p => p.l2Date && !p.l3Date).length;
-        const l3Count = doneProjects.filter(p => p.l3Date).length;
-        const noSubmit = doneProjects.filter(p => !p.l1Date).length;
-        qualityDistChartInstance = new Chart(document.getElementById("qualityDistChart").getContext("2d"), {
-            type: "doughnut",
-            data: {
-                labels: ["Đạt L1 (1 lần)", "Đạt L2 (2 lần)", "Phải L3 (3 lần)", "Chưa ghi nhận"],
-                datasets: [{
-                    data: [l1Count, l2Count, l3Count, noSubmit],
-                    backgroundColor: ["#00A896", "#F5A623", "#EF4444", "#475569"],
-                    borderWidth: 2, borderColor: "#040d1a"
-                }]
-            },
-            options: {
-                responsive: true, maintainAspectRatio: false,
-                plugins: { legend: { position: "bottom", labels: { color: "#e2e8f0", font: { size: 9 }, boxWidth: 10 } } },
-                cutout: "60%"
-            }
+        const completedProjects = projects.filter(p => p.status === "Đã ra giấy");
+        const levelCounts = [1,2,3].map(level => completedProjects.filter(p => getApprovedSubmissionLevel(p) === level).length);
+        submissionLevelChartInstance = new Chart(document.getElementById("submissionLevelChart").getContext("2d"), {
+            type:"doughnut",
+            data:{ labels:["L1","L2","L3"], datasets:[{ data:levelCounts, backgroundColor:["#10B981","#3B82F6","#F59E0B"], borderWidth:2, borderColor:"#040d1a" }] },
+            options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:"bottom", labels:{ color:"#e2e8f0", font:{size:10}, boxWidth:12 } } }, cutout:"62%" }
         });
 
-        // ── Chart 4 (NEW): Chất lượng theo nhân sự (số lần nộp TB) ──
-        const qualityData = staffNames.map(name => {
-            const pp = projects.filter(p => p.assignee === name && p.l1Date);
-            if (pp.length === 0) return 0;
-            const total = pp.reduce((sum, p) => sum + countSubmissions(p), 0);
-            return parseFloat((total / pp.length).toFixed(2));
-        });
-        qualityPersonnelChartInstance = new Chart(document.getElementById("qualityPersonnelChart").getContext("2d"), {
-            type: "bar",
-            data: {
-                labels: staffNames,
-                datasets: [{
-                    label: "Lần nộp TB",
-                    data: qualityData,
-                    backgroundColor: staffNames.map((_,i) => ["#00A896","#F5A623","#0F52BA","#8B5CF6"][i % 4]),
-                    borderRadius: 6
-                }]
-            },
-            options: {
-                responsive: true, maintainAspectRatio: false,
-                scales: {
-                    x: { grid: { display: false }, ticks: { color: "#94a3b8", font: { size: 9 } } },
-                    y: {
-                        grid: { color: "rgba(30,41,59,0.5)" },
-                        ticks: { color: "#94a3b8", font: { size: 9 } },
-                        min: 0,
-                        suggestedMax: 3,
-                        title: { display: true, text: "Lần nộp", color: "#64748b", font: { size: 9 } }
-                    }
-                },
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: ctx => ` ${ctx.raw} lần nộp TB`
-                        }
-                    }
-                }
-            }
+        qualityByStaffChartInstance = new Chart(document.getElementById("qualityByStaffChart").getContext("2d"), {
+            type:"bar",
+            data:{ labels:staffNames, datasets:[
+                { label:"L1", data:staffNames.map(n => completedProjects.filter(p=>projectHasAssignee(p,n)&&getApprovedSubmissionLevel(p)===1).length), backgroundColor:"#10B981", borderRadius:4 },
+                { label:"L2", data:staffNames.map(n => completedProjects.filter(p=>projectHasAssignee(p,n)&&getApprovedSubmissionLevel(p)===2).length), backgroundColor:"#3B82F6", borderRadius:4 },
+                { label:"L3", data:staffNames.map(n => completedProjects.filter(p=>projectHasAssignee(p,n)&&getApprovedSubmissionLevel(p)===3).length), backgroundColor:"#F59E0B", borderRadius:4 }
+            ]},
+            options:{ responsive:true, maintainAspectRatio:false, scales:{ x:{stacked:true,grid:{display:false},ticks:{color:"#94a3b8",font:{size:9}}}, y:{stacked:true,beginAtZero:true,grid:{color:"rgba(30,41,59,0.5)"},ticks:{color:"#94a3b8",font:{size:9},precision:0}} }, plugins:{ legend:{ position:"bottom", labels:{color:"#e2e8f0",font:{size:9},boxWidth:10} } } }
         });
 
-        // ── Chart 5 (NEW): Thời gian chỉnh sửa TB theo nhân sự ──
-        const editTimeData = staffNames.map(name => {
-            const segs = [];
-            projects.filter(p => p.assignee === name).forEach(p => {
-                const ed = getEditDays(p);
-                ed.segments.forEach(d => segs.push(d));
-            });
-            if (segs.length === 0) return 0;
-            return Math.round(segs.reduce((a,b) => a+b, 0) / segs.length);
-        });
-        editTimePersonnelChartInstance = new Chart(document.getElementById("editTimePersonnelChart").getContext("2d"), {
-            type: "bar",
-            data: {
-                labels: staffNames,
-                datasets: [{
-                    label: "Ngày TB",
-                    data: editTimeData,
-                    backgroundColor: staffNames.map((_,i) => ["#7C3AED","#DB2777","#0F52BA","#059669"][i % 4]),
-                    borderRadius: 6
-                }]
-            },
-            options: {
-                responsive: true, maintainAspectRatio: false,
-                scales: {
-                    x: { grid: { display: false }, ticks: { color: "#94a3b8", font: { size: 9 } } },
-                    y: {
-                        grid: { color: "rgba(30,41,59,0.5)" },
-                        ticks: { color: "#94a3b8", font: { size: 9 } },
-                        min: 0,
-                        title: { display: true, text: "Ngày", color: "#64748b", font: { size: 9 } }
-                    }
-                },
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: ctx => ` ${ctx.raw} ngày TB`
-                        }
-                    }
-                }
-            }
+        editTimeByStaffChartInstance = new Chart(document.getElementById("editTimeByStaffChart").getContext("2d"), {
+            type:"bar",
+            data:{ labels:staffNames, datasets:[{
+                label:"Ngày sửa TB",
+                data:staffNames.map(n => {
+                    const metrics = projects.filter(p=>projectHasAssignee(p,n)).map(getRevisionMetrics).filter(m=>m.total>0);
+                    return metrics.length ? +(metrics.reduce((sum,m)=>sum+m.total,0)/metrics.length).toFixed(1) : 0;
+                }),
+                backgroundColor:"#A78BFA", borderRadius:4
+            }]},
+            options:{ responsive:true, maintainAspectRatio:false, scales:{ x:{grid:{display:false},ticks:{color:"#94a3b8",font:{size:9}}}, y:{beginAtZero:true,grid:{color:"rgba(30,41,59,0.5)"},ticks:{color:"#94a3b8",font:{size:9}}} }, plugins:{ legend:{ display:false } } }
         });
     }
 
-    function renderAllTables() { renderProjectTable(); renderFinancePersonnelTable(); }
+    function renderAllTables() { renderProjectTable(); renderFinancePersonnelTable(); renderQualityTable(); }
 
+    function renderQualityTable() {
+        const tbody = document.getElementById("qualityTableBody");
+        if (!tbody) return;
+        tbody.innerHTML = "";
+        if (projects.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="9" class="py-10 text-center text-slate-500 italic">Chưa có dữ liệu đánh giá chất lượng.</td></tr>`;
+            return;
+        }
+        const levelBadge = (level) => {
+            if (level === 1) return `<span class="px-2 py-1 rounded-lg bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 font-bold">Đạt L1</span>`;
+            if (level === 2) return `<span class="px-2 py-1 rounded-lg bg-blue-500/10 text-blue-300 border border-blue-500/20 font-bold">Đạt L2</span>`;
+            if (level === 3) return `<span class="px-2 py-1 rounded-lg bg-amber-500/10 text-brand-gold border border-amber-500/20 font-bold">Đạt L3</span>`;
+            return `<span class="px-2 py-1 rounded-lg bg-slate-500/10 text-slate-400 border border-slate-500/20 font-bold">Chưa kết luận</span>`;
+        };
+        const dateText = (value) => value ? value.split("-").reverse().join("/") : "—";
+        projects.forEach(p => {
+            const level = getApprovedSubmissionLevel(p);
+            const submissions = getSubmissionCount(p);
+            const revision = getRevisionMetrics(p);
+            const tr = document.createElement("tr");
+            tr.className = "hover:bg-slate-900/40 transition align-top";
+            tr.innerHTML = `
+                <td class="py-3 px-3">
+                    <div class="font-bold text-slate-200">${p.name}</div>
+                    <div class="text-[9px] text-slate-500 mt-1">${p.id}</div>
+                </td>
+                <td class="py-3 px-3 text-slate-300 font-semibold">${p.assignee}</td>
+                <td class="py-3 px-3 text-center text-slate-300">${p.status}</td>
+                <td class="py-3 px-3 text-center">${levelBadge(level)}</td>
+                <td class="py-3 px-3 text-center font-black text-white">${submissions}</td>
+                <td class="py-3 px-3 text-center text-slate-300">${revision.l1ToL2} ngày</td>
+                <td class="py-3 px-3 text-center text-slate-300">${revision.l2ToL3} ngày</td>
+                <td class="py-3 px-3 text-center font-bold text-violet-300">${revision.total} ngày</td>
+                <td class="py-3 px-3 text-[10px] text-slate-400">
+                    <div>L1: nộp ${dateText(p.l1Date)} · phản hồi ${dateText(p.l1ResponseDate)}</div>
+                    <div class="mt-1">L2: nộp ${dateText(p.l2Date)} · phản hồi ${dateText(p.l2ResponseDate)}</div>
+                    <div class="mt-1">L3: nộp ${dateText(p.l3Date)} · phản hồi ${dateText(p.l3ResponseDate)}</div>
+                </td>`;
+            tbody.appendChild(tr);
+        });
+    }
+
+    // ─── FINANCE TABLE — BỔ SUNG cột tạm ứng ───
     function renderFinancePersonnelTable() {
         const tbody = document.getElementById("financePersonnelTableBody");
         tbody.innerHTML = "";
@@ -1642,6 +1606,7 @@
         });
     }
 
+    // ─── PROJECT TABLE — BỔ SUNG hiển thị ngày ký HĐ + tạm ứng ───
     function renderProjectTable(filteredProjects = null) {
         const tbody = document.getElementById("projectTableBody");
         tbody.innerHTML = "";
@@ -1649,7 +1614,7 @@
         document.getElementById("displayedCount").textContent = list.length;
         document.getElementById("totalCount").textContent = projects.length;
         if (list.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="12" class="py-10 text-center text-slate-500 italic">Không tìm thấy hồ sơ phù hợp!</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="8" class="py-10 text-center text-slate-500 italic">Không tìm thấy hồ sơ phù hợp!</td></tr>`;
             return;
         }
         const statusBadge = (s) => {
@@ -1661,22 +1626,18 @@
             };
             return map[s] || map["Đang triển khai"];
         };
-
-        // Render milestone với ngày phản hồi
-        const milestone = (label, status, submitDate, feedbackDate) => {
+        const milestone = (label, status, date, responseDate) => {
             let cls = "text-slate-500 border-slate-800 bg-slate-950/20";
             if (status === "Đã duyệt") cls = "text-brand-teal border-emerald-950/40 bg-emerald-950/20";
             else if (status === "Đang duyệt") cls = "text-brand-gold border-amber-950/40 bg-amber-950/20";
-            const submitStr = submitDate ? submitDate.split("-").reverse().join("/") : "--/--";
-            const feedStr   = feedbackDate ? `<span class="text-amber-400/80 ml-1">↩${feedbackDate.split("-").reverse().join("/")}</span>` : "";
             return `<div class="text-[10px] px-2 py-1 rounded-lg border ${cls} mb-1">
                 <div class="flex items-center justify-between">
                     <span class="font-bold">${label}: ${status}</span>
-                    <span class="text-[9px] opacity-85">${submitStr}${feedStr}</span>
+                    <span class="text-[9px] opacity-85">${date ? date.split("-").reverse().join("/") : "--/--"}</span>
                 </div>
+                ${responseDate ? `<div class="text-[9px] text-slate-400 mt-0.5">PH: ${responseDate.split("-").reverse().join("/")}</div>` : ""}
             </div>`;
         };
-
         const today = new Date(); today.setHours(0,0,0,0);
         const getRowUrgency = (p) => {
             if (p.status === "Đã ra giấy") return "";
@@ -1691,33 +1652,10 @@
             const tr = document.createElement("tr");
             tr.className = `hover:bg-slate-900/30 transition duration-150 align-top ${rowBg}`;
 
-            const contractDateDisplay = p.contractDate
-                ? `<div class="font-semibold text-slate-200 whitespace-nowrap">${p.contractDate.split("-").reverse().join("/")}</div>`
-                : `<div class="text-slate-600 text-[10px] italic">Chưa cập nhật</div>`;
-
+            // Tạm ứng
             const advanceDisplay = (p.advancePayment && p.advancePayment > 0)
                 ? `<span class="advance-badge"><i class="fa-solid fa-hand-holding-dollar mr-1"></i>${new Intl.NumberFormat('vi-VN').format(p.advancePayment)}</span>`
                 : `<span class="text-slate-600 text-[10px]">—</span>`;
-
-            // Số lần nộp badge
-            const subCount = countSubmissions(p);
-            const { editL1L2, editL2L3, total: totalEdit } = getEditDays(p);
-            let subBadgeColor = "bg-slate-700/30 text-slate-400 border-slate-700/40";
-            if (subCount === 1) subBadgeColor = "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
-            else if (subCount === 2) subBadgeColor = "bg-amber-500/10 text-amber-400 border-amber-500/20";
-            else if (subCount >= 3) subBadgeColor = "bg-red-500/10 text-red-400 border-red-500/20";
-
-            const editInfo = [];
-            if (editL1L2 !== null) editInfo.push(`L1→L2: ${editL1L2}ng`);
-            if (editL2L3 !== null) editInfo.push(`L2→L3: ${editL2L3}ng`);
-
-            const subDisplay = subCount > 0
-                ? `<div class="flex flex-col items-center gap-1">
-                    <span class="inline-flex items-center justify-center w-8 h-8 rounded-xl border text-sm font-extrabold ${subBadgeColor}">${subCount}</span>
-                    ${editInfo.length > 0 ? `<div class="text-[9px] text-slate-500 text-center leading-tight">${editInfo.join('<br>')}</div>` : ''}
-                   </div>`
-                : `<span class="text-slate-600 text-[10px]">—</span>`;
-
             tr.innerHTML = `
                 <td class="py-3 px-3 text-center text-slate-500 font-bold border-r border-blue-950/20">${i+1}</td>
                 <td class="py-3 px-3">
@@ -1727,28 +1665,27 @@
                         <span>TVTK Nam Lợi Phát</span>
                     </div>
                 </td>
-                <td class="py-3 px-3 text-right font-bold text-slate-300 whitespace-nowrap">${formatVND(p.contractValue)}</td>
-                <td class="py-3 px-3 text-center">${contractDateDisplay}</td>
-                <td class="py-3 px-3 text-center">${advanceDisplay}</td>
+                <td class="py-3 px-3">
+                    <div class="font-bold text-slate-200 whitespace-nowrap">${formatVND(p.contractValue)}</div>
+                    <div class="text-[10px] text-slate-400 mt-1">Ký HĐ: ${p.contractDate ? p.contractDate.split("-").reverse().join("/") : "Chưa cập nhật"}</div>
+                    <div class="mt-1">${advanceDisplay}</div>
+                </td>
                 <td class="py-3 px-3">
                     <div class="flex items-center space-x-1.5">
                         <div class="w-5 h-5 rounded-full bg-brand-blue/30 flex items-center justify-center text-[10px] text-brand-gold font-bold flex-shrink-0">${p.assignee.charAt(0)}</div>
                         <span class="font-semibold text-slate-200">${p.assignee}</span>
                     </div>
-                </td>
-                <td class="py-3 px-3">
-                    <div class="font-bold text-slate-300 whitespace-nowrap">${dl}</div>
+                    <div class="font-bold text-slate-300 whitespace-nowrap mt-1">${dl}</div>
                     <div class="text-[9px] text-slate-500 mt-0.5">Hạn nộp</div>
                 </td>
                 <td class="py-3 px-3">${statusBadge(p.status)}</td>
                 <td class="py-3 px-3">
                     <div class="space-y-1">
-                        ${milestone("L1", p.l1Status, p.l1Date, p.l1FeedbackDate)}
-                        ${milestone("L2", p.l2Status, p.l2Date, p.l2FeedbackDate)}
-                        ${milestone("L3", p.l3Status, p.l3Date, p.l3FeedbackDate)}
+                        ${milestone("L1", p.l1Status, p.l1Date, p.l1ResponseDate)}
+                        ${milestone("L2", p.l2Status, p.l2Date, p.l2ResponseDate)}
+                        ${milestone("L3", p.l3Status, p.l3Date, p.l3ResponseDate)}
                     </div>
                 </td>
-                <td class="py-3 px-3 text-center">${subDisplay}</td>
                 <td class="py-3 px-3">
                     <div class="font-medium text-brand-gold text-[11px]">${p.officer || "N/A"}</div>
                     <div class="text-[10px] text-slate-400 mt-1 max-w-[180px] break-words italic">${p.notes || "—"}</div>
@@ -1775,7 +1712,7 @@
         renderProjectTable(filtered);
     }
 
-    // ─── PROJECT MODAL ───
+    // ─── PROJECT MODAL — BỔ SUNG load/save contractDate & advancePayment ───
     function openProjectModal(projectId = null) {
         const modal = document.getElementById("projectModal");
         document.getElementById("projectForm").reset();
@@ -1793,13 +1730,13 @@
                 document.getElementById("formStatus").value = p.status === "TRỄ HẠN" ? "Đang triển khai" : p.status;
                 document.getElementById("formL1Status").value = p.l1Status;
                 document.getElementById("formL1Date").value = p.l1Date;
-                document.getElementById("formL1FeedbackDate").value = p.l1FeedbackDate || "";
+                document.getElementById("formL1ResponseDate").value = p.l1ResponseDate || "";
                 document.getElementById("formL2Status").value = p.l2Status;
                 document.getElementById("formL2Date").value = p.l2Date;
-                document.getElementById("formL2FeedbackDate").value = p.l2FeedbackDate || "";
+                document.getElementById("formL2ResponseDate").value = p.l2ResponseDate || "";
                 document.getElementById("formL3Status").value = p.l3Status;
                 document.getElementById("formL3Date").value = p.l3Date;
-                document.getElementById("formL3FeedbackDate").value = p.l3FeedbackDate || "";
+                document.getElementById("formL3ResponseDate").value = p.l3ResponseDate || "";
                 document.getElementById("formOfficer").value = p.officer || "";
                 document.getElementById("formNotes").value = p.notes || "";
             }
@@ -1814,25 +1751,25 @@
 
     function saveProject(e) {
         e.preventDefault();
-        const id              = document.getElementById("formProjectId").value;
-        const name            = document.getElementById("formProjectName").value.trim();
-        const contractValue   = parseInt(document.getElementById("formContractValue").value) || 0;
-        const contractDate    = document.getElementById("formContractDate").value;
-        const advancePayment  = parseInt(document.getElementById("formAdvancePayment").value) || 0;
-        const assignee        = document.getElementById("formAssignee").value;
-        const deadline        = document.getElementById("formDeadline").value;
-        const status          = document.getElementById("formStatus").value;
-        const l1Status        = document.getElementById("formL1Status").value;
-        const l1Date          = document.getElementById("formL1Date").value;
-        const l1FeedbackDate  = document.getElementById("formL1FeedbackDate").value;
-        const l2Status        = document.getElementById("formL2Status").value;
-        const l2Date          = document.getElementById("formL2Date").value;
-        const l2FeedbackDate  = document.getElementById("formL2FeedbackDate").value;
-        const l3Status        = document.getElementById("formL3Status").value;
-        const l3Date          = document.getElementById("formL3Date").value;
-        const l3FeedbackDate  = document.getElementById("formL3FeedbackDate").value;
-        const officer         = document.getElementById("formOfficer").value.trim();
-        const notes           = document.getElementById("formNotes").value.trim();
+        const id            = document.getElementById("formProjectId").value;
+        const name          = document.getElementById("formProjectName").value.trim();
+        const contractValue  = parseInt(document.getElementById("formContractValue").value) || 0;
+        const contractDate   = document.getElementById("formContractDate").value;
+        const advancePayment = parseInt(document.getElementById("formAdvancePayment").value) || 0;
+        const assignee      = document.getElementById("formAssignee").value;
+        const deadline      = document.getElementById("formDeadline").value;
+        const status        = document.getElementById("formStatus").value;
+        const l1Status = document.getElementById("formL1Status").value;
+        const l1Date   = document.getElementById("formL1Date").value;
+        const l1ResponseDate = document.getElementById("formL1ResponseDate").value;
+        const l2Status = document.getElementById("formL2Status").value;
+        const l2Date   = document.getElementById("formL2Date").value;
+        const l2ResponseDate = document.getElementById("formL2ResponseDate").value;
+        const l3Status = document.getElementById("formL3Status").value;
+        const l3Date   = document.getElementById("formL3Date").value;
+        const l3ResponseDate = document.getElementById("formL3ResponseDate").value;
+        const officer  = document.getElementById("formOfficer").value.trim();
+        const notes    = document.getElementById("formNotes").value.trim();
 
         if (!name || !assignee || !deadline) { showToast("Vui lòng nhập đầy đủ thông tin bắt buộc!", "error"); return; }
 
@@ -1841,24 +1778,24 @@
             if (idx !== -1) {
                 const old = projects[idx];
                 const changes = [];
-                if (old.name !== name)                              changes.push(`Tên: "${old.name}" → "${name}"`);
-                if (old.status !== status)                          changes.push(`Trạng thái: ${old.status} → ${status}`);
-                if (old.assignee !== assignee)                      changes.push(`Người thực hiện: ${old.assignee} → ${assignee}`);
-                if (old.deadline !== deadline)                      changes.push(`Deadline: ${old.deadline} → ${deadline}`);
-                if ((old.contractDate||"") !== contractDate)        changes.push(`Ngày ký HĐ: ${old.contractDate||"—"} → ${contractDate||"—"}`);
-                if ((old.advancePayment||0) !== advancePayment)     changes.push(`Tạm ứng: ${formatVND(old.advancePayment||0)} → ${formatVND(advancePayment)}`);
-                if ((old.l1FeedbackDate||"") !== l1FeedbackDate)    changes.push(`Phản hồi L1: ${old.l1FeedbackDate||"—"} → ${l1FeedbackDate||"—"}`);
-                if ((old.l2FeedbackDate||"") !== l2FeedbackDate)    changes.push(`Phản hồi L2: ${old.l2FeedbackDate||"—"} → ${l2FeedbackDate||"—"}`);
-                if ((old.l3FeedbackDate||"") !== l3FeedbackDate)    changes.push(`Phản hồi L3: ${old.l3FeedbackDate||"—"} → ${l3FeedbackDate||"—"}`);
-                projects[idx] = { ...projects[idx], name, contractValue, contractDate, advancePayment, assignee, deadline, status, l1Status, l1Date, l1FeedbackDate, l2Status, l2Date, l2FeedbackDate, l3Status, l3Date, l3FeedbackDate, officer, notes };
+                if (old.name !== name)                         changes.push(`Tên: "${old.name}" → "${name}"`);
+                if (old.status !== status)                     changes.push(`Trạng thái: ${old.status} → ${status}`);
+                if (old.assignee !== assignee)                 changes.push(`Người thực hiện: ${old.assignee} → ${assignee}`);
+                if (old.deadline !== deadline)                 changes.push(`Deadline: ${old.deadline} → ${deadline}`);
+                if ((old.contractDate||"") !== contractDate)   changes.push(`Ngày ký HĐ: ${old.contractDate||"—"} → ${contractDate||"—"}`);
+                if ((old.advancePayment||0) !== advancePayment) changes.push(`Tạm ứng: ${formatVND(old.advancePayment||0)} → ${formatVND(advancePayment)}`);
+                if ((old.l1ResponseDate||"") !== l1ResponseDate) changes.push(`Phản hồi L1: ${old.l1ResponseDate||"—"} → ${l1ResponseDate||"—"}`);
+                if ((old.l2ResponseDate||"") !== l2ResponseDate) changes.push(`Phản hồi L2: ${old.l2ResponseDate||"—"} → ${l2ResponseDate||"—"}`);
+                if ((old.l3ResponseDate||"") !== l3ResponseDate) changes.push(`Phản hồi L3: ${old.l3ResponseDate||"—"} → ${l3ResponseDate||"—"}`);
+                projects[idx] = { ...projects[idx], name, contractValue, contractDate, advancePayment, assignee, deadline, status, l1Status, l1Date, l1ResponseDate, l2Status, l2Date, l2ResponseDate, l3Status, l3Date, l3ResponseDate, officer, notes };
                 addAuditEntry("UPDATE", `Cập nhật dự án: ${name}`, changes.length > 0 ? changes.join(" | ") : "Chỉnh sửa chi tiết");
                 showToast(`Cập nhật dự án "${name}" thành công!`, "success");
             }
         } else {
             const nums  = projects.map(p => parseInt(p.id.replace("DA",""))).filter(n => !isNaN(n));
             const nextId = `DA${String(Math.max(0,...nums)+1).padStart(3,'0')}`;
-            projects.push({ id:nextId, name, contractValue, contractDate, advancePayment, assignee, deadline, status, l1Status, l1Date, l1FeedbackDate, l2Status, l2Date, l2FeedbackDate, l3Status, l3Date, l3FeedbackDate, officer, notes });
-            addAuditEntry("CREATE", `Thêm dự án mới: ${name}`, `Mã: ${nextId} | Người thực hiện: ${assignee} | Deadline: ${deadline}`);
+            projects.push({ id:nextId, name, contractValue, contractDate, advancePayment, assignee, deadline, status, l1Status, l1Date, l1ResponseDate, l2Status, l2Date, l2ResponseDate, l3Status, l3Date, l3ResponseDate, officer, notes });
+            addAuditEntry("CREATE", `Thêm dự án mới: ${name}`, `Mã: ${nextId} | Người thực hiện: ${assignee} | Deadline: ${deadline}${contractDate ? ' | Ngày ký: '+contractDate : ''}${advancePayment ? ' | Tạm ứng: '+formatVND(advancePayment) : ''}`);
             showToast(`Thêm dự án mới ${nextId} thành công!`, "success");
         }
 
@@ -1891,18 +1828,6 @@
             const run  = pp.filter(p => p.status === "Đang triển khai").length;
             const loadVal = pp.filter(p => p.status !== "Đã ra giấy").reduce((a,p) => a+(p.contractValue||0), 0);
             const advanceVal = pp.filter(p => p.status !== "Đã ra giấy").reduce((a,p) => a+(p.advancePayment||0), 0);
-
-            // Quality metrics for this person
-            const ppWithSub = pp.filter(p => p.l1Date);
-            const avgSub = ppWithSub.length > 0
-                ? (ppWithSub.reduce((sum,p) => sum + countSubmissions(p), 0) / ppWithSub.length).toFixed(1)
-                : null;
-            const allSegs = [];
-            pp.forEach(p => { getEditDays(p).segments.forEach(d => allSegs.push(d)); });
-            const avgEdit = allSegs.length > 0
-                ? Math.round(allSegs.reduce((a,b) => a+b,0) / allSegs.length)
-                : null;
-
             const card = document.createElement("div");
             card.className = "kpi-card print-card bg-brand-darkblue/40 border border-blue-900/50 rounded-2xl p-5 flex flex-col justify-between";
             card.innerHTML = `
@@ -1928,17 +1853,6 @@
                             <div class="text-sm font-black text-brand-teal mt-0.5">${done}</div>
                         </div>
                     </div>
-                    ${avgSub !== null || avgEdit !== null ? `
-                    <div class="mt-2 grid grid-cols-2 gap-2 text-center">
-                        ${avgSub !== null ? `<div class="bg-slate-950/50 p-2 rounded-xl border border-blue-950">
-                            <div class="text-[9px] text-slate-500">SỐ LẦN NỘP TB</div>
-                            <div class="text-sm font-black text-emerald-400 mt-0.5">${avgSub}</div>
-                        </div>` : '<div></div>'}
-                        ${avgEdit !== null ? `<div class="bg-slate-950/50 p-2 rounded-xl border border-blue-950">
-                            <div class="text-[9px] text-slate-500">CHỈNH SỬA TB</div>
-                            <div class="text-sm font-black text-violet-400 mt-0.5">${avgEdit}ng</div>
-                        </div>` : ''}
-                    </div>` : ''}
                 </div>
                 <div class="mt-4 pt-3 border-t border-blue-950 space-y-1">
                     <div class="flex justify-between items-center">
@@ -2046,6 +1960,18 @@
             notifPanelOpen = false; panel.classList.add("hidden-panel");
         }
     });
+
+    window.onload = () => {
+        const saved = sessionStorage.getItem("nlp_role");
+        if (saved === "admin" || saved === "viewer") {
+            currentRole = saved;
+            document.getElementById("loginOverlay").style.display = "none";
+            document.getElementById("mainContent").classList.remove("hidden-ui");
+            if (typeof initializeApplication === "function") initializeApplication();
+        }
+    };
     </script>
 </body>
 </html>
+
+
