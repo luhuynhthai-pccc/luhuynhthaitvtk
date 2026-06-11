@@ -342,7 +342,7 @@
                     </div>
                     <div class="kpi-card print-card bg-brand-darkblue/40 backdrop-blur border border-blue-900/50 rounded-2xl p-5">
                         <div class="flex items-center justify-between">
-                            <span class="text-xs font-medium text-slate-300">Đang Triển Khai</span>
+                            <span class="text-xs font-medium text-slate-300">Đang Triển Khoai</span>
                             <div class="w-8 h-8 rounded-lg bg-brand-gold/15 flex items-center justify-center text-brand-gold">
                                 <i class="fa-solid fa-person-digging text-sm"></i>
                             </div>
@@ -1383,6 +1383,18 @@
         if (tabId === "audit")     renderAuditLog();
     }
 
+    // Tiện ích phụ giúp tạo biểu đồ an toàn
+    function safeCreateChart(canvasId, config) {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas) return null;
+        try {
+            return new Chart(canvas.getContext("2d"), config);
+        } catch (e) {
+            console.warn(`Không thể khởi tạo biểu đồ cho canvas #${canvasId}:`, e);
+            return null;
+        }
+    }
+
     function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
     function formatVND(val) {
@@ -1438,14 +1450,16 @@
         document.getElementById("progressAdvanceBar").style.width = totalVal > 0 ? `${Math.min(totalAdvance/totalVal*100,100).toFixed(1)}%` : "0%";
 
         const alertContainer = document.getElementById("alertBoxBadges");
-        alertContainer.innerHTML = "";
-        projects.filter(p => p.status === "TRỄ HẠN").forEach(p => {
-            const badge = document.createElement("span");
-            badge.className = "inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-semibold bg-red-500/20 text-red-400 border border-red-500/30 cursor-pointer hover:bg-red-500/35 transition";
-            badge.innerHTML = `<i class="fa-solid fa-fire text-[8px] mr-1"></i>${p.name} (${p.assignee})`;
-            badge.onclick = () => editProject(p.id);
-            alertContainer.appendChild(badge);
-        });
+        if (alertContainer) {
+            alertContainer.innerHTML = "";
+            projects.filter(p => p.status === "TRỄ HẠN").forEach(p => {
+                const badge = document.createElement("span");
+                badge.className = "inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-semibold bg-red-500/20 text-red-400 border border-red-500/30 cursor-pointer hover:bg-red-500/35 transition";
+                badge.innerHTML = `<i class="fa-solid fa-fire text-[8px] mr-1"></i>${p.name} (${p.assignee})`;
+                badge.onclick = () => editProject(p.id);
+                alertContainer.appendChild(badge);
+            });
+        }
 
         calculateQualityKPIs();
     }
@@ -1519,21 +1533,22 @@
         }).join("");
     }
 
-    // ─── CHARTS ───
+    // ─── CHARTS (ĐÃ ĐƯỢC BẢO VỆ CHỐNG CRASH) ───
     function renderCharts() {
-        // Destroy existing
-        if (statusChartInstance)          statusChartInstance.destroy();
-        if (personnelChartInstance)       personnelChartInstance.destroy();
-        if (qualityDistChartInstance)     qualityDistChartInstance.destroy();
-        if (qualityPersonnelChartInstance) qualityPersonnelChartInstance.destroy();
-        if (editTimePersonnelChartInstance) editTimePersonnelChartInstance.destroy();
+        // Hủy các instance cũ an toàn
+        if (statusChartInstance) { statusChartInstance.destroy(); statusChartInstance = null; }
+        if (personnelChartInstance) { personnelChartInstance.destroy(); personnelChartInstance = null; }
+        if (qualityDistChartInstance) { qualityDistChartInstance.destroy(); qualityDistChartInstance = null; }
+        if (qualityPersonnelChartInstance) { qualityPersonnelChartInstance.destroy(); qualityPersonnelChartInstance = null; }
+        if (editTimePersonnelChartInstance) { editTimePersonnelChartInstance.destroy(); editTimePersonnelChartInstance = null; }
 
         // ── Chart 1: Status doughnut ──
         const completed = projects.filter(p => p.status === "Đã ra giấy").length;
         const active    = projects.filter(p => p.status === "Đang triển khai").length;
         const suspended = projects.filter(p => p.status === "Đang tạm dừng").length;
         const delayed   = projects.filter(p => p.status === "TRỄ HẠN").length;
-        statusChartInstance = new Chart(document.getElementById("statusChart").getContext("2d"), {
+        
+        statusChartInstance = safeCreateChart("statusChart", {
             type:"doughnut",
             data:{ labels:["Đã ra giấy","Đang triển khai","Đang tạm dừng","Trễ hạn"], datasets:[{ data:[completed,active,suspended,delayed], backgroundColor:["#00A896","#0F52BA","#475569","#EF4444"], borderWidth:2, borderColor:"#040d1a" }] },
             options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:"bottom", labels:{ color:"#e2e8f0", font:{size:9}, boxWidth:12 } } }, cutout:"65%" }
@@ -1541,7 +1556,7 @@
 
         // ── Chart 2: Personnel load bar ──
         const staffNames = staff.map(s => s.name);
-        personnelChartInstance = new Chart(document.getElementById("personnelChart").getContext("2d"), {
+        personnelChartInstance = safeCreateChart("personnelChart", {
             type:"bar",
             data:{ labels:staffNames, datasets:[
                 { label:"Đã ra giấy", data:staffNames.map(n => projects.filter(p=>p.assignee&&p.assignee.split(',').map(s=>s.trim()).includes(n)&&p.status==="Đã ra giấy").reduce((a,p)=>a+p.contractValue,0)/1e9), backgroundColor:"#00A896", borderRadius:4 },
@@ -1556,7 +1571,8 @@
         const l2Count = doneProjects.filter(p => p.l2Date && !p.l3Date).length;
         const l3Count = doneProjects.filter(p => p.l3Date).length;
         const noSubmit = doneProjects.filter(p => !p.l1Date).length;
-        qualityDistChartInstance = new Chart(document.getElementById("qualityDistChart").getContext("2d"), {
+        
+        qualityDistChartInstance = safeCreateChart("qualityDistChart", {
             type: "doughnut",
             data: {
                 labels: ["Đạt L1 (1 lần)", "Đạt L2 (2 lần)", "Phải L3 (3 lần)", "Chưa ghi nhận"],
@@ -1580,7 +1596,8 @@
             const total = pp.reduce((sum, p) => sum + countSubmissions(p), 0);
             return parseFloat((total / pp.length).toFixed(2));
         });
-        qualityPersonnelChartInstance = new Chart(document.getElementById("qualityPersonnelChart").getContext("2d"), {
+        
+        qualityPersonnelChartInstance = safeCreateChart("qualityPersonnelChart", {
             type: "bar",
             data: {
                 labels: staffNames,
@@ -1624,7 +1641,8 @@
             if (segs.length === 0) return 0;
             return Math.round(segs.reduce((a,b) => a+b, 0) / segs.length);
         });
-        editTimePersonnelChartInstance = new Chart(document.getElementById("editTimePersonnelChart").getContext("2d"), {
+        
+        editTimePersonnelChartInstance = safeCreateChart("editTimePersonnelChart", {
             type: "bar",
             data: {
                 labels: staffNames,
