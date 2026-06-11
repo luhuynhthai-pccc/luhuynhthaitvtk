@@ -228,6 +228,9 @@
                 <button onclick="switchTab('personnel')" id="tabBtnPersonnel" class="px-4 py-2 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 text-slate-400 hover:text-white">
                     <i class="fa-solid fa-users-gear"></i><span>Quản lý Nhân Sự</span>
                 </button>
+                <button onclick="switchTab('quality')" id="tabBtnQuality" class="px-4 py-2 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-medal"></i><span>Chất Lượng</span>
+                </button>
                 <button onclick="switchTab('audit')" id="tabBtnAudit" class="px-4 py-2 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 text-slate-400 hover:text-white">
                     <i class="fa-solid fa-clock-rotate-left"></i><span>Lịch sử</span>
                 </button>
@@ -264,6 +267,7 @@
         <div class="inline-flex rounded-lg p-1 bg-slate-950 gap-1">
             <button onclick="switchTab('dashboard')" id="mobileTabBtnDashboard" class="px-3 py-1.5 rounded-md text-xs font-bold bg-brand-blue text-white">Dashboard</button>
             <button onclick="switchTab('personnel')" id="mobileTabBtnPersonnel" class="px-3 py-1.5 rounded-md text-xs font-bold text-slate-400">Nhân Sự</button>
+            <button onclick="switchTab('quality')" id="mobileTabBtnQuality" class="px-3 py-1.5 rounded-md text-xs font-bold text-slate-400">Chất Lượng</button>
             <button onclick="switchTab('audit')" id="mobileTabBtnAudit" class="px-3 py-1.5 rounded-md text-xs font-bold text-slate-400">Lịch sử</button>
         </div>
     </div>
@@ -470,96 +474,9 @@
                 <!-- ══════════════════════════════════════════════════════ -->
                 <!-- QUALITY KPI SECTION — MỚI                            -->
                 <!-- ══════════════════════════════════════════════════════ -->
-                <div class="print-card bg-brand-darkblue/40 border border-blue-900/40 rounded-2xl p-6">
-                    <div class="flex items-center space-x-2 mb-5 pb-4 border-b border-blue-900/30">
-                        <div class="w-9 h-9 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400">
-                            <i class="fa-solid fa-medal text-lg"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-sm font-bold uppercase text-white">Chất Lượng Hồ Sơ — KPI Số Lần Nộp & Thời Gian Chỉnh Sửa</h3>
-                            <p class="text-[11px] text-slate-400 mt-0.5">Phân tích dựa trên các dự án <span class="text-brand-teal font-semibold">Đã Ra Giấy</span> · Mục tiêu: phê duyệt trong tối đa 3 lần nộp</p>
-                        </div>
-                    </div>
-
-                    <!-- KPI CARDS ROW -->
-                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
-                        <!-- Tỷ lệ đạt L1 -->
-                        <div class="quality-kpi-card bg-emerald-950/20 border border-emerald-500/25 rounded-2xl p-4 text-center">
-                            <div class="w-9 h-9 bg-emerald-500/15 rounded-xl flex items-center justify-center mx-auto mb-2">
-                                <i class="fa-solid fa-1 text-emerald-400 text-sm font-black"></i>
-                            </div>
-                            <div class="text-2xl font-extrabold text-emerald-400" id="statL1Rate">0%</div>
-                            <div class="text-[10px] text-slate-400 mt-1 leading-tight">Đạt ngay<br><span class="font-bold text-emerald-300">Lần nộp 1</span></div>
-                            <div class="text-[9px] text-slate-500 mt-1" id="statL1Count">0 / 0 DA</div>
-                        </div>
-                        <!-- Tỷ lệ đạt L2 -->
-                        <div class="quality-kpi-card bg-amber-950/20 border border-amber-500/25 rounded-2xl p-4 text-center">
-                            <div class="w-9 h-9 bg-amber-500/15 rounded-xl flex items-center justify-center mx-auto mb-2">
-                                <i class="fa-solid fa-2 text-amber-400 text-sm font-black"></i>
-                            </div>
-                            <div class="text-2xl font-extrabold text-amber-400" id="statL2Rate">0%</div>
-                            <div class="text-[10px] text-slate-400 mt-1 leading-tight">Đạt sau<br><span class="font-bold text-amber-300">Lần nộp 2</span></div>
-                            <div class="text-[9px] text-slate-500 mt-1" id="statL2Count">0 / 0 DA</div>
-                        </div>
-                        <!-- Tỷ lệ phải nộp L3 -->
-                        <div class="quality-kpi-card bg-red-950/20 border border-red-500/25 rounded-2xl p-4 text-center">
-                            <div class="w-9 h-9 bg-red-500/15 rounded-xl flex items-center justify-center mx-auto mb-2">
-                                <i class="fa-solid fa-3 text-red-400 text-sm font-black"></i>
-                            </div>
-                            <div class="text-2xl font-extrabold text-red-400" id="statL3Rate">0%</div>
-                            <div class="text-[10px] text-slate-400 mt-1 leading-tight">Phải nộp đến<br><span class="font-bold text-red-300">Lần nộp 3</span></div>
-                            <div class="text-[9px] text-slate-500 mt-1" id="statL3Count">0 / 0 DA</div>
-                        </div>
-                        <!-- Số lần nộp TB -->
-                        <div class="quality-kpi-card bg-blue-950/20 border border-blue-500/25 rounded-2xl p-4 text-center">
-                            <div class="w-9 h-9 bg-blue-500/15 rounded-xl flex items-center justify-center mx-auto mb-2">
-                                <i class="fa-solid fa-rotate text-blue-400 text-sm"></i>
-                            </div>
-                            <div class="text-2xl font-extrabold text-blue-400" id="statAvgSubmissions">0.0</div>
-                            <div class="text-[10px] text-slate-400 mt-1 leading-tight">Lần nộp<br><span class="font-bold text-blue-300">trung bình</span></div>
-                            <div class="text-[9px] text-slate-500 mt-1">lần / dự án</div>
-                        </div>
-                        <!-- Thời gian chỉnh sửa TB -->
-                        <div class="quality-kpi-card bg-violet-950/20 border border-violet-500/25 rounded-2xl p-4 text-center">
-                            <div class="w-9 h-9 bg-violet-500/15 rounded-xl flex items-center justify-center mx-auto mb-2">
-                                <i class="fa-solid fa-clock text-violet-400 text-sm"></i>
-                            </div>
-                            <div class="text-2xl font-extrabold text-violet-400" id="statL1L2Rate">0%</div>
-                            <div class="text-[10px] text-slate-400 mt-1 leading-tight">Hoàn thành<br><span class="font-bold text-teal-300">trong ≤ 2 lần</span></div>
-                            <div class="text-[9px] text-slate-500 mt-1" id="statL1L2Count">Mục tiêu BGĐ</div>
-                        </div>
-                    </div>
-
-                    <!-- QUALITY CHARTS ROW -->
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
-                        <!-- Chart 1: Phân bố L1/L2/L3 -->
-                        <div class="bg-slate-900/50 border border-blue-900/30 rounded-xl p-4">
-                            <div class="flex items-center space-x-2 mb-3">
-                                <i class="fa-solid fa-chart-pie text-emerald-400 text-sm"></i>
-                                <h4 class="text-xs font-bold text-slate-200 uppercase">Phân Bố Theo Số Lần Nộp</h4>
-                            </div>
-                            <p class="text-[10px] text-slate-500 mb-3">Dự án Đã Ra Giấy — phân theo L1 / L2 / L3</p>
-                            <div class="relative h-44">
-                                <canvas id="qualityDistChart"></canvas>
-                            </div>
-                        </div>
-                        <!-- Chart 2: Chất lượng theo nhân sự -->
-                        <div class="bg-slate-900/50 border border-blue-900/30 rounded-xl p-4">
-                            <div class="flex items-center space-x-2 mb-3">
-                                <i class="fa-solid fa-users text-amber-400 text-sm"></i>
-                                <h4 class="text-xs font-bold text-slate-200 uppercase">Chất Lượng Theo Nhân Sự</h4>
-                            </div>
-                            <p class="text-[10px] text-slate-500 mb-3">Số lần nộp trung bình mỗi kỹ sư</p>
-                            <div class="relative h-44">
-                                <canvas id="qualityPersonnelChart"></canvas>
-                            </div>
-                        </div>
-                </div>
-                </div>
-                <!-- ══ END QUALITY KPI SECTION ══ -->
                 
 
-                                <!-- DEADLINE ALERT BANNER -->
+<!-- DEADLINE ALERT BANNER -->
                 <div id="deadlineBanner" class="hidden print-card bg-amber-950/20 border border-amber-500/30 rounded-2xl p-5">
                     <div class="flex items-start space-x-3.5">
                         <div class="p-3 bg-amber-500/10 rounded-xl text-amber-400 flex-shrink-0">
@@ -721,6 +638,111 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+
+            <!-- ====== TAB 4: CHẤT LƯỢNG HỒ SƠ ====== -->
+            <div id="qualityTab" class="space-y-8 hidden">
+                <div class="bg-brand-darkblue/40 border border-blue-900/50 rounded-2xl p-6">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center text-emerald-400">
+                            <i class="fa-solid fa-medal text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-white">Chất Lượng Hồ Sơ Thẩm Duyệt</h3>
+                            <p class="text-xs text-slate-400 mt-0.5">Phân tích số lần nộp, tỷ lệ đạt L1/L2/L3 và thời gian xử lý theo từng dự án & nhân sự</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="print-card bg-brand-darkblue/40 border border-blue-900/40 rounded-2xl p-6">
+                    <div class="flex items-center space-x-2 mb-5 pb-4 border-b border-blue-900/30">
+                        <div class="w-9 h-9 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+                            <i class="fa-solid fa-medal text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold uppercase text-white">Chất Lượng Hồ Sơ — KPI Số Lần Nộp & Thời Gian Chỉnh Sửa</h3>
+                            <p class="text-[11px] text-slate-400 mt-0.5">Phân tích dựa trên các dự án <span class="text-brand-teal font-semibold">Đã Ra Giấy</span> · Mục tiêu: phê duyệt trong tối đa 3 lần nộp</p>
+                        </div>
+                    </div>
+
+                    <!-- KPI CARDS ROW -->
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
+                        <!-- Tỷ lệ đạt L1 -->
+                        <div class="quality-kpi-card bg-emerald-950/20 border border-emerald-500/25 rounded-2xl p-4 text-center">
+                            <div class="w-9 h-9 bg-emerald-500/15 rounded-xl flex items-center justify-center mx-auto mb-2">
+                                <i class="fa-solid fa-1 text-emerald-400 text-sm font-black"></i>
+                            </div>
+                            <div class="text-2xl font-extrabold text-emerald-400" id="statL1Rate">0%</div>
+                            <div class="text-[10px] text-slate-400 mt-1 leading-tight">Đạt ngay<br><span class="font-bold text-emerald-300">Lần nộp 1</span></div>
+                            <div class="text-[9px] text-slate-500 mt-1" id="statL1Count">0 / 0 DA</div>
+                        </div>
+                        <!-- Tỷ lệ đạt L2 -->
+                        <div class="quality-kpi-card bg-amber-950/20 border border-amber-500/25 rounded-2xl p-4 text-center">
+                            <div class="w-9 h-9 bg-amber-500/15 rounded-xl flex items-center justify-center mx-auto mb-2">
+                                <i class="fa-solid fa-2 text-amber-400 text-sm font-black"></i>
+                            </div>
+                            <div class="text-2xl font-extrabold text-amber-400" id="statL2Rate">0%</div>
+                            <div class="text-[10px] text-slate-400 mt-1 leading-tight">Đạt sau<br><span class="font-bold text-amber-300">Lần nộp 2</span></div>
+                            <div class="text-[9px] text-slate-500 mt-1" id="statL2Count">0 / 0 DA</div>
+                        </div>
+                        <!-- Tỷ lệ phải nộp L3 -->
+                        <div class="quality-kpi-card bg-red-950/20 border border-red-500/25 rounded-2xl p-4 text-center">
+                            <div class="w-9 h-9 bg-red-500/15 rounded-xl flex items-center justify-center mx-auto mb-2">
+                                <i class="fa-solid fa-3 text-red-400 text-sm font-black"></i>
+                            </div>
+                            <div class="text-2xl font-extrabold text-red-400" id="statL3Rate">0%</div>
+                            <div class="text-[10px] text-slate-400 mt-1 leading-tight">Phải nộp đến<br><span class="font-bold text-red-300">Lần nộp 3</span></div>
+                            <div class="text-[9px] text-slate-500 mt-1" id="statL3Count">0 / 0 DA</div>
+                        </div>
+                        <!-- Số lần nộp TB -->
+                        <div class="quality-kpi-card bg-blue-950/20 border border-blue-500/25 rounded-2xl p-4 text-center">
+                            <div class="w-9 h-9 bg-blue-500/15 rounded-xl flex items-center justify-center mx-auto mb-2">
+                                <i class="fa-solid fa-rotate text-blue-400 text-sm"></i>
+                            </div>
+                            <div class="text-2xl font-extrabold text-blue-400" id="statAvgSubmissions">0.0</div>
+                            <div class="text-[10px] text-slate-400 mt-1 leading-tight">Lần nộp<br><span class="font-bold text-blue-300">trung bình</span></div>
+                            <div class="text-[9px] text-slate-500 mt-1">lần / dự án</div>
+                        </div>
+                        <!-- Thời gian chỉnh sửa TB -->
+                        <div class="quality-kpi-card bg-violet-950/20 border border-violet-500/25 rounded-2xl p-4 text-center">
+                            <div class="w-9 h-9 bg-violet-500/15 rounded-xl flex items-center justify-center mx-auto mb-2">
+                                <i class="fa-solid fa-clock text-violet-400 text-sm"></i>
+                            </div>
+                            <div class="text-2xl font-extrabold text-violet-400" id="statL1L2Rate">0%</div>
+                            <div class="text-[10px] text-slate-400 mt-1 leading-tight">Hoàn thành<br><span class="font-bold text-teal-300">trong ≤ 2 lần</span></div>
+                            <div class="text-[9px] text-slate-500 mt-1" id="statL1L2Count">Mục tiêu BGĐ</div>
+                        </div>
+                    </div>
+
+                    <!-- QUALITY CHARTS ROW -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                        <!-- Chart 1: Phân bố L1/L2/L3 -->
+                        <div class="bg-slate-900/50 border border-blue-900/30 rounded-xl p-4">
+                            <div class="flex items-center space-x-2 mb-3">
+                                <i class="fa-solid fa-chart-pie text-emerald-400 text-sm"></i>
+                                <h4 class="text-xs font-bold text-slate-200 uppercase">Phân Bố Theo Số Lần Nộp</h4>
+                            </div>
+                            <p class="text-[10px] text-slate-500 mb-3">Dự án Đã Ra Giấy — phân theo L1 / L2 / L3</p>
+                            <div class="relative h-44">
+                                <canvas id="qualityDistChart"></canvas>
+                            </div>
+                        </div>
+                        <!-- Chart 2: Chất lượng theo nhân sự -->
+                        <div class="bg-slate-900/50 border border-blue-900/30 rounded-xl p-4">
+                            <div class="flex items-center space-x-2 mb-3">
+                                <i class="fa-solid fa-users text-amber-400 text-sm"></i>
+                                <h4 class="text-xs font-bold text-slate-200 uppercase">Chất Lượng Theo Nhân Sự</h4>
+                            </div>
+                            <p class="text-[10px] text-slate-500 mb-3">Số lần nộp trung bình mỗi kỹ sư</p>
+                            <div class="relative h-44">
+                                <canvas id="qualityPersonnelChart"></canvas>
+                            </div>
+                        </div>
+                </div>
+                </div>
+                <!-- ══ END QUALITY KPI SECTION ══ -->
+
             </div>
 
             <!-- ====== TAB 3: AUDIT LOG ====== -->
@@ -1266,7 +1288,9 @@
                     l1FeedbackDate: "", l2FeedbackDate: "", l3FeedbackDate: "",
                     ...p
                 }));
-                staff = data.staff || [];
+                staff = (data.staff && data.staff.length > 0)
+                    ? data.staff
+                    : JSON.parse(JSON.stringify(defaultStaff));
                 localStorage.setItem("NLP_TVTK_Projects", JSON.stringify(projects));
                 localStorage.setItem("NLP_TVTK_Staff", JSON.stringify(staff));
             } else {
@@ -1340,20 +1364,23 @@
     }
 
     function switchTab(tabId) {
-        ["dashboard","personnel","audit"].forEach(id => {
-            document.getElementById(id+"Tab").classList.add("hidden");
+        ["dashboard","personnel","quality","audit"].forEach(id => {
+            const tabEl = document.getElementById(id+"Tab");
+            if (tabEl) tabEl.classList.add("hidden");
             const btn = document.getElementById("tabBtn"+capitalize(id));
             const mBtn = document.getElementById("mobileTabBtn"+capitalize(id));
             if (btn)  btn.className  = "px-4 py-2 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 text-slate-400 hover:text-white";
-            if (mBtn) mBtn.className = "px-3 py-1.5 rounded-md text-xs font-bold text-slate-400" + (id!=="dashboard"?" ml-1":"");
+            if (mBtn) mBtn.className = "px-3 py-1.5 rounded-md text-xs font-bold text-slate-400";
         });
-        document.getElementById(tabId+"Tab").classList.remove("hidden");
+        const activeEl = document.getElementById(tabId+"Tab");
+        if (activeEl) activeEl.classList.remove("hidden");
         const activeBtn  = document.getElementById("tabBtn"+capitalize(tabId));
         const activeMBtn = document.getElementById("mobileTabBtn"+capitalize(tabId));
         if (activeBtn)  activeBtn.className  = "px-4 py-2 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 bg-brand-blue text-white";
-        if (activeMBtn) activeMBtn.className = "px-3 py-1.5 rounded-md text-xs font-bold bg-brand-blue text-white" + (tabId!=="dashboard"?" ml-1":"");
+        if (activeMBtn) activeMBtn.className = "px-3 py-1.5 rounded-md text-xs font-bold bg-brand-blue text-white";
         if (tabId === "dashboard") setTimeout(renderCharts, 100);
-        if (tabId === "audit") renderAuditLog();
+        if (tabId === "quality")   { setTimeout(renderCharts, 100); calculateQualityKPIs(); }
+        if (tabId === "audit")     renderAuditLog();
     }
 
     function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
@@ -1888,81 +1915,79 @@
     // ─── STAFF ───
     function renderStaffCards() {
         const grid = document.getElementById("staffCardsGrid");
+        if (!grid) return;
         grid.innerHTML = "";
+        if (!staff || staff.length === 0) {
+            grid.innerHTML = '<div class="col-span-4 py-10 text-center text-slate-500 italic text-sm"><i class="fa-solid fa-users text-2xl mb-2 block text-slate-700"></i>Chưa có nhân sự nào.</div>';
+            return;
+        }
         staff.forEach(function(person) {
-            const pp = projects.filter(function(p){ return p.assignee && p.assignee.split(',').map(function(s){return s.trim();}).indexOf(person.name) >= 0; });
+            const pp = projects.filter(function(p) {
+                if (!p.assignee) return false;
+                return p.assignee.split(",").map(function(s){ return s.trim(); }).indexOf(person.name) >= 0;
+            });
             const doneArr = pp.filter(function(p){ return p.status === "Đã ra giấy"; });
-            const done = doneArr.length;
-            const run  = pp.filter(function(p){ return p.status === "Đang triển khai"; }).length;
-            const loadVal = pp.filter(function(p){ return p.status !== "Đã ra giấy"; }).reduce(function(a,p){ return a+(p.contractValue||0); }, 0);
-            const advanceVal = pp.filter(function(p){ return p.status !== "Đã ra giấy"; }).reduce(function(a,p){ return a+(p.advancePayment||0); }, 0);
-            const l1Only = doneArr.filter(function(p){ return p.l1Date && !p.l2Date; }).length;
-            const l2Only = doneArr.filter(function(p){ return p.l2Date && !p.l3Date; }).length;
-            const l3Plus = doneArr.filter(function(p){ return p.l3Date; }).length;
-            const l1Pct = done > 0 ? Math.round((l1Only/done)*100) : 0;
-            const l2Pct = done > 0 ? Math.round((l2Only/done)*100) : 0;
-            const l3Pct = done > 0 ? Math.round((l3Plus/done)*100) : 0;
-
-            const editBtn = currentRole === "viewer" ? "" :
-                '<button onclick="editStaff(\'' + person.id + '\')" class="text-slate-500 hover:text-brand-gold transition" title="Chỉnh sửa"><i class="fa-solid fa-pen-to-square text-sm"></i></button>';
-            const deleteBtn = currentRole === "viewer" ? "" :
-                '<button onclick="deleteStaff(\'' + person.id + '\')" class="text-slate-500 hover:text-red-400 transition" title="Xóa"><i class="fa-solid fa-trash-can text-sm"></i></button>';
-            const advanceHtml = advanceVal > 0
-                ? '<div class="flex justify-between items-center"><span class="text-[9px] text-slate-400">TẠM ỨNG ĐÃ THU:</span><span class="text-xs font-bold text-violet-400">' + formatVND(advanceVal) + '</span></div>'
-                : '';
+            const done    = doneArr.length;
+            const run     = pp.filter(function(p){ return p.status === "Đang triển khai"; }).length;
+            const loadVal = pp.filter(function(p){ return p.status !== "Đã ra giấy"; }).reduce(function(a,p){ return a + (p.contractValue||0); }, 0);
+            const advVal  = pp.filter(function(p){ return p.status !== "Đã ra giấy"; }).reduce(function(a,p){ return a + (p.advancePayment||0); }, 0);
+            const l1c = doneArr.filter(function(p){ return p.l1Date && !p.l2Date; }).length;
+            const l2c = doneArr.filter(function(p){ return p.l2Date && !p.l3Date; }).length;
+            const l3c = doneArr.filter(function(p){ return p.l3Date; }).length;
+            const l1p = done > 0 ? Math.round(l1c/done*100) : 0;
+            const l2p = done > 0 ? Math.round(l2c/done*100) : 0;
+            const l3p = done > 0 ? Math.round(l3c/done*100) : 0;
 
             const card = document.createElement("div");
             card.className = "kpi-card print-card bg-brand-darkblue/40 border border-blue-900/50 rounded-2xl p-5 flex flex-col justify-between";
+
+            const topActions = document.createElement("div");
+            topActions.className = "flex items-center space-x-2 no-print";
+            if (currentRole !== "viewer") {
+                const eBtn = document.createElement("button");
+                eBtn.title = "Chỉnh sửa";
+                eBtn.className = "text-slate-500 hover:text-brand-gold transition";
+                eBtn.innerHTML = '<i class="fa-solid fa-pen-to-square text-sm"></i>';
+                eBtn.onclick = function(){ editStaff(person.id); };
+                topActions.appendChild(eBtn);
+                const dBtn = document.createElement("button");
+                dBtn.title = "Xóa";
+                dBtn.className = "text-slate-500 hover:text-red-400 transition";
+                dBtn.innerHTML = '<i class="fa-solid fa-trash-can text-sm"></i>';
+                dBtn.onclick = function(){ deleteStaff(person.id); };
+                topActions.appendChild(dBtn);
+            }
+
             card.innerHTML =
                 '<div>' +
                   '<div class="flex items-center justify-between mb-4">' +
                     '<div class="w-12 h-12 bg-brand-blue/25 rounded-2xl border border-brand-blue flex items-center justify-center text-brand-gold font-black text-lg">' + person.name.charAt(0) + '</div>' +
-                    '<div class="flex items-center space-x-2 no-print">' + editBtn + deleteBtn + '</div>' +
                   '</div>' +
                   '<h4 class="text-base font-bold text-white mb-0.5">' + person.name + '</h4>' +
                   '<p class="text-[11px] text-slate-400">' + person.role + '</p>' +
                   '<p class="text-[10px] text-slate-500 mt-1"><i class="fa-solid fa-envelope mr-1"></i>' + (person.contact || "N/A") + '</p>' +
                   '<div class="mt-4 pt-3 border-t border-blue-950/50 grid grid-cols-2 gap-2 text-center">' +
-                    '<div class="bg-slate-950/50 p-2 rounded-xl border border-blue-950">' +
-                      '<div class="text-[9px] text-slate-500">ĐANG CHẠY</div>' +
-                      '<div class="text-sm font-black text-brand-gold mt-0.5">' + run + '</div>' +
-                    '</div>' +
-                    '<div class="bg-slate-950/50 p-2 rounded-xl border border-blue-950">' +
-                      '<div class="text-[9px] text-slate-500">ĐÃ RA GIẤY</div>' +
-                      '<div class="text-sm font-black text-brand-teal mt-0.5">' + done + '</div>' +
-                    '</div>' +
+                    '<div class="bg-slate-950/50 p-2 rounded-xl border border-blue-950"><div class="text-[9px] text-slate-500">ĐANG CHẠY</div><div class="text-sm font-black text-brand-gold mt-0.5">' + run + '</div></div>' +
+                    '<div class="bg-slate-950/50 p-2 rounded-xl border border-blue-950"><div class="text-[9px] text-slate-500">ĐÃ RA GIẤY</div><div class="text-sm font-black text-brand-teal mt-0.5">' + done + '</div></div>' +
                   '</div>' +
                   '<div class="mt-3 pt-3 border-t border-blue-950/50">' +
-                    '<div class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1">' +
-                      '<i class="fa-solid fa-medal text-brand-gold text-[8px]"></i>' +
-                      ' Chất lượng hồ sơ (' + done + ' DA ra giấy)' +
-                    '</div>' +
+                    '<div class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-2"><i class="fa-solid fa-medal text-brand-gold text-[8px] mr-1"></i>Chất lượng (' + done + ' DA ra giấy)</div>' +
                     '<div class="grid grid-cols-3 gap-1.5 text-center">' +
-                      '<div class="bg-emerald-950/30 border border-emerald-500/20 p-2 rounded-xl">' +
-                        '<div class="text-[9px] text-slate-500">LẦN 1</div>' +
-                        '<div class="text-sm font-black text-emerald-400 mt-0.5">' + l1Only + '</div>' +
-                        '<div class="text-[9px] text-emerald-300 font-bold">' + l1Pct + '%</div>' +
-                      '</div>' +
-                      '<div class="bg-amber-950/30 border border-amber-500/20 p-2 rounded-xl">' +
-                        '<div class="text-[9px] text-slate-500">LẦN 2</div>' +
-                        '<div class="text-sm font-black text-amber-400 mt-0.5">' + l2Only + '</div>' +
-                        '<div class="text-[9px] text-amber-300 font-bold">' + l2Pct + '%</div>' +
-                      '</div>' +
-                      '<div class="bg-red-950/30 border border-red-500/20 p-2 rounded-xl">' +
-                        '<div class="text-[9px] text-slate-500">LẦN 3</div>' +
-                        '<div class="text-sm font-black text-red-400 mt-0.5">' + l3Plus + '</div>' +
-                        '<div class="text-[9px] text-red-300 font-bold">' + l3Pct + '%</div>' +
-                      '</div>' +
+                      '<div class="bg-emerald-950/30 border border-emerald-500/20 p-2 rounded-xl"><div class="text-[9px] text-slate-500">LẦN 1</div><div class="text-sm font-black text-emerald-400 mt-0.5">' + l1c + '</div><div class="text-[9px] text-emerald-300 font-bold">' + l1p + '%</div></div>' +
+                      '<div class="bg-amber-950/30 border border-amber-500/20 p-2 rounded-xl"><div class="text-[9px] text-slate-500">LẦN 2</div><div class="text-sm font-black text-amber-400 mt-0.5">' + l2c + '</div><div class="text-[9px] text-amber-300 font-bold">' + l2p + '%</div></div>' +
+                      '<div class="bg-red-950/30 border border-red-500/20 p-2 rounded-xl"><div class="text-[9px] text-slate-500">LẦN 3</div><div class="text-sm font-black text-red-400 mt-0.5">' + l3c + '</div><div class="text-[9px] text-red-300 font-bold">' + l3p + '%</div></div>' +
                     '</div>' +
                   '</div>' +
                 '</div>' +
                 '<div class="mt-4 pt-3 border-t border-blue-950 space-y-1">' +
-                  '<div class="flex justify-between items-center">' +
-                    '<span class="text-[9px] text-slate-400">TẢI TRỌNG HĐ:</span>' +
-                    '<span class="text-xs font-black text-brand-gold">' + formatVND(loadVal) + '</span>' +
-                  '</div>' +
-                  advanceHtml +
+                  '<div class="flex justify-between items-center"><span class="text-[9px] text-slate-400">TẢI TRỌNG HĐ:</span><span class="text-xs font-black text-brand-gold">' + formatVND(loadVal) + '</span></div>' +
+                  (advVal > 0 ? '<div class="flex justify-between items-center"><span class="text-[9px] text-slate-400">TẠM ỨNG ĐÃ THU:</span><span class="text-xs font-bold text-violet-400">' + formatVND(advVal) + '</span></div>' : '') +
                 '</div>';
+
+            // Insert action buttons vào đúng chỗ
+            const avatarRow = card.querySelector(".flex.items-center.justify-between.mb-4");
+            if (avatarRow) avatarRow.appendChild(topActions);
+
             grid.appendChild(card);
         });
     }
