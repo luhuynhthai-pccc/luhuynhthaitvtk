@@ -14,11 +14,9 @@
                 extend: {
                     colors: {
                         brand: {
-                            blue: '#005C7A',      // Màu xanh dầu hỏa chủ đạo
-                            darkblue: '#003D52',  // Tông xanh dầu hỏa đậm hơn
-                            gold: '#D97706',      // Tông màu hổ phách/cam ấm độ tương phản cao
-                            lightgold: '#FEF3C7', // Nền hổ phách nhạt
-                            teal: '#0D9488',      // Xanh mòng két phối hợp
+                            blue: '#0F52BA', darkblue: '#0A2540',
+                            gold: '#F5A623', lightgold: '#FFF9E6',
+                            teal: '#00A896',
                         }
                     }
                 }
@@ -26,118 +24,12 @@
         }
     </script>
     <style>
-        /* ─── 1. THIẾT LẬP NỀN SÁNG TOÀN TRANG (Màu sắc hiện đại) ─── */
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            background-color: #f3f4f6 !important; /* Màu xám sáng trung tính */
-            color: #1e293b !important; 
-        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #040d1a; color: #e2e8f0; }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #e2e8f0; }
-        ::-webkit-scrollbar-thumb { background: #005c7a; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #d97706; }
+        ::-webkit-scrollbar-track { background: #0a192f; }
+        ::-webkit-scrollbar-thumb { background: #1e3a8a; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #F5A623; }
 
-        /* ─── 2. ĐỊNH DẠNG THANH MENU ĐẦU TRANG (Header tông tối cao cấp) ─── */
-        header {
-            background-color: #003d52 !important; /* Xanh dầu hỏa đậm */
-            border-bottom: 1px solid #002d3d !important;
-        }
-        header h1, header span, header p, header i, header .text-slate-300, header .text-slate-400 {
-            color: #ffffff !important; 
-        }
-        #mobileTabNav {
-            background-color: #003d52 !important;
-        }
-
-        /* ─── 3. OVERRIDE CÁC BLOCK PANEL / CARD SANG TRẮNG SÁNG ─── */
-        .print-card, 
-        .bg-brand-darkblue\/40, 
-        .bg-brand-darkblue\/30, 
-        .bg-slate-900\/60, 
-        .bg-slate-900\/50,
-        .bg-red-950\/15,
-        .bg-amber-950\/20,
-        .bg-brand-gold\/5 {
-            background-color: #ffffff !important;
-            border: 1px solid #e2e8f0 !important;
-            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05) !important;
-            color: #1e293b !important;
-        }
-
-        /* Chỉnh màu chữ trong các card */
-        h3, h4, .text-slate-300, .text-slate-200, .text-white {
-            color: #0f172a !important;
-        }
-        .text-slate-400, .text-slate-500 {
-            color: #64748b !important;
-        }
-
-        /* ─── 4. ĐỊNH DẠNG BẢNG QUẢN LÝ TIÊU CHUẨN (Tiêu đề Xanh dầu hỏa) ─── */
-        thead tr, .bg-brand-darkblue {
-            background-color: #005c7a !important; /* Xanh dầu hỏa */
-            color: #ffffff !important;
-        }
-        thead th {
-            color: #ffffff !important;
-            font-weight: 700 !important;
-            border-bottom: 2px solid #004b63 !important;
-        }
-        tbody tr {
-            border-bottom: 1px solid #e2e8f0 !important;
-            background-color: #ffffff !important;
-            color: #334155 !important;
-        }
-        tbody tr:hover {
-            background-color: #f8fafc !important;
-        }
-
-        /* ─── 5. INPUT, SELECT & BUTTON CHO LAYOUT SÁNG ─── */
-        input, select {
-            background-color: #ffffff !important;
-            border: 1px solid #cbd5e1 !important;
-            color: #0f172a !important;
-        }
-        input:focus, select:focus {
-            border-color: #005c7a !important;
-            outline: none !important;
-        }
-        .tab-navigation button:not(.bg-brand-blue) {
-            color: #64748b !important;
-        }
-        .tab-navigation button.bg-brand-blue {
-            background-color: #005c7a !important;
-            color: #ffffff !important;
-        }
-
-        /* ─── 6. BẢNG HIỂN THỊ POPUP (MODAL) THÊM SỬA ─── */
-        #projectModal > div, #staffModal > div {
-            background-color: #ffffff !important;
-            border: 1px solid #cbd5e1 !important;
-            color: #0f172a !important;
-        }
-        #projectModal label, #staffModal label {
-            color: #475569 !important;
-        }
-
-        /* ─── 7. TINH CHỈNH ĐỘ TƯƠNG PHẢN CÁC NHÃN TRÊN NỀN SÁNG ─── */
-        .text-brand-teal { color: #0d9488 !important; }
-        .text-brand-gold { color: #d97706 !important; }
-        .text-violet-400 { color: #7c3aed !important; }
-        .bg-brand-blue\/20 { background-color: rgba(0, 92, 122, 0.1) !important; color: #005c7a !important; }
-        .bg-brand-teal\/15 { background-color: rgba(13, 148, 136, 0.1) !important; }
-        .bg-brand-gold\/15 { background-color: rgba(217, 119, 6, 0.1) !important; }
-        
-        /* ─── 8. HỘP THÔNG BÁO NHANH ─── */
-        #notifPanel {
-            background: #ffffff;
-            border: 1px solid #cbd5e1;
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
-        }
-        #notifPanel h4 {
-            color: #ffffff !important;
-        }
-
-        /* Các thuộc tính chuyển động và cấu trúc nền tảng được giữ nguyên */
         .bell-badge {
             position: absolute; top: -4px; right: -4px;
             background: #ef4444; color: white;
@@ -146,7 +38,7 @@
             border-radius: 9999px;
             display: flex; align-items: center; justify-content: center;
             padding: 0 3px;
-            border: 2px solid #003d52;
+            border: 2px solid #040d1a;
             animation: bellPulse 2s infinite;
         }
         @keyframes bellPulse {
@@ -157,20 +49,88 @@
         @keyframes shake {
             0%,100%{transform:rotate(0)} 20%{transform:rotate(-15deg)} 40%{transform:rotate(15deg)} 60%{transform:rotate(-10deg)} 80%{transform:rotate(10deg)}
         }
+
+        #notifPanel {
+            position: fixed; top: 72px; right: 16px;
+            width: 380px; max-height: 520px;
+            background: #0d1b2e;
+            border: 1px solid rgba(15,82,186,0.4);
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+            z-index: 999;
+            overflow: hidden;
+            display: flex; flex-direction: column;
+            transform-origin: top right;
+            transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        #notifPanel.hidden-panel {
+            transform: scale(0.85) translateY(-10px);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #auditPanel {
+            position: fixed; top: 72px; right: 16px;
+            width: 420px; max-height: 560px;
+            background: #0d1b2e;
+            border: 1px solid rgba(15,82,186,0.4);
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+            z-index: 998;
+            overflow: hidden;
+            display: flex; flex-direction: column;
+            transform-origin: top right;
+            transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        #auditPanel.hidden-panel {
+            transform: scale(0.85) translateY(-10px);
+            opacity: 0;
+            pointer-events: none;
+        }
+
         .urgency-critical { border-left: 3px solid #ef4444; background: rgba(239,68,68,0.05); }
         .urgency-warning  { border-left: 3px solid #f97316; background: rgba(249,115,22,0.05); }
         .urgency-soon     { border-left: 3px solid #F5A623; background: rgba(245,166,35,0.05); }
-        #projectTableBody tr { animation: fadeInRow 0.3s ease forwards; }
-        @keyframes fadeInRow { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: translateX(0); } }
-        #projectModal > div, #staffModal > div { animation: modalIn 0.25s cubic-bezier(0.34,1.56,0.64,1); }
-        @keyframes modalIn { from { transform: scale(0.92) translateY(12px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
-        .kpi-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
-        .kpi-card:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,92,122,0.15) !important; }
-        .progress-fill { transition: width 1s cubic-bezier(0.4,0,0.2,1); }
-        .toast-item { animation: slideInToast 0.35s cubic-bezier(0.34,1.56,0.64,1); }
-        @keyframes slideInToast { from { transform: translateX(60px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        #projectTableBody tr {
+            animation: fadeInRow 0.3s ease forwards;
+        }
+        @keyframes fadeInRow {
+            from { opacity: 0; transform: translateX(-8px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+
+        #projectModal > div, #staffModal > div {
+            animation: modalIn 0.25s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        @keyframes modalIn {
+            from { transform: scale(0.92) translateY(12px); opacity: 0; }
+            to   { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .kpi-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .kpi-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(15,82,186,0.2);
+        }
+
+        .progress-fill {
+            transition: width 1s cubic-bezier(0.4,0,0.2,1);
+        }
+
+        .toast-item {
+            animation: slideInToast 0.35s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        @keyframes slideInToast {
+            from { transform: translateX(60px); opacity: 0; }
+            to   { transform: translateX(0); opacity: 1; }
+        }
+
         .audit-entry { transition: background 0.15s; }
-        .audit-entry:hover { background: rgba(0,92,122,0.05); }
+        .audit-entry:hover { background: rgba(15,82,186,0.08); }
+
         @media print {
             body { background: #fff !important; color: #000 !important; font-size: 10px !important; }
             header, .no-print, button, select, input, #notifPanel, #auditPanel { display: none !important; }
@@ -188,16 +148,17 @@
             .print-new-page { page-break-before: always; }
         }
         .print-header { display: none; }
+
         .hidden-ui { display: none !important; }
         #loginOverlay {
-            position: fixed; inset: 0; background: #003d52; z-index: 9999;
+            position: fixed; inset: 0; background: #040d1a; z-index: 9999;
             display: flex; align-items: center; justify-content: center;
             backdrop-filter: blur(15px);
         }
         .btn-system {
             transition: all 0.2s;
-            background: rgba(0,92,122,0.1);
-            border: 1px solid rgba(0,92,122,0.3);
+            background: rgba(15,82,186,0.1);
+            border: 1px solid rgba(15,82,186,0.3);
         }
         .btn-system:hover {
             background: rgba(245,166,35,0.1);
@@ -208,17 +169,18 @@
             display: inline-flex; align-items: center;
             background: rgba(139,92,246,0.12);
             border: 1px solid rgba(139,92,246,0.3);
-            color: #7c3aed;
+            color: #a78bfa;
             font-size: 9px; font-weight: 700;
             padding: 2px 6px; border-radius: 6px;
             white-space: nowrap;
         }
+        /* ── QUALITY KPI SECTION ── */
         .quality-kpi-card {
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
         .quality-kpi-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 30px rgba(0,92,122,0.15);
+            box-shadow: 0 8px 30px rgba(15,82,186,0.2);
         }
     </style>
 </head>
@@ -1435,7 +1397,711 @@
 
     function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
-    // ─── END OF FILE Paste June 12, 2026 - 2:28PM ───
+    function formatVND(val) {
+        if (!val || val === 0) return "—";
+        return new Intl.NumberFormat('vi-VN').format(val) + " VNĐ";
+    }
+
+    // ─── KPIs ───
+    function calculateKPIs() {
+        const today = new Date(); today.setHours(0,0,0,0);
+        projects.forEach(p => {
+            if (p.status === "Đã ra giấy") return;
+            const dl = new Date(p.deadline); dl.setHours(0,0,0,0);
+            if (dl < today && p.status !== "TRỄ HẠN") p.status = "TRỄ HẠN";
+        });
+
+        const total     = projects.length;
+        const completed = projects.filter(p => p.status === "Đã ra giấy").length;
+        const active    = projects.filter(p => p.status === "Đang triển khai").length;
+        const suspended = projects.filter(p => p.status === "Đang tạm dừng").length;
+        const delayed   = projects.filter(p => p.status === "TRỄ HẠN").length;
+
+        document.getElementById("statTotalProjects").textContent = total;
+        document.getElementById("statCompleted").textContent = completed;
+        document.getElementById("statCompletedPct").textContent = `Tỷ lệ: ${total>0?((completed/total)*100).toFixed(1):0}%`;
+        document.getElementById("statActive").textContent = active;
+        document.getElementById("statSuspended").textContent = suspended;
+        document.getElementById("statDelayed").textContent = delayed;
+        document.getElementById("alertDelayedCount").textContent = delayed;
+
+        let totalVal = 0, completedVal = 0, totalAdvance = 0;
+        projects.forEach(p => {
+            totalVal += (p.contractValue || 0);
+            if (p.status === "Đã ra giấy") {
+                completedVal += (p.contractValue || 0);
+            } else {
+                totalAdvance += (p.advancePayment || 0);
+            }
+        });
+
+        const TARGET = 8000000000;
+        const realRevenue = completedVal + totalAdvance;
+
+        document.getElementById("statTotalContractValue").textContent = formatVND(totalVal);
+        document.getElementById("statCompletedContractValue").textContent = formatVND(completedVal);
+        document.getElementById("statTotalAdvance").textContent = formatVND(totalAdvance);
+        document.getElementById("statRealRevenue").textContent = formatVND(realRevenue);
+
+        const realPct = TARGET > 0 ? Math.min((realRevenue/TARGET*100),100).toFixed(1) : 0;
+        document.getElementById("statRealRevenuePct").textContent = realPct + "%";
+        document.getElementById("progressRealRevenueBar").style.width = realPct + "%";
+        document.getElementById("progressCompletedValBar").style.width = totalVal > 0 ? `${(completedVal/totalVal*100).toFixed(1)}%` : "0%";
+        document.getElementById("progressAdvanceBar").style.width = totalVal > 0 ? `${Math.min(totalAdvance/totalVal*100,100).toFixed(1)}%` : "0%";
+
+        const alertContainer = document.getElementById("alertBoxBadges");
+        if (alertContainer) {
+            alertContainer.innerHTML = "";
+            projects.filter(p => p.status === "TRỄ HẠN").forEach(p => {
+                const badge = document.createElement("span");
+                badge.className = "inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-semibold bg-red-500/20 text-red-400 border border-red-500/30 cursor-pointer hover:bg-red-500/35 transition";
+                badge.innerHTML = `<i class="fa-solid fa-fire text-[8px] mr-1"></i>${p.name} (${p.assignee})`;
+                badge.onclick = () => editProject(p.id);
+                alertContainer.appendChild(badge);
+            });
+        }
+
+        calculateQualityKPIs();
+    }
+
+    // ─── QUALITY KPIs — MỚI ───
+    function calculateQualityKPIs() {
+        // Chỉ xét dự án Đã Ra Giấy
+        const doneProjects = projects.filter(p => p.status === "Đã ra giấy");
+        const doneCount = doneProjects.length;
+
+        // Phân loại theo số lần nộp
+        const l1Only = doneProjects.filter(p => p.l1Date && !p.l2Date);   // chỉ nộp L1
+        const l2Only = doneProjects.filter(p => p.l2Date && !p.l3Date);   // nộp đến L2
+        const l3Plus = doneProjects.filter(p => p.l3Date);                  // nộp đến L3
+
+        const l1Rate = doneCount > 0 ? ((l1Only.length / doneCount) * 100).toFixed(1) : 0;
+        const l2Rate = doneCount > 0 ? ((l2Only.length / doneCount) * 100).toFixed(1) : 0;
+        const l3Rate = doneCount > 0 ? ((l3Plus.length / doneCount) * 100).toFixed(1) : 0;
+
+        document.getElementById("statL1Rate").textContent = l1Rate + "%";
+        document.getElementById("statL2Rate").textContent = l2Rate + "%";
+        document.getElementById("statL3Rate").textContent = l3Rate + "%";
+        document.getElementById("statL1Count").textContent = `${l1Only.length} / ${doneCount} DA`;
+        document.getElementById("statL2Count").textContent = `${l2Only.length} / ${doneCount} DA`;
+        document.getElementById("statL3Count").textContent = `${l3Plus.length} / ${doneCount} DA`;
+
+        // Số lần nộp TB — tính trên tất cả dự án có ít nhất 1 lần nộp
+        const projectsWithSubmission = projects.filter(p => p.l1Date);
+        const totalSubmissions = projectsWithSubmission.reduce((sum, p) => sum + countSubmissions(p), 0);
+        const avgSubmissions = projectsWithSubmission.length > 0 ? (totalSubmissions / projectsWithSubmission.length).toFixed(1) : "0.0";
+        document.getElementById("statAvgSubmissions").textContent = avgSubmissions;
+
+        // % hoàn thành trong ≤ 2 lần (mục tiêu BGĐ)
+        const l1l2Count = l1Only.length + l2Only.length;
+        const l1l2Rate = doneCount > 0 ? ((l1l2Count / doneCount) * 100).toFixed(1) : 0;
+        const elRate = document.getElementById("statL1L2Rate");
+        const elCount = document.getElementById("statL1L2Count");
+        if (elRate) elRate.textContent = l1l2Rate + "%";
+        if (elCount) elCount.textContent = l1l2Count + " / " + doneCount + " DA đạt mục tiêu";
+
+        renderEditTimeTable();
+    }
+
+    // ─── BẢNG THỜI GIAN CHỈNH SỬA ───
+    function renderEditTimeTable() {
+        const tbody = document.getElementById("editTimeTableBody");
+        const emptyEl = document.getElementById("editTimeEmpty");
+        if (!tbody || !emptyEl) return;
+        const rows = projects.filter(p => (p.l1FeedbackDate && p.l2Date) || (p.l2FeedbackDate && p.l3Date));
+        if (rows.length === 0) { tbody.innerHTML = ""; emptyEl.classList.remove("hidden"); return; }
+        emptyEl.classList.add("hidden");
+        function dayBadge(d) {
+            if (d === null || d === undefined) return '<span class="text-slate-600">—</span>';
+            const cls = d > 14 ? 'text-red-400 font-bold' : d > 7 ? 'text-amber-400 font-bold' : 'text-emerald-400 font-semibold';
+            return '<span class="' + cls + '">' + d + ' ngày</span>';
+        }
+        function fmtD(s) { return s ? s.split("-").reverse().join("/") : "—"; }
+        tbody.innerHTML = rows.map(function(p, i) {
+            const ed = getEditDays(p);
+            return '<tr class="hover:bg-slate-900/30 transition ' + (i%2===0 ? '' : 'bg-blue-950/5') + '">' +
+                '<td class="py-2.5 px-4 font-semibold text-slate-200">' + p.name + '</td>' +
+                '<td class="py-2.5 px-4 text-slate-300">' + p.assignee + '</td>' +
+                '<td class="py-2.5 px-4 text-center text-[11px] text-amber-300">' + fmtD(p.l1FeedbackDate) + '</td>' +
+                '<td class="py-2.5 px-4 text-center text-[11px] text-slate-300">' + fmtD(p.l2Date) + '</td>' +
+                '<td class="py-2.5 px-4 text-center">' + dayBadge(ed.editL1L2) + '</td>' +
+                '<td class="py-2.5 px-4 text-center text-[11px] text-amber-300">' + fmtD(p.l2FeedbackDate) + '</td>' +
+                '<td class="py-2.5 px-4 text-center text-[11px] text-slate-300">' + fmtD(p.l3Date) + '</td>' +
+                '<td class="py-2.5 px-4 text-center">' + dayBadge(ed.editL2L3) + '</td>' +
+                '<td class="py-2.5 px-4 text-center font-bold text-brand-gold">' + (ed.total !== null ? ed.total + ' ngày' : '—') + '</td>' +
+                '</tr>';
+        }).join("");
+    }
+
+    // ─── CHARTS (ĐÃ ĐƯỢC BẢO VỆ CHỐNG CRASH) ───
+    function renderCharts() {
+        // Hủy các instance cũ an toàn
+        if (statusChartInstance) { statusChartInstance.destroy(); statusChartInstance = null; }
+        if (personnelChartInstance) { personnelChartInstance.destroy(); personnelChartInstance = null; }
+        if (qualityDistChartInstance) { qualityDistChartInstance.destroy(); qualityDistChartInstance = null; }
+        if (qualityPersonnelChartInstance) { qualityPersonnelChartInstance.destroy(); qualityPersonnelChartInstance = null; }
+        if (editTimePersonnelChartInstance) { editTimePersonnelChartInstance.destroy(); editTimePersonnelChartInstance = null; }
+
+        // ── Chart 1: Status doughnut ──
+        const completed = projects.filter(p => p.status === "Đã ra giấy").length;
+        const active    = projects.filter(p => p.status === "Đang triển khai").length;
+        const suspended = projects.filter(p => p.status === "Đang tạm dừng").length;
+        const delayed   = projects.filter(p => p.status === "TRỄ HẠN").length;
+        
+        statusChartInstance = safeCreateChart("statusChart", {
+            type:"doughnut",
+            data:{ labels:["Đã ra giấy","Đang triển khai","Đang tạm dừng","Trễ hạn"], datasets:[{ data:[completed,active,suspended,delayed], backgroundColor:["#00A896","#0F52BA","#475569","#EF4444"], borderWidth:2, borderColor:"#040d1a" }] },
+            options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:"bottom", labels:{ color:"#e2e8f0", font:{size:9}, boxWidth:12 } } }, cutout:"65%" }
+        });
+
+        // ── Chart 2: Personnel load bar ──
+        const staffNames = staff.map(s => s.name);
+        personnelChartInstance = safeCreateChart("personnelChart", {
+            type:"bar",
+            data:{ labels:staffNames, datasets:[
+                { label:"Đã ra giấy", data:staffNames.map(n => projects.filter(p=>p.assignee&&p.assignee.split(',').map(s=>s.trim()).includes(n)&&p.status==="Đã ra giấy").reduce((a,p)=>a+p.contractValue,0)/1e9), backgroundColor:"#00A896", borderRadius:4 },
+                { label:"Đang triển khai", data:staffNames.map(n => projects.filter(p=>p.assignee&&p.assignee.split(',').map(s=>s.trim()).includes(n)&&p.status!=="Đã ra giấy").reduce((a,p)=>a+p.contractValue,0)/1e9), backgroundColor:"#F5A623", borderRadius:4 }
+            ]},
+            options:{ responsive:true, maintainAspectRatio:false, scales:{ x:{stacked:true,grid:{display:false},ticks:{color:"#94a3b8",font:{size:9}}}, y:{stacked:true,grid:{color:"rgba(30,41,59,0.5)"},ticks:{color:"#94a3b8",font:{size:9}}} }, plugins:{ legend:{ position:"bottom", labels:{color:"#e2e8f0",font:{size:9},boxWidth:10} } } }
+        });
+
+        // ── Chart 3 (NEW): Phân bố L1/L2/L3 ──
+        const doneProjects = projects.filter(p => p.status === "Đã ra giấy");
+        const l1Count = doneProjects.filter(p => p.l1Date && !p.l2Date).length;
+        const l2Count = doneProjects.filter(p => p.l2Date && !p.l3Date).length;
+        const l3Count = doneProjects.filter(p => p.l3Date).length;
+        const noSubmit = doneProjects.filter(p => !p.l1Date).length;
+        
+        qualityDistChartInstance = safeCreateChart("qualityDistChart", {
+            type: "doughnut",
+            data: {
+                labels: ["Đạt L1 (1 lần)", "Đạt L2 (2 lần)", "Phải L3 (3 lần)", "Chưa ghi nhận"],
+                datasets: [{
+                    data: [l1Count, l2Count, l3Count, noSubmit],
+                    backgroundColor: ["#00A896", "#F5A623", "#EF4444", "#475569"],
+                    borderWidth: 2, borderColor: "#040d1a"
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { position: "bottom", labels: { color: "#e2e8f0", font: { size: 9 }, boxWidth: 10 } } },
+                cutout: "60%"
+            }
+        });
+
+        // ── Chart 4 (NEW): Chất lượng theo nhân sự (số lần nộp TB) ──
+        const qualityData = staffNames.map(name => {
+            const pp = projects.filter(p => p.assignee && p.assignee.split(',').map(s=>s.trim()).includes(name) && p.l1Date && p.status === "Đã ra giấy");
+            if (pp.length === 0) return 0;
+            const total = pp.reduce((sum, p) => sum + countSubmissions(p), 0);
+            return parseFloat((total / pp.length).toFixed(2));
+        });
+        
+        qualityPersonnelChartInstance = safeCreateChart("qualityPersonnelChart", {
+            type: "bar",
+            data: {
+                labels: staffNames,
+                datasets: [{
+                    label: "Lần nộp TB",
+                    data: qualityData,
+                    backgroundColor: staffNames.map((_,i) => ["#00A896","#F5A623","#0F52BA","#8B5CF6"][i % 4]),
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                scales: {
+                    x: { grid: { display: false }, ticks: { color: "#94a3b8", font: { size: 9 } } },
+                    y: {
+                        grid: { color: "rgba(30,41,59,0.5)" },
+                        ticks: { color: "#94a3b8", font: { size: 9 } },
+                        min: 0,
+                        suggestedMax: 3,
+                        title: { display: true, text: "Lần nộp", color: "#64748b", font: { size: 9 } }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: ctx => ` ${ctx.raw} lần nộp TB`
+                        }
+                    }
+                }
+            }
+        });
+
+        // ── Chart 5 (NEW): Thời gian chỉnh sửa TB theo nhân sự ──
+        const editTimeData = staffNames.map(name => {
+            const segs = [];
+            projects.filter(p => p.assignee && p.assignee.split(',').map(s=>s.trim()).includes(name)).forEach(p => {
+                const ed = getEditDays(p);
+                ed.segments.forEach(d => segs.push(d));
+            });
+            if (segs.length === 0) return 0;
+            return Math.round(segs.reduce((a,b) => a+b, 0) / segs.length);
+        });
+        
+        editTimePersonnelChartInstance = safeCreateChart("editTimePersonnelChart", {
+            type: "bar",
+            data: {
+                labels: staffNames,
+                datasets: [{
+                    label: "Ngày TB",
+                    data: editTimeData,
+                    backgroundColor: staffNames.map((_,i) => ["#7C3AED","#DB2777","#0F52BA","#059669"][i % 4]),
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                scales: {
+                    x: { grid: { display: false }, ticks: { color: "#94a3b8", font: { size: 9 } } },
+                    y: {
+                        grid: { color: "rgba(30,41,59,0.5)" },
+                        ticks: { color: "#94a3b8", font: { size: 9 } },
+                        min: 0,
+                        title: { display: true, text: "Ngày", color: "#64748b", font: { size: 9 } }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: ctx => ` ${ctx.raw} ngày TB`
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    function renderAllTables() { renderProjectTable(); renderFinancePersonnelTable(); }
+
+    function renderFinancePersonnelTable() {
+        const tbody = document.getElementById("financePersonnelTableBody");
+        tbody.innerHTML = "";
+        staff.forEach(person => {
+            const pp = projects.filter(p => p.assignee && p.assignee.split(',').map(s=>s.trim()).includes(person.name));
+            const total = pp.length;
+            const done  = pp.filter(p => p.status === "Đã ra giấy").length;
+            const run   = total - done;
+            let doneVal = 0, runVal = 0, advanceVal = 0;
+            pp.forEach(p => {
+                if (p.status === "Đã ra giấy") { doneVal += (p.contractValue||0); }
+                else { runVal += (p.contractValue||0); advanceVal += (p.advancePayment||0); }
+            });
+            const tr = document.createElement("tr");
+            tr.className = "hover:bg-slate-900/40 transition";
+            tr.innerHTML = `
+                <td class="py-3 px-4 font-semibold text-white flex items-center"><span class="w-2 h-2 rounded-full bg-brand-blue mr-2"></span>${person.name}</td>
+                <td class="py-3 px-4 text-center font-bold text-slate-300">${total}</td>
+                <td class="py-3 px-4 text-center text-brand-teal font-semibold">${done}</td>
+                <td class="py-3 px-4 text-right text-brand-teal font-semibold">${formatVND(doneVal)}</td>
+                <td class="py-3 px-4 text-right text-violet-400 font-semibold">${advanceVal > 0 ? formatVND(advanceVal) : '—'}</td>
+                <td class="py-3 px-4 text-center text-brand-gold font-semibold">${run}</td>
+                <td class="py-3 px-4 text-right text-brand-gold font-semibold">${formatVND(runVal)}</td>
+                <td class="py-3 px-4 text-right font-extrabold text-white bg-blue-950/20">${formatVND(doneVal+runVal)}</td>`;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function renderProjectTable(filteredProjects = null) {
+        const tbody = document.getElementById("projectTableBody");
+        tbody.innerHTML = "";
+        const list = filteredProjects || projects;
+        document.getElementById("displayedCount").textContent = list.length;
+        document.getElementById("totalCount").textContent = projects.length;
+        if (list.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="12" class="py-10 text-center text-slate-500 italic">Không tìm thấy hồ sơ phù hợp!</td></tr>`;
+            return;
+        }
+        const statusBadge = (s) => {
+            const map = {
+                "Đã ra giấy":     `<span class="px-2 py-1 rounded-md text-[10px] font-bold bg-emerald-500/10 text-brand-teal border border-emerald-500/20 whitespace-nowrap"><i class="fa-solid fa-circle-check mr-1"></i>Ra giấy</span>`,
+                "Đang triển khai":`<span class="px-2 py-1 rounded-md text-[10px] font-bold bg-blue-500/10 text-blue-400 border border-blue-500/20 whitespace-nowrap"><i class="fa-solid fa-spinner animate-spin mr-1"></i>Triển khai</span>`,
+                "Đang tạm dừng":  `<span class="px-2 py-1 rounded-md text-[10px] font-bold bg-slate-500/15 text-slate-400 border border-slate-500/20 whitespace-nowrap"><i class="fa-solid fa-circle-pause mr-1"></i>Tạm dừng</span>`,
+                "TRỄ HẠN":        `<span class="px-2 py-1 rounded-md text-[10px] font-bold bg-red-500/15 text-red-400 border border-red-500/20 animate-pulse whitespace-nowrap"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Quá hạn</span>`,
+            };
+            return map[s] || map["Đang triển khai"];
+        };
+
+        // Render milestone với ngày phản hồi
+        const milestone = (label, status, submitDate, feedbackDate) => {
+            let cls = "text-slate-500 border-slate-800 bg-slate-950/20";
+            if (status === "Đã duyệt") cls = "text-brand-teal border-emerald-950/40 bg-emerald-950/20";
+            else if (status === "Đang duyệt") cls = "text-brand-gold border-amber-950/40 bg-amber-950/20";
+            const submitStr = submitDate ? submitDate.split("-").reverse().join("/") : "--/--";
+            const feedStr   = feedbackDate ? `<span class="text-amber-400/80 ml-1">↩${feedbackDate.split("-").reverse().join("/")}</span>` : "";
+            return `<div class="text-[10px] px-2 py-1 rounded-lg border ${cls} mb-1">
+                <div class="flex items-center justify-between">
+                    <span class="font-bold">${label}: ${status}</span>
+                    <span class="text-[9px] opacity-85">${submitStr}${feedStr}</span>
+                </div>
+            </div>`;
+        };
+
+        const today = new Date(); today.setHours(0,0,0,0);
+        const getRowUrgency = (p) => {
+            if (p.status === "Đã ra giấy") return "";
+            const dl = new Date(p.deadline); dl.setHours(0,0,0,0);
+            const diff = Math.ceil((dl - today)/(1000*60*60*24));
+            if (diff < 0) return "bg-red-950/10"; if (diff <= 7) return "bg-red-950/5"; if (diff <= 14) return "bg-amber-950/5"; return "";
+        };
+
+        list.forEach((p, i) => {
+            const dl = p.deadline.split("-").reverse().join("/");
+            const rowBg = getRowUrgency(p);
+            const tr = document.createElement("tr");
+            tr.className = `hover:bg-slate-900/30 transition duration-150 align-top ${rowBg}`;
+
+            const advanceDisplay = (p.advancePayment && p.advancePayment > 0)
+                ? `<span class="advance-badge"><i class="fa-solid fa-hand-holding-dollar mr-1"></i>${new Intl.NumberFormat('vi-VN').format(p.advancePayment)}</span>`
+                : `<span class="text-slate-600 text-[10px]">—</span>`;
+
+            // Số lần nộp badge
+            const subCount = countSubmissions(p);
+            const { editL1L2, editL2L3 } = getEditDays(p);
+            let subBadgeColor = "bg-slate-700/30 text-slate-400 border-slate-700/40";
+            if (subCount === 1) subBadgeColor = "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
+            else if (subCount === 2) subBadgeColor = "bg-amber-500/10 text-amber-400 border-amber-500/20";
+            else if (subCount >= 3) subBadgeColor = "bg-red-500/10 text-red-400 border-red-500/20";
+
+            const subDisplay = subCount > 0
+                ? `<span class="inline-flex items-center justify-center w-8 h-8 rounded-xl border text-sm font-extrabold ${subBadgeColor}">${subCount}</span>`
+                : `<span class="text-slate-600 text-[10px]">—</span>`;
+
+            // Tổng ngày xử lý chỉnh sửa = (PH L1 → nộp L2) + (PH L2 → nộp L3)
+            let totalEditDays = null;
+            if (editL1L2 !== null) totalEditDays = (totalEditDays || 0) + editL1L2;
+            if (editL2L3 !== null) totalEditDays = (totalEditDays || 0) + editL2L3;
+            const editDayDisplay = totalEditDays !== null
+                ? `<div class="flex flex-col items-center"><span class="text-base font-extrabold ${totalEditDays > 14 ? 'text-red-400' : totalEditDays > 7 ? 'text-amber-400' : 'text-emerald-400'}">${totalEditDays}</span><span class="text-[9px] text-slate-500">ngày</span></div>`
+                : `<span class="text-slate-700 text-[10px]">—</span>`;
+
+            tr.innerHTML = `
+                <td class="py-3 px-2 text-center text-slate-500 font-bold border-r border-blue-950/20 text-[11px]">${i+1}</td>
+                <td class="py-3 px-3">
+                    <div class="font-bold text-slate-200 text-xs hover:text-brand-gold transition cursor-pointer leading-tight" onclick="editProject('${p.id}')">${p.name}</div>
+                    <div class="text-[9px] text-slate-400 mt-1 flex items-center gap-1 flex-wrap">
+                        <span class="bg-blue-950 text-blue-400 px-1.5 py-0.5 rounded font-bold uppercase">${p.id}</span>
+                        ${p.contractDate ? `<span class="text-slate-600">${p.contractDate.split('-').reverse().join('/')}</span>` : ''}
+                    </div>
+                </td>
+                <td class="py-3 px-2 text-right font-bold text-slate-300 whitespace-nowrap text-[11px]">${formatVND(p.contractValue)}</td>
+                <td class="py-3 px-2 text-center">${advanceDisplay}</td>
+                <td class="py-3 px-2">
+                    <div class="flex items-center space-x-1">
+                        <div class="w-5 h-5 rounded-full bg-brand-blue/30 flex items-center justify-center text-[10px] text-brand-gold font-bold flex-shrink-0">${p.assignee.charAt(0)}</div>
+                        <span class="font-semibold text-slate-200 text-[11px]">${p.assignee}</span>
+                    </div>
+                </td>
+                <td class="py-3 px-2 whitespace-nowrap text-[11px]">
+                    <div class="font-bold text-slate-300">${dl}</div>
+                </td>
+                <td class="py-3 px-2">${statusBadge(p.status)}</td>
+                <td class="py-3 px-2"><div class="space-y-1">${milestone("L1",p.l1Status,p.l1Date,p.l1FeedbackDate)}${milestone("L2",p.l2Status,p.l2Date,p.l2FeedbackDate)}${milestone("L3",p.l3Status,p.l3Date,p.l3FeedbackDate)}</div></td>
+                <td class="py-3 px-2 text-center">${subDisplay}</td>
+                <td class="py-3 px-2 text-center">${editDayDisplay}</td>
+                <td class="py-3 px-2">
+                    <div class="font-medium text-brand-gold text-[11px]">${p.officer||"N/A"}</div>
+                    <div class="text-[10px] text-slate-400 mt-1 max-w-[130px] break-words italic">${p.notes||"—"}</div>
+                </td>
+                <td class="py-3 px-2 text-center no-print">${currentRole==="viewer"?`<span class="text-[10px] text-slate-600">—</span>`:`<div class="flex items-center justify-center space-x-1"><button onclick="editProject('${p.id}')" class="w-7 h-7 bg-blue-900/30 hover:bg-brand-blue/40 text-blue-400 hover:text-white rounded-lg flex items-center justify-center transition"><i class="fa-solid fa-pen-to-square text-xs"></i></button><button onclick="deleteProject('${p.id}')" class="w-7 h-7 bg-red-950/20 hover:bg-red-500 text-red-400 hover:text-white rounded-lg flex items-center justify-center transition"><i class="fa-solid fa-trash-can text-xs"></i></button></div>`}</td>`;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function applyFilters() {
+        const search = document.getElementById("searchInput").value.toLowerCase().trim();
+        const status = document.getElementById("statusFilter").value;
+        const person = document.getElementById("personnelFilter").value;
+        const filtered = projects.filter(p =>
+            (search===""||p.name.toLowerCase().includes(search)||p.id.toLowerCase().includes(search)||(p.notes||"").toLowerCase().includes(search)||(p.officer||"").toLowerCase().includes(search)) &&
+            (status==="all"||p.status===status) &&
+            (person==="all"||( p.assignee&&p.assignee.split(',').map(s=>s.trim()).includes(person)))
+        );
+        renderProjectTable(filtered);
+    }
+
+    // ─── PROJECT MODAL ───
+    function openProjectModal(projectId = null) {
+        const modal = document.getElementById("projectModal");
+        document.getElementById("projectForm").reset();
+        if (projectId) {
+            document.getElementById("modalTitle").textContent = "Cập Nhật Thông Tin Dự Án";
+            const p = projects.find(x => x.id === projectId);
+            if (p) {
+                document.getElementById("formProjectId").value = p.id;
+                document.getElementById("formProjectName").value = p.name;
+                document.getElementById("formContractValue").value = p.contractValue;
+                document.getElementById("formContractDate").value = p.contractDate || "";
+                document.getElementById("formAdvancePayment").value = p.advancePayment || 0;
+                document.getElementById("formAssignee").value = p.assignee;
+                document.getElementById("formDeadline").value = p.deadline;
+                document.getElementById("formStatus").value = p.status === "TRỄ HẠN" ? "Đang triển khai" : p.status;
+                document.getElementById("formL1Status").value = p.l1Status;
+                document.getElementById("formL1Date").value = p.l1Date;
+                document.getElementById("formL1FeedbackDate").value = p.l1FeedbackDate || "";
+                document.getElementById("formL2Status").value = p.l2Status;
+                document.getElementById("formL2Date").value = p.l2Date;
+                document.getElementById("formL2FeedbackDate").value = p.l2FeedbackDate || "";
+                document.getElementById("formL3Status").value = p.l3Status;
+                document.getElementById("formL3Date").value = p.l3Date;
+                document.getElementById("formL3FeedbackDate").value = p.l3FeedbackDate || "";
+                document.getElementById("formOfficer").value = p.officer || "";
+                document.getElementById("formNotes").value = p.notes || "";
+            }
+        } else {
+            document.getElementById("modalTitle").textContent = "Thêm Dự Án TVTK Mới";
+            document.getElementById("formProjectId").value = "";
+        }
+        modal.classList.remove("hidden");
+    }
+
+    function closeProjectModal() { document.getElementById("projectModal").classList.add("hidden"); }
+
+    function saveProject(e) {
+        e.preventDefault();
+        const id              = document.getElementById("formProjectId").value;
+        const name            = document.getElementById("formProjectName").value.trim();
+        const contractValue   = parseInt(document.getElementById("formContractValue").value) || 0;
+        const contractDate    = document.getElementById("formContractDate").value;
+        const advancePayment  = parseInt(document.getElementById("formAdvancePayment").value) || 0;
+        const assignee        = document.getElementById("formAssignee").value;
+        const deadline        = document.getElementById("formDeadline").value;
+        const status          = document.getElementById("formStatus").value;
+        const l1Status        = document.getElementById("formL1Status").value;
+        const l1Date          = document.getElementById("formL1Date").value;
+        const l1FeedbackDate  = document.getElementById("formL1FeedbackDate").value;
+        const l2Status        = document.getElementById("formL2Status").value;
+        const l2Date          = document.getElementById("formL2Date").value;
+        const l2FeedbackDate  = document.getElementById("formL2FeedbackDate").value;
+        const l3Status        = document.getElementById("formL3Status").value;
+        const l3Date          = document.getElementById("formL3Date").value;
+        const l3FeedbackDate  = document.getElementById("formL3FeedbackDate").value;
+        const officer         = document.getElementById("formOfficer").value.trim();
+        const notes           = document.getElementById("formNotes").value.trim();
+
+        if (!name || !assignee || !deadline) { showToast("Vui lòng nhập đầy đủ thông tin bắt buộc!", "error"); return; }
+
+        if (id) {
+            const idx = projects.findIndex(x => x.id === id);
+            if (idx !== -1) {
+                const old = projects[idx];
+                const changes = [];
+                if (old.name !== name)                              changes.push(`Tên: "${old.name}" → "${name}"`);
+                if (old.status !== status)                          changes.push(`Trạng thái: ${old.status} → ${status}`);
+                if (old.assignee !== assignee)                      changes.push(`Người thực hiện: ${old.assignee} → ${assignee}`);
+                if (old.deadline !== deadline)                      changes.push(`Deadline: ${old.deadline} → ${deadline}`);
+                if ((old.contractDate||"") !== contractDate)        changes.push(`Ngày ký HĐ: ${old.contractDate||"—"} → ${contractDate||"—"}`);
+                if ((old.advancePayment||0) !== advancePayment)     changes.push(`Tạm ứng: ${formatVND(old.advancePayment||0)} → ${formatVND(advancePayment)}`);
+                if ((old.l1FeedbackDate||"") !== l1FeedbackDate)    changes.push(`Phản hồi L1: ${old.l1FeedbackDate||"—"} → ${l1FeedbackDate||"—"}`);
+                if ((old.l2FeedbackDate||"") !== l2FeedbackDate)    changes.push(`Phản hồi L2: ${old.l2FeedbackDate||"—"} → ${l2FeedbackDate||"—"}`);
+                if ((old.l3FeedbackDate||"") !== l3FeedbackDate)    changes.push(`Phản hồi L3: ${old.l3FeedbackDate||"—"} → ${l3FeedbackDate||"—"}`);
+                projects[idx] = { ...projects[idx], name, contractValue, contractDate, advancePayment, assignee, deadline, status, l1Status, l1Date, l1FeedbackDate, l2Status, l2Date, l2FeedbackDate, l3Status, l3Date, l3FeedbackDate, officer, notes };
+                addAuditEntry("UPDATE", `Cập nhật dự án: ${name}`, changes.length > 0 ? changes.join(" | ") : "Chỉnh sửa chi tiết");
+                showToast(`Cập nhật dự án "${name}" thành công!`, "success");
+            }
+        } else {
+            const nums  = projects.map(p => parseInt(p.id.replace("DA",""))).filter(n => !isNaN(n));
+            const nextId = `DA${String(Math.max(0,...nums)+1).padStart(3,'0')}`;
+            projects.push({ id:nextId, name, contractValue, contractDate, advancePayment, assignee, deadline, status, l1Status, l1Date, l1FeedbackDate, l2Status, l2Date, l2FeedbackDate, l3Status, l3Date, l3FeedbackDate, officer, notes });
+            addAuditEntry("CREATE", `Thêm dự án mới: ${name}`, `Mã: ${nextId} | Người thực hiện: ${assignee} | Deadline: ${deadline}`);
+            showToast(`Thêm dự án mới ${nextId} thành công!`, "success");
+        }
+
+        saveData(); closeProjectModal();
+        calculateKPIs(); renderAllTables(); renderCharts();
+        updateNotifBell(); renderDeadlineBanner();
+    }
+
+    function editProject(id) { if (currentRole === "viewer") return; openProjectModal(id); }
+
+    function deleteProject(id) {
+        if (currentRole === "viewer") return;
+        const p = projects.find(x => x.id === id);
+        if (!p) return;
+        if (!confirm(`Xóa vĩnh viễn dự án: "${p.name}"?`)) return;
+        projects = projects.filter(x => x.id !== id);
+        addAuditEntry("DELETE", `Xóa dự án: ${p.name}`, `Mã: ${p.id} | Người thực hiện: ${p.assignee} | Giá trị: ${formatVND(p.contractValue)}`);
+        saveData(); calculateKPIs(); renderAllTables(); renderCharts();
+        updateNotifBell(); renderDeadlineBanner();
+        showToast("Đã xóa hồ sơ khỏi hệ thống!", "warning");
+    }
+
+    // ─── STAFF ───
+    function renderStaffCards() {
+        const grid = document.getElementById("staffCardsGrid");
+        if (!grid) return;
+        grid.innerHTML = "";
+        if (!staff || staff.length === 0) {
+            grid.innerHTML = '<div class="col-span-4 py-10 text-center text-slate-500 italic text-sm"><i class="fa-solid fa-users text-2xl mb-2 block text-slate-700"></i>Chưa có nhân sự nào.</div>';
+            return;
+        }
+        staff.forEach(function(person) {
+            const pp = projects.filter(function(p) {
+                if (!p.assignee) return false;
+                return p.assignee.split(",").map(function(s){ return s.trim(); }).indexOf(person.name) >= 0;
+            });
+            const doneArr = pp.filter(function(p){ return p.status === "Đã ra giấy"; });
+            const done    = doneArr.length;
+            const run     = pp.filter(function(p){ return p.status === "Đang triển khai"; }).length;
+            const loadVal = pp.filter(function(p){ return p.status !== "Đã ra giấy"; }).reduce(function(a,p){ return a + (p.contractValue||0); }, 0);
+            const advVal  = pp.filter(function(p){ return p.status !== "Đã ra giấy"; }).reduce(function(a,p){ return a + (p.advancePayment||0); }, 0);
+            const l1c = doneArr.filter(function(p){ return p.l1Date && !p.l2Date; }).length;
+            const l2c = doneArr.filter(function(p){ return p.l2Date && !p.l3Date; }).length;
+            const l3c = doneArr.filter(function(p){ return p.l3Date; }).length;
+            const l1p = done > 0 ? Math.round(l1c/done*100) : 0;
+            const l2p = done > 0 ? Math.round(l2c/done*100) : 0;
+            const l3p = done > 0 ? Math.round(l3c/done*100) : 0;
+
+            const card = document.createElement("div");
+            card.className = "kpi-card print-card bg-brand-darkblue/40 border border-blue-900/50 rounded-2xl p-5 flex flex-col justify-between";
+
+            const topActions = document.createElement("div");
+            topActions.className = "flex items-center space-x-2 no-print";
+            if (currentRole !== "viewer") {
+                const eBtn = document.createElement("button");
+                eBtn.title = "Chỉnh sửa";
+                eBtn.className = "text-slate-500 hover:text-brand-gold transition";
+                eBtn.innerHTML = '<i class="fa-solid fa-pen-to-square text-sm"></i>';
+                eBtn.onclick = function(){ editStaff(person.id); };
+                topActions.appendChild(eBtn);
+                const dBtn = document.createElement("button");
+                dBtn.title = "Xóa";
+                dBtn.className = "text-slate-500 hover:text-red-400 transition";
+                dBtn.innerHTML = '<i class="fa-solid fa-trash-can text-sm"></i>';
+                dBtn.onclick = function(){ deleteStaff(person.id); };
+                topActions.appendChild(dBtn);
+            }
+
+            card.innerHTML =
+                '<div>' +
+                  '<div class="flex items-center justify-between mb-4">' +
+                    '<div class="w-12 h-12 bg-brand-blue/25 rounded-2xl border border-brand-blue flex items-center justify-center text-brand-gold font-black text-lg">' + person.name.charAt(0) + '</div>' +
+                  '</div>' +
+                  '<h4 class="text-base font-bold text-white mb-0.5">' + person.name + '</h4>' +
+                  '<p class="text-[11px] text-slate-400">' + person.role + '</p>' +
+                  '<p class="text-[10px] text-slate-500 mt-1"><i class="fa-solid fa-envelope mr-1"></i>' + (person.contact || "N/A") + '</p>' +
+                  '<div class="mt-4 pt-3 border-t border-blue-950/50 grid grid-cols-2 gap-2 text-center">' +
+                    '<div class="bg-slate-950/50 p-2 rounded-xl border border-blue-950"><div class="text-[9px] text-slate-500">ĐANG CHẠY</div><div class="text-sm font-black text-brand-gold mt-0.5">' + run + '</div></div>' +
+                    '<div class="bg-slate-950/50 p-2 rounded-xl border border-blue-950"><div class="text-[9px] text-slate-500">ĐÃ RA GIẤY</div><div class="text-sm font-black text-brand-teal mt-0.5">' + done + '</div></div>' +
+                  '</div>' +
+                  '<div class="mt-3 pt-3 border-t border-blue-950/50">' +
+                    '<div class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-2"><i class="fa-solid fa-medal text-brand-gold text-[8px] mr-1"></i>Chất lượng (' + done + ' DA ra giấy)</div>' +
+                    '<div class="grid grid-cols-3 gap-1.5 text-center">' +
+                      '<div class="bg-emerald-950/30 border border-emerald-500/20 p-2 rounded-xl"><div class="text-[9px] text-slate-500">LẦN 1</div><div class="text-sm font-black text-emerald-400 mt-0.5">' + l1c + '</div><div class="text-[9px] text-emerald-300 font-bold">' + l1p + '%</div></div>' +
+                      '<div class="bg-amber-950/30 border border-amber-500/20 p-2 rounded-xl"><div class="text-[9px] text-slate-500">LẦN 2</div><div class="text-sm font-black text-amber-400 mt-0.5">' + l2c + '</div><div class="text-[9px] text-amber-300 font-bold">' + l2p + '%</div></div>' +
+                      '<div class="bg-red-950/30 border border-red-500/20 p-2 rounded-xl"><div class="text-[9px] text-slate-500">LẦN 3</div><div class="text-sm font-black text-red-400 mt-0.5">' + l3c + '</div><div class="text-[9px] text-red-300 font-bold">' + l3p + '%</div></div>' +
+                    '</div>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="mt-4 pt-3 border-t border-blue-950 space-y-1">' +
+                  '<div class="flex justify-between items-center"><span class="text-[9px] text-slate-400">TẢI TRỌNG HĐ:</span><span class="text-xs font-black text-brand-gold">' + formatVND(loadVal) + '</span></div>' +
+                  (advVal > 0 ? '<div class="flex justify-between items-center"><span class="text-[9px] text-slate-400">TẠM ỨNG ĐÃ THU:</span><span class="text-xs font-bold text-violet-400">' + formatVND(advVal) + '</span></div>' : '') +
+                '</div>';
+
+            // Insert action buttons vào đúng chỗ
+            const avatarRow = card.querySelector(".flex.items-center.justify-between.mb-4");
+            if (avatarRow) avatarRow.appendChild(topActions);
+
+            grid.appendChild(card);
+        });
+    }
+
+    function openStaffModal() {
+        document.getElementById("staffModalTitle").textContent = "Thêm Nhân Sự TVTK Mới";
+        document.getElementById("staffSubmitBtn").textContent = "Đăng ký";
+        document.getElementById("formStaffId").value = "";
+        document.getElementById("formStaffName").value = "";
+        document.getElementById("formStaffRole").value = "";
+        document.getElementById("formStaffContact").value = "";
+        document.getElementById("staffModal").classList.remove("hidden");
+    }
+    function closeStaffModal() { document.getElementById("staffModal").classList.add("hidden"); }
+
+    function editStaff(staffId) {
+        const person = staff.find(s => s.id === staffId);
+        if (!person) return;
+        document.getElementById("staffModalTitle").textContent = "Chỉnh Sửa Thông Tin Nhân Sự";
+        document.getElementById("staffSubmitBtn").textContent = "Lưu thay đổi";
+        document.getElementById("formStaffId").value = person.id;
+        document.getElementById("formStaffName").value = person.name;
+        document.getElementById("formStaffRole").value = person.role;
+        document.getElementById("formStaffContact").value = person.contact || "";
+        document.getElementById("staffModal").classList.remove("hidden");
+    }
+
+    function saveStaff(e) {
+        e.preventDefault();
+        const editingId = document.getElementById("formStaffId").value;
+        const name    = document.getElementById("formStaffName").value.trim();
+        const role    = document.getElementById("formStaffRole").value.trim();
+        const contact = document.getElementById("formStaffContact").value.trim();
+        if (!name || !role) { showToast("Vui lòng điền Tên và Chức vụ!", "error"); return; }
+        if (editingId) {
+            const idx = staff.findIndex(s => s.id === editingId);
+            if (idx === -1) return;
+            const old = staff[idx];
+            if (old.name !== name) { projects.forEach(p => { if (p.assignee === old.name) p.assignee = name; }); }
+            staff[idx] = { ...old, name, role, contact };
+            addAuditEntry("STAFF", `Cập nhật nhân sự: ${name}`, `Mã: ${editingId} | Chức vụ: ${role}`);
+            showToast(`Đã cập nhật thông tin: ${name}!`, "success");
+        } else {
+            if (staff.some(s => s.name.toLowerCase() === name.toLowerCase())) { showToast("Tên nhân sự đã tồn tại!", "error"); return; }
+            const nums = staff.map(s => parseInt(s.id.replace("NV",""))).filter(n => !isNaN(n));
+            const newId = `NV${String(Math.max(0,...nums)+1).padStart(3,"0")}`;
+            staff.push({ id:newId, name, role, contact });
+            addAuditEntry("STAFF", `Thêm nhân sự: ${name}`, `Mã: ${newId} | Chức vụ: ${role}`);
+            showToast(`Đã thêm nhân sự: ${name}!`, "success");
+        }
+        saveData(); closeStaffModal(); syncFilterOptions(); renderStaffCards();
+    }
+
+    function deleteStaff(staffId) {
+        if (currentRole === "viewer") return;
+        const person = staff.find(s => s.id === staffId);
+        if (!person) return;
+        const active = projects.filter(p => p.assignee && p.assignee.split(',').map(s=>s.trim()).includes(person.name)).length;
+        if (active > 0) { showToast(`Không thể xóa! "${person.name}" đang phụ trách ${active} dự án. Hãy chuyển giao trước!`, "error"); return; }
+        if (!confirm(`Xóa nhân viên "${person.name}" khỏi hệ thống?`)) return;
+        staff = staff.filter(s => s.id !== staffId);
+        addAuditEntry("STAFF", `Xóa nhân sự: ${person.name}`, `Mã: ${person.id} | Chức vụ: ${person.role}`);
+        saveData(); syncFilterOptions(); renderStaffCards();
+        showToast(`Đã xóa nhân sự.`, "warning");
+    }
+
+    function executeTransfer() {
+        const src  = document.getElementById("reassignSource").value;
+        const dest = document.getElementById("reassignDest").value;
+        if (!src || !dest) { showToast("Vui lòng chọn nhân sự chuyển đi và tiếp quản!", "error"); return; }
+        if (src === dest)  { showToast("Nhân viên tiếp quản phải là người khác!", "error"); return; }
+        const pending = projects.filter(p => p.assignee && p.assignee.split(',').map(s=>s.trim()).includes(src) && p.status !== "Đã ra giấy");
+        if (pending.length === 0) { showToast(`"${src}" không có dự án dở dang nào!`, "warning"); return; }
+        if (!confirm(`Chuyển toàn bộ ${pending.length} hồ sơ chưa hoàn thành từ "${src}" → "${dest}"?`)) return;
+        projects.forEach(p => {
+            if (p.assignee && p.assignee.split(',').map(s=>s.trim()).includes(src) && p.status !== "Đã ra giấy") {
+                p.assignee = dest;
+                p.notes = `[Bàn giao từ ${src}] ` + (p.notes || "");
+            }
+        });
+        addAuditEntry("TRANSFER", `Bàn giao hồ sơ: ${src} → ${dest}`, `${pending.length} dự án được chuyển giao`);
+        saveData(); calculateKPIs(); renderAllTables(); renderCharts(); renderStaffCards();
+        document.getElementById("reassignSource").value = "";
+        document.getElementById("reassignDest").value   = "";
+        showToast(`Chuyển giao ${pending.length} hồ sơ cho ${dest} thành công!`, "success");
+    }
+
+    function triggerPrint() { showToast("Đang chuẩn bị xuất PDF...", "success"); setTimeout(() => window.print(), 500); }
+
+    document.addEventListener("click", function(e) {
+        const panel = document.getElementById("notifPanel");
+        const bell  = document.getElementById("bellBtn");
+        if (notifPanelOpen && !panel.contains(e.target) && !bell.contains(e.target)) {
+            notifPanelOpen = false; panel.classList.add("hidden-panel");
+        }
+    });
     </script>
 </body>
 </html>
